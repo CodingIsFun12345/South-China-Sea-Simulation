@@ -442,7 +442,8 @@
     let bData = { troops: [], bases: [], fleets: [], config: { turn: 1, season: 'setup' }, eco: [] };
 
     async function sbGet(path) {
-      const r = await fetch(SB_URL + '/rest/v1/' + path, { headers: { 'apikey': SB_ANON, 'Authorization': 'Bearer ' + SB_ANON } });
+      const cleanAnon = SB_ANON.replace(/[^\x20-\x7E]/g, '');
+      const r = await fetch(SB_URL.replace(/[^\x20-\x7E]/g, '') + '/rest/v1/' + path, { headers: { 'apikey': cleanAnon, 'Authorization': 'Bearer ' + cleanAnon } });
       const t = await r.text(); return t ? JSON.parse(t) : [];
     }
 
