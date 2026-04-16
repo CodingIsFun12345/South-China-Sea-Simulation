@@ -588,13 +588,27 @@ function renderPlayer(){
   setSeasonChip(s);
   renderSidebar();
   ['setup','fall','winter','spring','summer'].forEach(x=>document.getElementById('panel-'+x).classList.add('hidden'));
-  document.getElementById('p-msg').classList.add('hidden');
-  document.getElementById('panel-'+s)?.classList.remove('hidden');
-  if(s==='setup')rSetup(c);
-  if(s==='fall')rFall(c);
-  if(s==='winter')rWinter(c);
-  if(s==='spring')rSpring(c);
-  if(s==='summer')rSummer(c);
+  if(s!=='setup'&&D.myOrders.length>0){
+    const msgEl=document.getElementById('p-msg');
+    msgEl.innerHTML='<div class="al as"><b>Orders Submitted!</b> Waiting for GM approval. <button class="btn btn-sm btn-o" style="margin-left:10px;vertical-align:middle;padding:3px 8px;font-size:10px;" onclick="cancelMyOrders()">Withdraw Orders</button></div>';
+    msgEl.classList.remove('hidden');
+  }else{
+    document.getElementById('p-msg').classList.add('hidden');
+    document.getElementById('panel-'+s)?.classList.remove('hidden');
+    if(s==='setup')rSetup(c);
+    if(s==='fall')rFall(c);
+    if(s==='winter')rWinter(c);
+    if(s==='spring')rSpring(c);
+    if(s==='summer')rSummer(c);
+  }
+}
+async function cancelMyOrders(){
+  if(!confirm('Withdraw your submitted orders?'))return;
+  showLoad('Withdrawing…');
+  try{
+    await sb('pending_orders?country=eq.'+encodeURIComponent(CU.country)+'&season=eq.'+D.cfg.season+'&turn=eq.'+D.cfg.turn,{method:'DELETE',prefer:'return=minimal'});
+    await handleRefresh();
+  }catch(e){hideLoad();alert(e.message);}
 }
 
 function renderSidebar(){
@@ -1085,7 +1099,8 @@ function renderOrders(){
     }
     return '<div class="order-row"><div class="order-c">'+(FLAGS[o.country]||'')+' '+o.country+'</div>'
       +'<div style="flex:1;font-size:12px;color:var(--text2);">'+detail+'</div>'
-      +'<div class="tm mu" style="font-size:10px;">'+ft(o.submitted_at)+'</div></div>';
+      +'<div style="display:flex;align-items:center;gap:8px;"><div class="tm mu" style="font-size:10px;">'+ft(o.submitted_at)+'</div>'
+      +'<button class="btn btn-d btn-sm" style="padding:1px 5px;" onclick="gmDelOrd(\''+o.country+'\')">✕</button></div></div>';
   }).join('');
 }
 function renderTroops(){
@@ -1111,6 +1126,7 @@ function renderTroops(){
       '<td>'+(inC?'<span class="badge br">!</span> ':'')+(anc?'<span class="badge bam">⚓</span> ':'')+( ship.disabled?'<span class="badge bgo">OFF</span>':'<span class="badge bgr">ON</span>')+'</td>'+
       '<td><div class="fl" style="gap:3px;">'+
         '<button class="btn btn-o btn-sm" onclick="gmHP(\''+ship.id+'\')">HP</button>'+
+        '<button class="btn btn-o btn-sm" onclick="gmMv(\''+ship.id+'\')">MV</button>'+
         '<button class="btn btn-o btn-sm" onclick="gmDis(\''+ship.id+'\')">'+(ship.disabled?'ON':'OFF')+'</button>'+
         '<button class="btn btn-d btn-sm" onclick="gmSink(\''+ship.id+'\')">✕</button>'+
       '</div></td></tr>';
@@ -1277,6 +1293,17 @@ async function applyAdj(){
     await sb('economy_log',{method:'POST',prefer:'return=minimal',body:{country:c,turn:D.cfg.turn,type:'adj',amount:amt,note:(amt>0?'+':'')+amt+'g: '+r}});
     await loadGMData();hideLoad();renderEconomy();
     document.getElementById('adj-a').value='';document.getElementById('adj-r').value='';}catch(e){hideLoad();alert(e.message);}
+}
+async function gmDelOrd(c){
+  if(!confirm('Withdraw orders for '+c+'?'))return;
+  showLoad('Withdrawing…');
+  try{
+    await sb('pending_orders?country=eq.'+encodeURIComponent(c)+'&season=eq.'+D.cfg.season+'&turn=eq.'+D.cfg.turn,{method:'DELETE',prefer:'return=minimal'});
+    await loadGMData();hideLoad();renderOrders();rGMOverview();
+  }catch(e){hideLoad();alert(e.message);}
+}
+async function gmMv(id){const t=prompt('Move '+id+' to tile:');if(!t)return;showLoad('…');
+  try{await sb('troops?id=eq.'+id,{method:'PATCH',prefer:'return=minimal',body:{tile:t}});await loadGMData();hideLoad();renderTroops();renderBases();}catch(e){hideLoad();alert(e.message);}
 }
 async function gmHP(id){const v=prompt('New HP for '+id+':');if(v===null)return;const hp=parseInt(v);if(isNaN(hp))return;showLoad('…');
   try{await sb('troops?id=eq.'+id,{method:'PATCH',prefer:'return=minimal',body:{hp}});await loadGMData();hideLoad();renderTroops();}catch(e){hideLoad();alert(e.message);}
