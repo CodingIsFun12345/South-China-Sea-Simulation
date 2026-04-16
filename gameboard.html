@@ -450,14 +450,13 @@
     async function loadBoard() {
       document.getElementById('b-st').innerHTML = '<span class="spin"></span>';
       try {
-        const [cfg, tr, bs, ec, fl] = await Promise.all([
+        const [cfg, tr, bs, fl] = await Promise.all([
           sbGet('game_config?select=turn,season'),
           sbGet('troops?select=id,country,type,tile,hp,max_hp,disabled'),
           sbGet('bases?select=id,country,tile,status,anchor_ship'),
-          sbGet('economy?select=country,gold'),
           sbGet('fleets?select=id,country,name,ship_ids'),
         ]);
-        bData = { config: cfg?.[0] || { turn: 1, season: 'setup' }, troops: tr || [], bases: bs || [], eco: ec || [], fleets: fl || [] };
+        bData = { config: cfg?.[0] || { turn: 1, season: 'setup' }, troops: tr || [], bases: bs || [], fleets: fl || [] };
         renderBoard();
         document.getElementById('b-st').textContent = '';
         document.getElementById('last-updated').textContent = 'Updated: ' + new Date().toLocaleTimeString();
@@ -545,7 +544,6 @@
       });
 
       document.getElementById('country-cards').innerHTML = COUNTRIES.map(c => {
-        const e = bData.eco.find(x => x.country === c) || { gold: '?' };
         const myT = troops.filter(s => s.country === c);
         const myB = bases.filter(b => b.country === c && b.status === 'active');
         const myBuild = bases.filter(b => b.country === c && b.status === 'construction');
