@@ -1442,6 +1442,11 @@
         </div>
         <div id="gt-settings" class="tp">
           <div class="card">
+            <div class="card-title">Live Board</div>
+            <div class="al ai" style="font-size:12px;margin-bottom:12px;">Open the public live game board in a new tab.</div>
+            <a href="gameboard.html" target="_blank" class="btn btn-o btn-sm btn-full" style="text-decoration:none;text-align:center;display:block;">Open Live Board ↗</a>
+          </div>
+          <div class="card">
             <div class="card-title">PIN Management</div>
             <div id="pin-list" style="display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:14px;"></div>
             <button class="btn btn-g btn-sm" onclick="savePins()">Save PINs</button>
@@ -1560,9 +1565,9 @@
 
     const SEASON_ORDER = ['fall', 'winter', 'spring', 'summer'];
 
-    function apiKey() { return SB_SVC || SB_ANON; }
+    function apiKey() { return (SB_SVC || SB_ANON).replace(/[^\x20-\x7E]/g, ''); }
     async function sb(path, opts = {}) {
-      const res = await fetch(SB_URL + '/rest/v1/' + path, {
+      const res = await fetch(SB_URL.replace(/[^\x20-\x7E]/g, '') + '/rest/v1/' + path, {
         headers: {
           'apikey': apiKey(), 'Authorization': 'Bearer ' + apiKey(),
           'Content-Type': 'application/json', 'Prefer': opts.prefer || 'return=representation',
@@ -1574,8 +1579,9 @@
       const t = await res.text(); return t ? JSON.parse(t) : null;
     }
     async function rpc(fn, params = {}) {
-      const res = await fetch(SB_URL + '/rest/v1/rpc/' + fn, {
-        headers: { 'apikey': SB_ANON, 'Authorization': 'Bearer ' + SB_ANON, 'Content-Type': 'application/json' },
+      const cleanAnon = SB_ANON.replace(/[^\x20-\x7E]/g, '');
+      const res = await fetch(SB_URL.replace(/[^\x20-\x7E]/g, '') + '/rest/v1/rpc/' + fn, {
+        headers: { 'apikey': cleanAnon, 'Authorization': 'Bearer ' + cleanAnon, 'Content-Type': 'application/json' },
         method: 'POST', body: JSON.stringify(params)
       });
       const t = await res.text(); return t ? JSON.parse(t) : null;
