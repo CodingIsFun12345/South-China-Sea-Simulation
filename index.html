@@ -1,3 +1,4 @@
+<!-- Git Connection Test -->
 <!DOCTYPE html>
 <html lang="en">
 
@@ -141,11 +142,13 @@
       text-transform: uppercase
     }
 
+    /* glassy card background with safari compatibility */
     .login-card {
       background: rgba(10, 22, 40, .96);
       border: 1px solid var(--bdr2);
       border-radius: 14px;
       padding: 32px 28px;
+      -webkit-backdrop-filter: blur(16px);
       backdrop-filter: blur(16px)
     }
 
@@ -261,6 +264,7 @@
       margin-top: 12px
     }
 
+    /* Sticky header with glassy blur */
     .hdr {
       display: flex;
       align-items: center;
@@ -269,6 +273,7 @@
       height: 52px;
       border-bottom: 1px solid var(--bdr);
       background: rgba(6, 15, 30, .98);
+      -webkit-backdrop-filter: blur(12px);
       backdrop-filter: blur(12px);
       position: sticky;
       top: 0;
@@ -585,12 +590,131 @@
       line-height: 1
     }
 
+    .stat-gold {
+      color: var(--gold);
+    }
+
     .stat-l {
       font-size: 9px;
       color: var(--text2);
       margin-top: 2px;
       letter-spacing: 1px;
       text-transform: uppercase
+    }
+
+    /* Utility classes to avoid inline styles */
+    .mt8 {
+      margin-top: 8px;
+    }
+
+    .mt14 {
+      margin-top: 14px;
+    }
+
+    .mb10 {
+      margin-bottom: 10px;
+    }
+
+    .m0 {
+      margin: 0;
+    }
+
+    .fs10 {
+      font-size: 10px;
+    }
+
+    .fs11 {
+      font-size: 11px;
+    }
+
+    .fs12 {
+      font-size: 12px;
+    }
+
+    .fs13 {
+      font-size: 13px;
+    }
+
+    .text-right {
+      text-align: right;
+    }
+
+    .text-center {
+      text-align: center;
+    }
+
+    .display-block {
+      display: block;
+    }
+
+    .no-decor {
+      text-decoration: none;
+    }
+
+    .border-top-bdr {
+      border-top: 1px solid var(--bdr);
+      padding-top: 12px;
+    }
+
+    .gap8 {
+      gap: 8px;
+    }
+
+    .w130 {
+      width: 130px;
+    }
+
+    .w90 {
+      width: 90px;
+    }
+
+    .w160 {
+      width: 160px;
+    }
+
+    .w170 {
+      width: 170px;
+    }
+
+    .max-h180 {
+      max-height: 180px;
+      overflow-y: auto;
+    }
+
+    .flex1 {
+      flex: 1;
+    }
+
+    .p12 {
+      padding: 12px;
+    }
+
+    .p1-5 {
+      padding: 1px 5px;
+    }
+
+    .bg-row {
+      background: rgba(230, 57, 70, .05);
+    }
+
+    .gap3 {
+      gap: 3px;
+    }
+
+    .min-w120 {
+      min-width: 120px;
+    }
+
+    .min-w28 {
+      min-width: 28px;
+    }
+
+    .fs9 {
+      font-size: 9px;
+    }
+
+    .fs8 {
+      font-size: 8px;
     }
 
     .tabs {
@@ -1091,14 +1215,14 @@
       </div>
       <div class="login-card">
         <div class="fg"><label>Role</label>
-          <select id="lr">
+          <select id="lr" title="Select Login Role">
             <option value="">— Select role —</option>
             <option value="gm">Game Master</option>
             <option value="player">Player</option>
           </select>
         </div>
         <div id="lcw" class="fg hidden"><label>Country</label>
-          <select id="lc">
+          <select id="lc" title="Select Player Country">
             <option value="">— Select country —</option>
             <option>China</option>
             <option>Taiwan</option>
@@ -1150,7 +1274,7 @@
       <div class="sidebar">
         <div class="stat-row">
           <div class="stat-box">
-            <div class="stat-v" id="p-gold">—</div>
+            <div class="stat-v stat-gold" id="p-gold">—</div>
             <div class="stat-l">Gold</div>
           </div>
           <div class="stat-box">
@@ -1166,13 +1290,13 @@
             <div class="stat-l">Income</div>
           </div>
         </div>
-        <div class="fb" style="margin-bottom:10px;">
-          <div class="stl" style="margin:0;">Your Fleet</div>
+        <div class="fb mb10">
+          <div class="stl m0">Your Fleet</div>
           <button class="btn btn-o btn-sm" onclick="openCreateFleet()">⭐ New Fleet</button>
         </div>
         <div id="p-fleet"></div>
         <div id="p-cons"></div>
-        <div style="border-top:1px solid var(--bdr);margin-top:14px;padding-top:12px;">
+        <div class="border-top-bdr mt14">
           <button class="btn btn-o btn-sm btn-full" onclick="handleRefresh()">↻ Refresh</button>
         </div>
       </div>
@@ -1183,9 +1307,8 @@
             <div class="card-title">◈ Setup — Place Your Starting Base</div>
             <div class="rn">Choose one tile from your EEZ below. Your base will be placed there for free before Turn 1
               begins.</div>
-            <div
-              style="font-family:var(--fm);font-size:10px;color:var(--text2);margin-bottom:4px;letter-spacing:1px;text-transform:uppercase;">
-              Your EEZ tiles: <b id="setup-eez-tiles" style="color:var(--teal);">—</b></div>
+            <div class="fs10 mu mt8 mb10 text-uppercase letter1">
+              Your EEZ tiles: <b id="setup-eez-tiles" class="t-teal">—</b></div>
             <div id="setup-tile-grid"></div>
             <div id="setup-selected-info" class="mt8"></div>
             <button class="btn btn-g mt8" id="btn-setup" onclick="submitSetup()" disabled>Confirm Base
@@ -1200,8 +1323,8 @@
             <div id="fall-zones"></div>
             <div class="dv"></div>
             <div class="fb">
-              <span class="tm" style="font-size:12px;">Base: <b class="tgo" id="f-base">0</b>g + Fish: <b class="tgo"
-                  id="f-fish">0</b>g = <b class="tgo" id="f-tot">0</b>g</span>
+              <span class="tm fs12">Base: <b class="tgo" id="f-base">0</b>g + Fish: <b class="tgo" id="f-fish">0</b>g =
+                <b class="tgo" id="f-tot">0</b>g</span>
               <button class="btn btn-g" onclick="submitFall()">Submit Orders</button>
             </div>
           </div>
@@ -1212,7 +1335,7 @@
             <div id="w-nobase" class="al aw hidden">No active bases — order construction below first.</div>
             <div id="spawn-base-row" class="fg hidden">
               <label>Ships spawn at base</label>
-              <select id="spawn-base-sel"></select>
+              <select id="spawn-base-sel" title="Select base to spawn ships at"></select>
             </div>
             <div id="shop-list"></div>
             <div class="dv"></div>
@@ -1234,7 +1357,8 @@
             <div class="card-title">Base Construction — 8g</div>
             <div class="rn">1 year build. If anchor fleet destroyed in Summer → base lost, no refund.</div>
             <div class="g2 mt8">
-              <div class="fg"><label>Anchor ship</label><select id="base-sel">
+              <div class="fg"><label>Anchor ship</label><select id="base-sel"
+                  title="Select ship to anchor the new base">
                   <option value="">-- select --</option>
                 </select></div>
               <div style="display:flex;align-items:flex-end;padding-bottom:12px;"><button class="btn btn-o"
@@ -1319,7 +1443,7 @@
             <div class="card-title">Fleet Roster <button class="btn btn-o btn-sm" onclick="openMod('m-ship')">+ Add
                 Ship</button></div>
             <div class="fb" style="margin-bottom:12px;">
-              <select id="tf" onchange="renderTroops()" style="width:170px;">
+              <select id="tf" onchange="renderTroops()" style="width:170px;" title="Filter fleet by country">
                 <option value="all">All countries</option>
                 <option>China</option>
                 <option>Taiwan</option>
@@ -1394,7 +1518,8 @@
             <div class="dv"></div>
             <div class="stl">Manual Adjustment</div>
             <div class="fl" style="gap:8px;align-items:flex-end;flex-wrap:wrap;">
-              <div class="fg" style="margin:0;"><label>Country</label><select id="adj-c" style="width:130px;">
+              <div class="fg" style="margin:0;"><label>Country</label>
+                <select id="adj-c" style="width:130px;" title="Country for manual adjustment">
                   <option>China</option>
                   <option>Taiwan</option>
                   <option>Philippines</option>
@@ -1403,7 +1528,8 @@
                   <option>Thailand</option>
                   <option>Cambodia</option>
                   <option>Vietnam</option>
-                </select></div>
+                </select>
+              </div>
               <div class="fg" style="margin:0;"><label>Amount (+/-)</label><input type="number" id="adj-a"
                   placeholder="-5" style="width:90px;"></div>
               <div class="fg" style="margin:0;"><label>Reason</label><input type="text" id="adj-r" placeholder="reason"
@@ -1411,7 +1537,7 @@
               <button class="btn btn-o btn-sm" onclick="applyAdj()">Apply</button>
             </div>
             <div class="stl mt14">Log</div>
-            <div id="eco-log" class="tm mu" style="font-size:11px;line-height:2;max-height:180px;overflow-y:auto;">
+            <div id="eco-log" class="tm mu fs11 max-h180">
             </div>
           </div>
           <div class="card">
@@ -1443,8 +1569,10 @@
         <div id="gt-settings" class="tp">
           <div class="card">
             <div class="card-title">Live Board</div>
-            <div class="al ai" style="font-size:12px;margin-bottom:12px;">Open the public live game board in a new tab.</div>
-            <a href="gameboard.html" target="_blank" class="btn btn-o btn-sm btn-full" style="text-decoration:none;text-align:center;display:block;">Open Live Board ↗</a>
+            <div class="al ai fs12 mb10">Open the public live game board in a new tab.
+            </div>
+            <a href="gameboard.html" target="_blank"
+              class="btn btn-o btn-sm btn-full no-decor text-center display-block">Open Live Board ↗</a>
           </div>
           <div class="card">
             <div class="card-title">PIN Management</div>
@@ -1471,7 +1599,7 @@
         <button class="btn btn-o btn-sm" onclick="closeMod()">✕</button>
       </div>
       <div class="g2">
-        <div class="fg"><label>Country</label><select id="ms-c">
+        <div class="fg"><label>Country</label><select id="ms-c" title="Add special ship to country">
             <option>China</option>
             <option>Taiwan</option>
             <option>Philippines</option>
@@ -1481,7 +1609,7 @@
             <option>Cambodia</option>
             <option>Vietnam</option>
           </select></div>
-        <div class="fg"><label>Type</label><select id="ms-t">
+        <div class="fg"><label>Type</label><select id="ms-t" title="Select ship type to add">
             <option>Fishing Boat</option>
             <option>Coast Guard</option>
             <option>FAC</option>
@@ -1500,7 +1628,7 @@
         <button class="btn btn-o btn-sm" onclick="closeMod()">✕</button>
       </div>
       <div class="g2">
-        <div class="fg"><label>Country</label><select id="mb-c">
+        <div class="fg"><label>Country</label><select id="mb-c" title="Select country for the new base">
             <option>China</option>
             <option>Taiwan</option>
             <option>Philippines</option>
@@ -1536,23 +1664,53 @@
   </div>
 
   <script>
+    /* 
+     * ─── CONFIGURATION & DATA MODELS ──────────────────────────────────────
+     * This section contains the static data and connection keys.
+     */
     const SB_URL = 'https://fbvybpxosrjvtrwkdrmr.supabase.co';
     const SB_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZidnlicHhvc3JqdnRyd2tkcm1yIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU5OTk1NjEsImV4cCI6MjA5MTU3NTU2MX0.tH6NYFlpZmH3tE_oh5V9gKe62hC_VCo3cIF2Dym-ydE';
+
+    // Country flag emojis for display
     const FLAGS = { China: '🇨🇳', Taiwan: '🇹🇼', Philippines: '🇵🇭', Malaysia: '🇲🇾', Indonesia: '🇮🇩', Thailand: '🇹🇭', Cambodia: '🇰🇭', Vietnam: '🇻🇳' };
+
+    // List of active participating countries
     const COUNTRIES = ['China', 'Taiwan', 'Philippines', 'Malaysia', 'Indonesia', 'Thailand', 'Cambodia', 'Vietnam'];
+
+    // Base amount of gold each country earns per Fall season
     const BASE_INCOME = { China: 4, Taiwan: 3, Philippines: 3, Malaysia: 2, Indonesia: 2, Thailand: 3, Cambodia: 2, Vietnam: 3 };
+
+    // Geographical Exclusive Economic Zones (EEZ) for each country
     const EEZ = { China: ['2', '3', '6', '7', '8', '9', '10', '11'], Vietnam: ['1', '5', '14', '24', '35'], Taiwan: ['19', '20', '30'], Philippines: ['41', '51', '60', '68', '69'], Malaysia: ['76', '77', '78', '79'], Indonesia: ['52', '61', '70', '71'], Cambodia: ['23', '33', '34'], Thailand: ['4', '12', '13', '21', '31', '42'] };
+
     const ALL_ZONES = ['China', 'Taiwan', 'Philippines', 'Malaysia', 'Indonesia', 'Thailand', 'Cambodia', 'Vietnam', 'Green Neutral Zone', 'Blue Neutral Zone', 'Purple Neutral Zone', 'Orange Neutral Zone'];
+
+    // Icons used for the turn status indicator
     const SEASON_ICONS = { setup: '◈', fall: '◆', winter: '❄', spring: '◉', summer: '⚔' };
     const SHIP_STATS = { 'Fishing Boat': { cost: 3, attack: 0, hp: 1, speed: 2, range: 2, notes: '1 fish/turn' }, 'Coast Guard': { cost: 3, attack: 3, hp: 3, speed: 4, range: 2, notes: 'Territorial waters' }, 'FAC': { cost: 6, attack: 6, hp: 1, speed: 5, range: 5, notes: '50% first-strike' }, 'Destroyer': { cost: 13, attack: 6, hp: 8, speed: 4, range: 1e9, notes: 'Unlimited range' } };
     const ZONE_COLORS = { "China": "#c1121f", "Vietnam": "#d4a017", "Taiwan": "#3a86ff", "Philippines": "#8338ec", "Malaysia": "#fb5607", "Indonesia": "#06d6a0", "Cambodia": "#bc6c25", "Thailand": "#e9c46a", "Blue Neutral Zone": "#4cc9f0", "Purple Neutral Zone": "#9d4edd", "Orange Neutral Zone": "#f77f00", "Green Neutral Zone": "#2d9e5f" };
     const TILE_DATA = { "1": { "z": "Vietnam", "a": ["2", "5", "6", "7"] }, "2": { "z": "China", "a": ["1", "3", "6", "7", "8"] }, "3": { "z": "China", "a": ["2", "7", "8", "9"] }, "4": { "z": "Thailand", "a": ["5", "12", "13"] }, "5": { "z": "Vietnam", "a": ["1", "4", "6", "13", "14"] }, "6": { "z": "China", "a": ["1", "2", "5", "7", "14", "15"] }, "7": { "z": "China", "a": ["1", "2", "3", "6", "8", "15", "16", "17"] }, "8": { "z": "China", "a": ["2", "3", "7", "9", "17", "18"] }, "9": { "z": "China", "a": ["3", "8", "10", "17", "18"] }, "10": { "z": "China", "a": ["9", "11", "18", "19"] }, "11": { "z": "China", "a": ["10", "19", "20"] }, "12": { "z": "Thailand", "a": ["4", "13", "21", "22"] }, "13": { "z": "Thailand", "a": ["4", "5", "12", "22", "23"] }, "14": { "z": "Vietnam", "a": ["5", "6", "13", "15", "23", "24", "25"] }, "15": { "z": "Blue Neutral Zone", "a": ["6", "7", "14", "16", "24", "25"] }, "16": { "z": "Blue Neutral Zone", "a": ["7", "15", "17", "25", "26", "27"] }, "17": { "z": "Blue Neutral Zone", "a": ["7", "8", "9", "16", "18", "26", "27", "28"] }, "18": { "z": "Purple Neutral Zone", "a": ["8", "9", "10", "17", "19", "28", "29"] }, "19": { "z": "Taiwan", "a": ["10", "11", "18", "20", "29", "30"] }, "20": { "z": "Taiwan", "a": ["11", "19", "30"] }, "21": { "z": "Thailand", "a": ["12", "22", "31", "32"] }, "22": { "z": "Green Neutral Zone", "a": ["12", "13", "21", "23", "32", "33"] }, "23": { "z": "Cambodia", "a": ["13", "14", "22", "24", "33", "34", "35"] }, "24": { "z": "Vietnam", "a": ["14", "15", "23", "25", "34", "35", "36"] }, "25": { "z": "Blue Neutral Zone", "a": ["14", "15", "16", "24", "26", "35", "36", "37"] }, "26": { "z": "Blue Neutral Zone", "a": ["16", "17", "25", "27", "36", "37", "38"] }, "27": { "z": "Blue Neutral Zone", "a": ["16", "17", "26", "28", "37", "38", "39"] }, "28": { "z": "Purple Neutral Zone", "a": ["17", "18", "27", "29", "38", "39", "40"] }, "29": { "z": "Purple Neutral Zone", "a": ["18", "19", "28", "30", "39", "40", "41"] }, "30": { "z": "Taiwan", "a": ["19", "20", "29", "40", "41"] }, "31": { "z": "Thailand", "a": ["21", "32", "42"] }, "32": { "z": "Green Neutral Zone", "a": ["21", "22", "31", "33", "42", "43"] }, "33": { "z": "Cambodia", "a": ["22", "23", "32", "34", "43", "44"] }, "34": { "z": "Cambodia", "a": ["23", "24", "33", "35", "44", "45"] }, "35": { "z": "Vietnam", "a": ["23", "24", "25", "34", "36", "45", "46"] }, "36": { "z": "Blue Neutral Zone", "a": ["24", "25", "26", "35", "37", "45", "46", "47"] }, "37": { "z": "Blue Neutral Zone", "a": ["25", "26", "27", "36", "38", "46", "47", "48"] }, "38": { "z": "Blue Neutral Zone", "a": ["26", "27", "28", "37", "39", "47", "48", "49"] }, "39": { "z": "Purple Neutral Zone", "a": ["27", "28", "29", "38", "40", "48", "49", "50"] }, "40": { "z": "Purple Neutral Zone", "a": ["28", "29", "30", "39", "41", "49", "50", "51"] }, "41": { "z": "Philippines", "a": ["29", "30", "40", "50", "51"] }, "42": { "z": "Thailand", "a": ["31", "32", "43", "52", "53"] }, "43": { "z": "Green Neutral Zone", "a": ["32", "33", "42", "44", "53", "54"] }, "44": { "z": "Green Neutral Zone", "a": ["33", "34", "43", "45", "54", "55"] }, "45": { "z": "Green Neutral Zone", "a": ["34", "35", "36", "44", "46", "54", "55", "56"] }, "46": { "z": "Orange Neutral Zone", "a": ["35", "36", "37", "45", "47", "55", "56", "57"] }, "47": { "z": "Blue Neutral Zone", "a": ["36", "37", "38", "46", "48", "56", "57", "58"] }, "48": { "z": "Purple Neutral Zone", "a": ["37", "38", "39", "47", "49", "57", "58", "59"] }, "49": { "z": "Purple Neutral Zone", "a": ["38", "39", "40", "48", "50", "58", "59", "60"] }, "50": { "z": "Purple Neutral Zone", "a": ["39", "40", "41", "49", "51", "59", "60"] }, "51": { "z": "Philippines", "a": ["40", "41", "50", "60"] }, "52": { "z": "Indonesia", "a": ["42", "53", "61", "62"] }, "53": { "z": "Green Neutral Zone", "a": ["42", "43", "52", "54", "62", "63"] }, "54": { "z": "Green Neutral Zone", "a": ["43", "44", "45", "53", "55", "63", "64"] }, "55": { "z": "Orange Neutral Zone", "a": ["44", "45", "46", "54", "56", "63", "64", "65"] }, "56": { "z": "Orange Neutral Zone", "a": ["45", "46", "47", "55", "57", "64", "65", "66"] }, "57": { "z": "Purple Neutral Zone", "a": ["46", "47", "48", "56", "58", "65", "66", "67"] }, "58": { "z": "Purple Neutral Zone", "a": ["47", "48", "49", "57", "59", "66", "67", "68"] }, "59": { "z": "Purple Neutral Zone", "a": ["48", "49", "50", "58", "60", "67", "68", "69"] }, "60": { "z": "Philippines", "a": ["49", "50", "51", "59", "68", "69"] }, "61": { "z": "Indonesia", "a": ["52", "62", "70"] }, "62": { "z": "Green Neutral Zone", "a": ["52", "53", "61", "63", "70", "71"] }, "63": { "z": "Green Neutral Zone", "a": ["53", "54", "55", "62", "64", "71", "72"] }, "64": { "z": "Orange Neutral Zone", "a": ["54", "55", "56", "63", "65", "71", "72", "73"] }, "65": { "z": "Orange Neutral Zone", "a": ["55", "56", "57", "64", "66", "72", "73", "74"] }, "66": { "z": "Orange Neutral Zone", "a": ["56", "57", "58", "65", "67", "73", "74", "75"] }, "67": { "z": "Purple Neutral Zone", "a": ["57", "58", "59", "66", "68", "74", "75"] }, "68": { "z": "Philippines", "a": ["58", "59", "60", "67", "69", "75"] }, "69": { "z": "Philippines", "a": ["59", "60", "68"] }, "70": { "z": "Indonesia", "a": ["61", "62", "71"] }, "71": { "z": "Indonesia", "a": ["62", "63", "64", "70", "72"] }, "72": { "z": "Orange Neutral Zone", "a": ["63", "64", "65", "66", "71", "73", "76", "77"] }, "73": { "z": "Orange Neutral Zone", "a": ["64", "65", "66", "67", "72", "74", "77", "78"] }, "74": { "z": "Orange Neutral Zone", "a": ["65", "66", "67", "68", "73", "75", "78", "79"] }, "75": { "z": "Orange Neutral Zone", "a": ["66", "67", "68", "74", "79"] }, "76": { "z": "Malaysia", "a": ["72", "77"] }, "77": { "z": "Malaysia", "a": ["72", "73", "76", "78"] }, "78": { "z": "Malaysia", "a": ["73", "74", "77", "79"] }, "79": { "z": "Malaysia", "a": ["74", "75", "78"] } };
+    /* ─── DATA ACCESS HELPERS ─────────────────────────────────────── */
+
+    // Gets the zone name for a specific tile ID
     function tz(id) { return TILE_DATA[String(id)]?.z || ''; }
+
+    // Gets the list of adjacent tile IDs for a specific tile
     function tadj(id) { return TILE_DATA[String(id)]?.a || []; }
+
+    // Maps a ship type string to its emoji representation
     function se(t) { return { 'Fishing Boat': '🎣', 'Coast Guard': '⚓', 'FAC': '⚡', 'Destroyer': '🚢' }[t] || '🚢'; }
+
+    // Sanitizes zone names for use in CSS classes (replaces spaces with underscores)
     function zi(z) { return z.replace(/ /g, '_'); }
+
+    // Maps a ship type string to its badge color class
     function tc(t) { return { 'Fishing Boat': 'bgy', 'Coast Guard': 'bt', 'FAC': 'bgo', 'Destroyer': 'br' }[t] || 'bgy'; }
+
+    // Formats an ISO date string into a user-friendly time string
     function ft(iso) { try { return new Date(iso).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); } catch (e) { return ''; } }
+
+    // Breadth-First Search: Finds the shortest path between two tiles
     function bfs(from, to) { const f = String(from), t2 = String(to); if (f === t2) return [f]; const q = [[f]]; const vis = new Set([f]); while (q.length) { const p = q.shift(); const n = p[p.length - 1]; for (const nb of (TILE_DATA[n]?.a || [])) { if (nb === t2) return [...p, nb]; if (!vis.has(nb)) { vis.add(nb); q.push([...p, nb]); } } } return null; }
 
 
@@ -1565,7 +1723,14 @@
 
     const SEASON_ORDER = ['fall', 'winter', 'spring', 'summer'];
 
+    // Cleans the API keys to remove hidden characters (prevents fetch errors)
     function apiKey() { return (SB_SVC || SB_ANON).replace(/[^\x20-\x7E]/g, ''); }
+
+    /**
+     * Core Fetch Wrapper for Supabase REST API
+     * @param {string} path - The table or resource path (e.g. 'ships?id=eq.1')
+     * @param {object} opts - Fetch options (method, body, headers, prefer)
+     */
     async function sb(path, opts = {}) {
       const res = await fetch(SB_URL.replace(/[^\x20-\x7E]/g, '') + '/rest/v1/' + path, {
         headers: {
@@ -1578,14 +1743,26 @@
       if (!res.ok) { const e = await res.text(); throw new Error(e); }
       const t = await res.text(); return t ? JSON.parse(t) : null;
     }
-    async function rpc(fn, params = {}) {
-      const cleanAnon = SB_ANON.replace(/[^\x20-\x7E]/g, '');
-      const res = await fetch(SB_URL.replace(/[^\x20-\x7E]/g, '') + '/rest/v1/rpc/' + fn, {
-        headers: { 'apikey': cleanAnon, 'Authorization': 'Bearer ' + cleanAnon, 'Content-Type': 'application/json' },
-        method: 'POST', body: JSON.stringify(params)
+
+    /**
+     * RPC Wrapper: Calls a Postgres function defined in Supabase
+     * @param {string} name - The name of the RPC function
+     * @param {object} payload - Arguments passed to the function
+     */
+    async function rpc(name, payload) {
+      const res = await fetch(SB_URL.replace(/[^\x20-\x7E]/g, '') + '/rest/v1/rpc/' + name, {
+        headers: { 'apikey': apiKey(), 'Authorization': 'Bearer ' + apiKey(), 'Content-Type': 'application/json' },
+        method: 'POST', body: JSON.stringify(payload)
       });
-      const t = await res.text(); return t ? JSON.parse(t) : null;
+      if (!res.ok) { const e = await res.text(); throw new Error(e); }
+      return res.json();
     }
+
+    /**
+     * Generates a unique ID for a new ship based on country and type
+     * @param {string} country - The country owning the ship
+     * @param {string} type - The type of ship
+     */
     async function genID(country, type) {
       const px = { China: 'CHN', Taiwan: 'TWN', Philippines: 'PHL', Malaysia: 'MYS', Indonesia: 'IDN', Thailand: 'THA', Cambodia: 'KHM', Vietnam: 'VNM' };
       const tx = { 'Fishing Boat': 'FB', 'Coast Guard': 'CG', 'FAC': 'FAC', 'Destroyer': 'DD' };
@@ -1615,6 +1792,9 @@
       document.getElementById('gkw').classList.toggle('hidden', this.value !== 'gm');
     });
 
+    /**
+     * Authenticates the user (Player or GM) using a PIN stored in Supabase
+     */
     async function doLogin() {
       const role = document.getElementById('lr').value;
       const pin = document.getElementById('lp').value;
@@ -2236,16 +2416,19 @@
           detail = [...fps, ...sps].join(' | ') || 'No moves';
         }
         return '<div class="order-row"><div class="order-c">' + (FLAGS[o.country] || '') + ' ' + o.country + '</div>'
-          + '<div style="flex:1;font-size:12px;color:var(--text2);">' + detail + '</div>'
-          + '<div style="display:flex;align-items:center;gap:8px;"><div class="tm mu" style="font-size:10px;">' + ft(o.submitted_at) + '</div>'
-          + '<button class="btn btn-d btn-sm" style="padding:1px 5px;" onclick="gmDelOrd(\'' + o.country + '\')">✕</button></div></div>';
+          + '<div class="flex1 fs12 mu">' + detail + '</div>'
+          + '<div class="fb gap8"><div class="tm mu fs10">' + ft(o.submitted_at) + '</div>'
+          + '<button class="btn btn-d btn-sm p1-5" onclick="gmDelOrd(\'' + o.country + '\')">✕</button></div></div>';
       }).join('');
     }
+    /**
+     * GM logic for rendering all ships/units in the units tab
+     */
     function renderTroops() {
       const f = document.getElementById('tf')?.value || 'all';
       const ships = f === 'all' ? D.allTroops : D.allTroops.filter(s => s.country === f);
       const tbody = document.getElementById('troops-body');
-      if (!ships.length) { tbody.innerHTML = '<tr><td colspan="9" class="mu" style="padding:12px;">No ships.</td></tr>'; return; }
+      if (!ships.length) { tbody.innerHTML = '<tr><td colspan="9" class="mu p12">No ships.</td></tr>'; return; }
       const cs = getConflicts();
       tbody.innerHTML = ships.map(ship => {
         const info = SHIP_STATS[ship.type] || {}; const pct = info.hp ? Math.round(ship.hp / info.hp * 100) : 100;
@@ -2253,16 +2436,16 @@
         const inC = cs.some(x => x.ships.some(ss => ss.id === ship.id));
         const anc = D.allBases.some(b => b.anchor_ship === ship.id && b.status === 'construction');
         const zone = tz(ship.tile); const fl = D.allFleets.find(f => f.ship_ids && f.ship_ids.includes(ship.id));
-        return '<tr ' + (inC ? 'style="background:rgba(230,57,70,.05)"' : '') + '>' +
-          '<td class="tm" style="font-size:10px;">' + ship.id + '</td>' +
+        return '<tr ' + (inC ? 'class="bg-row"' : '') + '>' +
+          '<td class="tm fs10">' + ship.id + '</td>' +
           '<td>' + (FLAGS[ship.country] || '') + ' ' + ship.country + '</td>' +
           '<td><span class="badge ' + tc(ship.type) + '">' + ship.type + '</span></td>' +
           '<td class="tm">' + (ship.tile || '—') + '</td>' +
-          '<td style="font-size:10px;color:' + (ZONE_COLORS[zone] || 'var(--text2)') + ';">' + (zone || '—') + '</td>' +
-          '<td>' + (fl ? '<span class="badge bam" style="font-size:9px;">⚓' + fl.name + '</span>' : '—') + '</td>' +
-          '<td><div style="display:flex;align-items:center;gap:4px;"><span class="tm" style="font-size:10px;">' + ship.hp + '/' + (info.hp || '?') + '</span><div class="hpb"><div class="hpf ' + hc + '" style="width:' + pct + '%"></div></div></div></td>' +
+          '<td class="fs10" style="color:' + (ZONE_COLORS[zone] || 'var(--text2)') + ';">' + (zone || '—') + '</td>' +
+          '<td>' + (fl ? '<span class="badge bam fs9">⚓' + fl.name + '</span>' : '—') + '</td>' +
+          '<td><div class="fb gap3"><span class="tm fs10">' + ship.hp + '/' + (info.hp || '?') + '</span><div class="hpb"><div class="hpf ' + hc + '" style="width:' + pct + '%"></div></div></div></td>' +
           '<td>' + (inC ? '<span class="badge br">!</span> ' : '') + (anc ? '<span class="badge bam">⚓</span> ' : '') + (ship.disabled ? '<span class="badge bgo">OFF</span>' : '<span class="badge bgr">ON</span>') + '</td>' +
-          '<td><div class="fl" style="gap:3px;">' +
+          '<td><div class="fl gap3">' +
           '<button class="btn btn-o btn-sm" onclick="gmHP(\'' + ship.id + '\')">HP</button>' +
           '<button class="btn btn-o btn-sm" onclick="gmMv(\'' + ship.id + '\')">MV</button>' +
           '<button class="btn btn-o btn-sm" onclick="gmDis(\'' + ship.id + '\')">' + (ship.disabled ? 'ON' : 'OFF') + '</button>' +
@@ -2270,17 +2453,20 @@
           '</div></td></tr>';
       }).join('');
     }
+    /**
+     * GM logic for rendering all bases in the bases tab
+     */
     function renderBases() {
       const tbody = document.getElementById('bases-body');
-      if (!D.allBases.length) { tbody.innerHTML = '<tr><td colspan="7" class="mu" style="padding:12px;">No bases.</td></tr>'; return; }
+      if (!D.allBases.length) { tbody.innerHTML = '<tr><td colspan="7" class="mu p12">No bases.</td></tr>'; return; }
       tbody.innerHTML = D.allBases.map(b => {
         const z = tz(b.tile);
         return '<tr><td>' + (FLAGS[b.country] || '') + ' ' + b.country + '</td><td class="tm">' + b.tile + '</td>' +
-          '<td style="font-size:10px;color:' + (ZONE_COLORS[z] || 'var(--text2)') + ';">' + (z || '—') + '</td>' +
+          '<td class="fs10" style="color:' + (ZONE_COLORS[z] || 'var(--text2)') + ';">' + (z || '—') + '</td>' +
           '<td>' + (b.status === 'active' ? '<span class="badge bgr">Active</span>' : '<span class="badge bam">Building</span>') + '</td>' +
-          '<td class="tm" style="font-size:10px;">' + (b.anchor_ship || '—') + '</td>' +
+          '<td class="tm fs10">' + (b.anchor_ship || '—') + '</td>' +
           '<td class="tm">' + (b.turn_started || '—') + '</td>' +
-          '<td><div class="fl" style="gap:3px;">' +
+          '<td><div class="fl gap3">' +
           (b.status === 'construction' ? '<button class="btn btn-o btn-sm" onclick="gmActBase(\'' + b.id + '\')">Activate</button>' : '') +
           '<button class="btn btn-d btn-sm" onclick="gmDelBase(\'' + b.id + '\')">✕</button>' +
           '</div></td></tr>';
@@ -2375,6 +2561,7 @@
             }
           }
         } else if (s === 'spring') {
+          // Spring Phase: Execute movement orders for all fleets and individual ships
           for (const ord of orders) {
             for (const [shipId, m] of Object.entries(ord.payload.moves || {})) {
               await sb('troops?id=eq.' + shipId, { method: 'PATCH', prefer: 'return=minimal', body: { tile: m.to } });
@@ -2382,8 +2569,10 @@
             }
           }
           await loadGMData();
+          // Log any conflicts discovered after the move
           getConflicts().forEach(x => log.push('⚠ CONFLICT tile ' + x.tile + ': ' + x.countries.join(' vs ')));
         } else if (s === 'summer') {
+          // Summer Phase: Resolve combat manually and prepare for Fall income
           log.push('Summer acknowledged. Give base income and resolve combat manually.');
           for (const c of COUNTRIES) {
             const eco = D.allEco.find(e => e.country === c) || { gold: 0 };
@@ -2394,7 +2583,7 @@
           }
         }
 
-        // Clear orders
+        // Clear orders and advance the global state
         await sb('pending_orders?season=eq.' + s + '&turn=eq.' + turn, { method: 'DELETE', prefer: 'return=minimal' });
 
         // ── Advance to next season ──
@@ -2412,6 +2601,9 @@
       } catch (e) { hideLoad(); alert('Approve error: ' + e.message); }
     }
 
+    /**
+     * GM Action: Initializes the game by setting season to 'fall' and awarding starting income.
+     */
     async function gmBeginGame() {
       if (!confirm('Begin Turn 1? This starts Fall season.')) return; showLoad('Starting…');
       try {
@@ -2426,6 +2618,9 @@
       } catch (e) { hideLoad(); alert('Error: ' + e.message); }
     }
 
+    /**
+     * GM Action: Manually adjusts a country's gold balance with a log entry.
+     */
     async function applyAdj() {
       const c = document.getElementById('adj-c').value, amt = parseInt(document.getElementById('adj-a').value);
       const r = document.getElementById('adj-r').value || 'GM adj'; if (!c || isNaN(amt)) return; showLoad('…');
@@ -2437,6 +2632,9 @@
         document.getElementById('adj-a').value = ''; document.getElementById('adj-r').value = '';
       } catch (e) { hideLoad(); alert(e.message); }
     }
+    /**
+     * GM Action: Deletes current season orders for a specific country.
+     */
     async function gmDelOrd(c) {
       if (!confirm('Withdraw orders for ' + c + '?')) return;
       showLoad('Withdrawing…');
@@ -2467,14 +2665,23 @@
         await loadGMData(); hideLoad(); renderTroops(); renderBases();
       } catch (e) { hideLoad(); alert(e.message); }
     }
+    /**
+     * GM Action: Activates a base under construction
+     */
     async function gmActBase(id) {
       showLoad('…');
       try { await sb('bases?id=eq.' + id, { method: 'PATCH', prefer: 'return=minimal', body: { status: 'active', anchor_ship: null } }); await loadGMData(); hideLoad(); renderBases(); } catch (e) { hideLoad(); alert(e.message); }
     }
+    /**
+     * GM Action: Deletes a base from the database
+     */
     async function gmDelBase(id) {
       const b = D.allBases.find(x => x.id === id); if (!confirm('Destroy base?')) return; showLoad('…');
       try { await sb('bases?id=eq.' + id, { method: 'DELETE', prefer: 'return=minimal' }); await loadGMData(); hideLoad(); renderBases(); } catch (e) { hideLoad(); alert(e.message); }
     }
+    /**
+     * GM Action: Manually spawns a new ship unit
+     */
     async function gmAddShip() {
       const c = document.getElementById('ms-c').value, type = document.getElementById('ms-t').value;
       const tile = document.getElementById('ms-tile').value.trim(), base = document.getElementById('ms-base').value.trim();
@@ -2536,6 +2743,11 @@
     }
 
     // ─── EXPORTS ────────────────────────────────────────────────────
+    /**
+     * Helper: Generates and downloads a CSV file from a 2D array.
+     * @param {Array[]} rows - Data rows to export
+     * @param {string} name - Filename for the download
+     */
     function dlCSV(rows, name) { const csv = rows.map(r => r.map(v => '"' + String(v || '').replace(/"/g, '""') + '"').join(',')).join('\n'); const a = document.createElement('a'); a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv); a.download = name; a.click(); }
     function exTroops() { const rows = [['ID', 'Country', 'Type', 'Tile', 'Zone', 'Fleet', 'HP', 'MaxHP']]; D.allTroops.forEach(s => { const fl = D.allFleets.find(f => f.ship_ids && f.ship_ids.includes(s.id)); rows.push([s.id, s.country, s.type, s.tile, tz(s.tile) || '', fl ? fl.name : '', s.hp, s.max_hp]); }); dlCSV(rows, 'troops_t' + D.cfg.turn + '.csv'); }
     function exEco() { const rows = [['Country', 'Gold', 'BaseIncome']]; D.allEco.forEach(e => rows.push([e.country, e.gold, BASE_INCOME[e.country]])); dlCSV(rows, 'eco_t' + D.cfg.turn + '.csv'); }

@@ -48,8 +48,13 @@
       padding: 0 20px;
       height: 50px;
       background: rgba(4, 12, 24, .98);
+      -webkit-backdrop-filter: blur(10px);
+      backdrop-filter: blur(10px);
       border-bottom: 1px solid var(--bdr);
       flex-shrink: 0;
+      position: sticky;
+      top: 0;
+      z-index: 100;
     }
 
     .top-bar h1 {
@@ -394,6 +399,10 @@
       vertical-align: middle;
     }
 
+    .w100 { width: 100%; }
+    .fs10 { font-size: 10px; }
+    .hidden { display: none !important; }
+
     @keyframes spin {
       to {
         transform: rotate(360deg)
@@ -409,7 +418,7 @@
       <div>Turn <b id="b-turn">—</b></div>
       <div id="b-sp" class="sp setup">◈ Setup</div>
       <button class="rfbtn" onclick="loadBoard()">↻ Refresh</button>
-      <div id="b-st" style="font-size:10px;"></div>
+      <div id="b-st" class="fs10"></div>
     </div>
   </div>
   <div class="board-area">
@@ -420,7 +429,7 @@
       </div>
     </div>
     <div class="sidebar-panel">
-      <div id="conf-panel" style="display:none;" class="conf-panel">
+      <div id="conf-panel" class="conf-panel hidden">
         <h3>⚠ Combat Alerts</h3>
         <div id="conf-list"></div>
       </div>
@@ -433,25 +442,48 @@
     </div>
   </div>
   <script>
+    // Supabase URL and Anonymous Key for public data fetching
     const SB_URL = 'https://fbvybpxosrjvtrwkdrmr.supabase.co';
     const SB_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZidnlicHhvc3JqdnRyd2tkcm1yIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU5OTk1NjEsImV4cCI6MjA5MTU3NTU2MX0.tH6NYFlpZmH3tE_oh5V9gKe62hC_VCo3cIF2Dym-ydE';
+    
+    // Core game configuration and dictionaries
     const MAP_SRC = 'Game Board Map.png';
+    // Map of country names to flag emojis
     const FLAGS = { China: '🇨🇳', Taiwan: '🇹🇼', Philippines: '🇵🇭', Malaysia: '🇲🇾', Indonesia: '🇮🇩', Thailand: '🇹🇭', Cambodia: '🇰🇭', Vietnam: '🇻🇳' };
+    // List of active countries in the game
     const COUNTRIES = ['China', 'Taiwan', 'Philippines', 'Malaysia', 'Indonesia', 'Thailand', 'Cambodia', 'Vietnam'];
+    // Color mapping for map zones
     const ZONE_COLORS = { "China": "#c1121f", "Vietnam": "#d4a017", "Taiwan": "#3a86ff", "Philippines": "#8338ec", "Malaysia": "#fb5607", "Indonesia": "#06d6a0", "Cambodia": "#bc6c25", "Thailand": "#e9c46a", "Blue Neutral Zone": "#4cc9f0", "Purple Neutral Zone": "#9d4edd", "Orange Neutral Zone": "#f77f00", "Green Neutral Zone": "#2d9e5f" };
+    // Tile data containing zone (z) and adjacent tiles (a)
     const TILE_DATA = { "1": { "z": "Vietnam", "a": ["2", "5", "6", "7"] }, "2": { "z": "China", "a": ["1", "3", "6", "7", "8"] }, "3": { "z": "China", "a": ["2", "7", "8", "9"] }, "4": { "z": "Thailand", "a": ["5", "12", "13"] }, "5": { "z": "Vietnam", "a": ["1", "4", "6", "13", "14"] }, "6": { "z": "China", "a": ["1", "2", "5", "7", "14", "15"] }, "7": { "z": "China", "a": ["1", "2", "3", "6", "8", "15", "16", "17"] }, "8": { "z": "China", "a": ["2", "3", "7", "9", "17", "18"] }, "9": { "z": "China", "a": ["3", "8", "10", "17", "18"] }, "10": { "z": "China", "a": ["9", "11", "18", "19"] }, "11": { "z": "China", "a": ["10", "19", "20"] }, "12": { "z": "Thailand", "a": ["4", "13", "21", "22"] }, "13": { "z": "Thailand", "a": ["4", "5", "12", "22", "23"] }, "14": { "z": "Vietnam", "a": ["5", "6", "13", "15", "23", "24", "25"] }, "15": { "z": "Blue Neutral Zone", "a": ["6", "7", "14", "16", "24", "25"] }, "16": { "z": "Blue Neutral Zone", "a": ["7", "15", "17", "25", "26", "27"] }, "17": { "z": "Blue Neutral Zone", "a": ["7", "8", "9", "16", "18", "26", "27", "28"] }, "18": { "z": "Purple Neutral Zone", "a": ["8", "9", "10", "17", "19", "28", "29"] }, "19": { "z": "Taiwan", "a": ["10", "11", "18", "20", "29", "30"] }, "20": { "z": "Taiwan", "a": ["11", "19", "30"] }, "21": { "z": "Thailand", "a": ["12", "22", "31", "32"] }, "22": { "z": "Green Neutral Zone", "a": ["12", "13", "21", "23", "32", "33"] }, "23": { "z": "Cambodia", "a": ["13", "14", "22", "24", "33", "34", "35"] }, "24": { "z": "Vietnam", "a": ["14", "15", "23", "25", "34", "35", "36"] }, "25": { "z": "Blue Neutral Zone", "a": ["14", "15", "16", "24", "26", "35", "36", "37"] }, "26": { "z": "Blue Neutral Zone", "a": ["16", "17", "25", "27", "36", "37", "38"] }, "27": { "z": "Blue Neutral Zone", "a": ["16", "17", "26", "28", "37", "38", "39"] }, "28": { "z": "Purple Neutral Zone", "a": ["17", "18", "27", "29", "38", "39", "40"] }, "29": { "z": "Purple Neutral Zone", "a": ["18", "19", "28", "30", "39", "40", "41"] }, "30": { "z": "Taiwan", "a": ["19", "20", "29", "40", "41"] }, "31": { "z": "Thailand", "a": ["21", "32", "42"] }, "32": { "z": "Green Neutral Zone", "a": ["21", "22", "31", "33", "42", "43"] }, "33": { "z": "Cambodia", "a": ["22", "23", "32", "34", "43", "44"] }, "34": { "z": "Cambodia", "a": ["23", "24", "33", "35", "44", "45"] }, "35": { "z": "Vietnam", "a": ["23", "24", "25", "34", "36", "45", "46"] }, "36": { "z": "Blue Neutral Zone", "a": ["24", "25", "26", "35", "37", "45", "46", "47"] }, "37": { "z": "Blue Neutral Zone", "a": ["25", "26", "27", "36", "38", "46", "47", "48"] }, "38": { "z": "Blue Neutral Zone", "a": ["26", "27", "28", "37", "39", "47", "48", "49"] }, "39": { "z": "Purple Neutral Zone", "a": ["27", "28", "29", "38", "40", "48", "49", "50"] }, "40": { "z": "Purple Neutral Zone", "a": ["28", "29", "30", "39", "41", "49", "50", "51"] }, "41": { "z": "Philippines", "a": ["29", "30", "40", "50", "51"] }, "42": { "z": "Thailand", "a": ["31", "32", "43", "52", "53"] }, "43": { "z": "Green Neutral Zone", "a": ["32", "33", "42", "44", "53", "54"] }, "44": { "z": "Green Neutral Zone", "a": ["33", "34", "43", "45", "54", "55"] }, "45": { "z": "Green Neutral Zone", "a": ["34", "35", "36", "44", "46", "54", "55", "56"] }, "46": { "z": "Orange Neutral Zone", "a": ["35", "36", "37", "45", "47", "55", "56", "57"] }, "47": { "z": "Blue Neutral Zone", "a": ["36", "37", "38", "46", "48", "56", "57", "58"] }, "48": { "z": "Purple Neutral Zone", "a": ["37", "38", "39", "47", "49", "57", "58", "59"] }, "49": { "z": "Purple Neutral Zone", "a": ["38", "39", "40", "48", "50", "58", "59", "60"] }, "50": { "z": "Purple Neutral Zone", "a": ["39", "40", "41", "49", "51", "59", "60"] }, "51": { "z": "Philippines", "a": ["40", "41", "50", "60"] }, "52": { "z": "Indonesia", "a": ["42", "53", "61", "62"] }, "53": { "z": "Green Neutral Zone", "a": ["42", "43", "52", "54", "62", "63"] }, "54": { "z": "Green Neutral Zone", "a": ["43", "44", "45", "53", "55", "63", "64"] }, "55": { "z": "Orange Neutral Zone", "a": ["44", "45", "46", "54", "56", "63", "64", "65"] }, "56": { "z": "Orange Neutral Zone", "a": ["45", "46", "47", "55", "57", "64", "65", "66"] }, "57": { "z": "Purple Neutral Zone", "a": ["46", "47", "48", "56", "58", "65", "66", "67"] }, "58": { "z": "Purple Neutral Zone", "a": ["47", "48", "49", "57", "59", "66", "67", "68"] }, "59": { "z": "Purple Neutral Zone", "a": ["48", "49", "50", "58", "60", "67", "68", "69"] }, "60": { "z": "Philippines", "a": ["49", "50", "51", "59", "68", "69"] }, "61": { "z": "Indonesia", "a": ["52", "62", "70"] }, "62": { "z": "Green Neutral Zone", "a": ["52", "53", "61", "63", "70", "71"] }, "63": { "z": "Green Neutral Zone", "a": ["53", "54", "55", "62", "64", "71", "72"] }, "64": { "z": "Orange Neutral Zone", "a": ["54", "55", "56", "63", "65", "71", "72", "73"] }, "65": { "z": "Orange Neutral Zone", "a": ["55", "56", "57", "64", "66", "72", "73", "74"] }, "66": { "z": "Orange Neutral Zone", "a": ["56", "57", "58", "65", "67", "73", "74", "75"] }, "67": { "z": "Purple Neutral Zone", "a": ["57", "58", "59", "66", "68", "74", "75"] }, "68": { "z": "Philippines", "a": ["58", "59", "60", "67", "69", "75"] }, "69": { "z": "Philippines", "a": ["59", "60", "68"] }, "70": { "z": "Indonesia", "a": ["61", "62", "71"] }, "71": { "z": "Indonesia", "a": ["62", "63", "64", "70", "72"] }, "72": { "z": "Orange Neutral Zone", "a": ["63", "64", "65", "66", "71", "73", "76", "77"] }, "73": { "z": "Orange Neutral Zone", "a": ["64", "65", "66", "67", "72", "74", "77", "78"] }, "74": { "z": "Orange Neutral Zone", "a": ["65", "66", "67", "68", "73", "75", "78", "79"] }, "75": { "z": "Orange Neutral Zone", "a": ["66", "67", "68", "74", "79"] }, "76": { "z": "Malaysia", "a": ["72", "77"] }, "77": { "z": "Malaysia", "a": ["72", "73", "76", "78"] }, "78": { "z": "Malaysia", "a": ["73", "74", "77", "79"] }, "79": { "z": "Malaysia", "a": ["74", "75", "78"] } };
+    // Percentage coordinates for map tiles
     const TILE_PCT = { "1": [32, 24], "2": [41, 19], "3": [49, 15], "4": [7, 45], "5": [32, 33], "6": [40, 28], "7": [49, 24], "8": [57, 19], "9": [66, 16], "10": [74, 11], "11": [83, 5], "12": [7, 54], "13": [15, 50], "14": [41, 37], "15": [49, 32], "16": [58, 28], "17": [66, 24], "18": [74, 19], "19": [83, 15], "20": [91, 11], "21": [6, 63], "22": [15, 58], "23": [24, 54], "24": [41, 45], "25": [49, 41], "26": [58, 37], "27": [66, 32], "28": [75, 28], "29": [83, 24], "30": [91, 20], "31": [7, 72], "32": [15, 67], "33": [24, 63], "34": [33, 58], "35": [41, 54], "36": [49, 50], "37": [58, 45], "38": [66, 41], "39": [75, 37], "40": [83, 32], "41": [92, 28], "42": [15, 76], "43": [24, 71], "44": [32, 67], "45": [41, 63], "46": [49, 58], "47": [58, 54], "48": [66, 49], "49": [75, 45], "50": [83, 41], "51": [91, 37], "52": [24, 80], "53": [32, 76], "54": [41, 71], "55": [49, 67], "56": [57, 62], "57": [66, 58], "58": [75, 54], "59": [83, 49], "60": [92, 45], "61": [23, 89], "62": [32, 84], "63": [41, 80], "64": [49, 76], "65": [58, 71], "66": [66, 67], "67": [74, 62], "68": [83, 58], "69": [92, 54], "70": [33, 93], "71": [41, 88], "72": [49, 84], "73": [58, 80], "74": [66, 76], "75": [75, 71], "76": [49, 93], "77": [58, 89], "78": [66, 85], "79": [74, 80] };
+    /**
+     * Helper: Gets the country/zone name for a given tile ID
+     * @param {string|number} id - Tile ID
+     */
     function tz(id) { return TILE_DATA[String(id)]?.z || ''; }
+    /**
+     * Helper: Returns a representative emoji for each unit type
+     * @param {string} t - Unit type
+     */
     function se(t) { return { 'Fishing Boat': '🎣', 'Coast Guard': '⚓', 'FAC': '⚡', 'Destroyer': '🚢' }[t] || '🚢'; }
 
-    let bData = { troops: [], bases: [], fleets: [], config: { turn: 1, season: 'setup' }, eco: [] };
+    let bData = { troops: [], bases: [], fleets: [], config: { turn: 1, season: 'setup' } };
 
+    /**
+     * Public Fetch Wrapper: Retrieves data from Supabase REST API
+     * sanitizes keys to prevent network errors.
+     */
     async function sbGet(path) {
       const cleanAnon = SB_ANON.replace(/[^\x20-\x7E]/g, '');
       const r = await fetch(SB_URL.replace(/[^\x20-\x7E]/g, '') + '/rest/v1/' + path, { headers: { 'apikey': cleanAnon, 'Authorization': 'Bearer ' + cleanAnon } });
       const t = await r.text(); return t ? JSON.parse(t) : [];
     }
-
+    
+    /**
+     * Main Data Sync: Fetches all game objects and triggers a re-render
+     */
     async function loadBoard() {
       document.getElementById('b-st').innerHTML = '<span class="spin"></span>';
       try {
@@ -468,8 +500,9 @@
       } catch (e) { document.getElementById('b-st').textContent = '⚠ ' + e.message; }
     }
 
-    // Replaced getRect with direct percentage usage constraints
-
+    // Replaced getRect with direct percentage usage constraints to keep map responsive
+    
+    // Primary function: Re-draws the map elements based on latest Supabase data
     function renderBoard() {
       const { config, troops, bases, eco, fleets } = bData;
       document.getElementById('b-turn').textContent = config.turn;
@@ -485,12 +518,16 @@
 
       const cp = document.getElementById('conf-panel'), cl = document.getElementById('conf-list');
       if (conflicts.length) {
-        cp.style.display = 'block';
+        cp.classList.remove('hidden');
         cl.innerHTML = conflicts.map(x => '<div class="conf-item">Tile ' + x.tile + ' (' + tz(x.tile) + '): ' + x.countries.join(' vs ') + '</div>').join('');
-      } else cp.style.display = 'none';
+      } else cp.classList.add('hidden');
 
       const overlay = document.getElementById('overlay'); overlay.innerHTML = '';
 
+      /**
+       * Helper: Creates a positioning wrapper for an overlay marker
+       * @param {string} tileId - Target tile ID
+       */
       function mk(tileId) {
         const pct = TILE_PCT[tileId]; if (!pct) return null;
         const el = document.createElement('div'); el.className = 'mk';
@@ -499,6 +536,7 @@
         return el;
       }
 
+      // Render all tiles containing ships/units
       Object.entries(byTile).forEach(([tile, ships]) => {
         const m = mk(tile); if (!m) return;
         const bBase = bases.find(b => String(b.tile) === String(tile));
@@ -509,9 +547,9 @@
         const zc = countries.length === 1 ? (ZONE_COLORS[countries[0]] || 'rgba(255,255,255,.2)') : 'rgba(255,255,255,.2)';
         const bStyle = inConf ? 'border-color:rgba(230,57,70,.85);background:rgba(230,57,70,.18);' : 'border-color:' + zc + ';';
         const flagsHtml = countries.slice(0, 3).map(c => '<span class="mk-flag">' + (FLAGS[c] || '') + '</span>').join('')
-          + (countries.length > 3 ? '<span style="font-size:9px;opacity:.5;">+' + (countries.length - 3) + '</span>' : '');
+          + (countries.length > 3 ? '<span class="fs9 mu">+' + (countries.length - 3) + '</span>' : '');
         const iconsHtml = Object.entries(typeCounts).map(([t, n]) => '<span class="mk-icon">' + se(t) + (n > 1 ? 'x' + n : '') + '</span>').join('');
-        const baseHtml = bBase ? '<div class="mk-base ' + (bBase.status === 'construction' ? 'mk-build' : '') + '" style="background:rgba(255,255,255,0.25);font-size:9px;padding:1px 2px;">⚓</div>' : '';
+        const baseHtml = bBase ? '<div class="mk-base ' + (bBase.status === 'construction' ? 'mk-build' : '') + '" style="background:rgba(255,255,255,0.25);">⚓</div>' : '';
         const flHtml = fl ? '<div class="mk-label">⚓' + fl.name + '</div>' : '';
         const tipLines = ships.map(s => {
           const sf = fleets.find(f => f.ship_ids && f.ship_ids.includes(s.id));
@@ -519,8 +557,8 @@
         }).join('<br>');
         const baseTip = bBase ? (FLAGS[bBase.country] || '') + ' ' + bBase.country + ' base' + (bBase.status === 'construction' ? ' (building)' : '') + '<br>' : '';
         m.innerHTML = '<div class="mk-inner" style="' + bStyle + '">'
-          + '<div style="display:flex;gap:1px;">' + flagsHtml + '</div>'
-          + '<div style="display:flex;gap:2px;flex-wrap:wrap;justify-content:center;align-items:center;">' + baseHtml + iconsHtml + '</div>'
+          + '<div class="fb gap1">' + flagsHtml + '</div>'
+          + '<div class="fb gap2 fw-w jc-c ai-c">' + baseHtml + iconsHtml + '</div>'
           + flHtml + '<div class="mk-id">T' + tile + '</div></div>'
           + '<div class="tooltip">' + baseTip + tipLines + '</div>';
         overlay.appendChild(m);
