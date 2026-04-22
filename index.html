@@ -898,6 +898,144 @@
       font-weight: bold
     }
 
+    /* ── Spy Cards ── */
+    .spy-card {
+      background: rgba(157, 78, 221, .08);
+      border: 1px solid rgba(157, 78, 221, .3);
+      border-radius: 10px;
+      padding: 14px 16px;
+      margin-bottom: 10px;
+    }
+
+    .spy-card.used {
+      opacity: .45;
+      border-style: dashed;
+    }
+
+    .spy-card.locked {
+      opacity: .55;
+      border-color: rgba(255, 255, 255, .1);
+      background: rgba(255, 255, 255, .02);
+    }
+
+    .spy-card-name {
+      font-family: var(--fh);
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      color: #c77dff;
+      text-transform: uppercase;
+    }
+
+    .spy-card.locked .spy-card-name {
+      color: var(--text2);
+    }
+
+    .spy-card-desc {
+      font-family: var(--fm);
+      font-size: 10px;
+      color: var(--text2);
+      margin-top: 3px;
+      line-height: 1.5;
+    }
+
+    .spy-badge {
+      background: rgba(157, 78, 221, .18);
+      border: 1px solid rgba(157, 78, 221, .32);
+      color: #c77dff;
+      font-family: var(--fm);
+      font-size: 9px;
+      padding: 2px 6px;
+      border-radius: 3px;
+      letter-spacing: .5px;
+      text-transform: uppercase;
+      display: inline-block;
+    }
+
+    .spy-badge.used {
+      background: rgba(255, 255, 255, .05);
+      border-color: rgba(255, 255, 255, .1);
+      color: var(--text2);
+    }
+
+    .spy-badge.locked {
+      background: rgba(255, 255, 255, .04);
+      border-color: rgba(255, 255, 255, .08);
+      color: var(--text2);
+    }
+
+    .spy-shop-row {
+      border: 1px solid rgba(157, 78, 221, .25);
+      border-radius: 9px;
+      padding: 12px 14px;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: rgba(157, 78, 221, .04);
+      cursor: pointer;
+      transition: border-color .18s, background .18s;
+    }
+
+    .spy-shop-row:hover {
+      border-color: rgba(157, 78, 221, .55);
+      background: rgba(157, 78, 221, .1);
+    }
+
+    .spy-shop-row.selected {
+      border-color: #c77dff;
+      background: rgba(157, 78, 221, .14);
+    }
+
+    .spy-shop-row.locked-card {
+      opacity: .5;
+      cursor: default;
+      pointer-events: none;
+    }
+
+    .scs-icon {
+      font-size: 20px;
+      width: 32px;
+      text-align: center;
+      flex-shrink: 0;
+    }
+
+    .scs-info {
+      flex: 1;
+    }
+
+    .scs-name {
+      font-family: var(--fh);
+      font-size: 13px;
+      font-weight: 600;
+      color: #c77dff;
+    }
+
+    .scs-desc {
+      font-family: var(--fm);
+      font-size: 10px;
+      color: var(--text2);
+      margin-top: 2px;
+    }
+
+    .scs-cost {
+      font-family: var(--fm);
+      font-size: 13px;
+      color: var(--gold);
+      font-weight: bold;
+      flex-shrink: 0;
+    }
+
+    .event-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 12px;
+      border: 1px solid var(--bdr);
+      border-radius: 7px;
+      margin-bottom: 6px;
+    }
+
     .ni {
       display: flex;
       align-items: center;
@@ -1366,6 +1504,13 @@
             </div>
             <div id="base-msg" class="hidden"></div>
           </div>
+          <div class="card" id="p-spycard-shop-card">
+            <div class="card-title" style="color:#c77dff;">🃏 Spy Cards — 6g each</div>
+            <div class="rn">Purchase a spy card for 6g. Cards are secret — only you and the GM can see them. Some card
+              types may be locked by the GM.</div>
+            <div id="p-card-shop-list"></div>
+            <div id="p-card-shop-msg" class="hidden mt8"></div>
+          </div>
         </div>
         <div id="panel-spring" class="hidden">
           <div class="card">
@@ -1385,6 +1530,13 @@
             <div class="rn">No orders to submit. GM will contact you if your ships are in combat.</div>
             <div id="summer-cons"></div>
             <div id="summer-conf"></div>
+          </div>
+          <div class="card" id="p-mycard-panel">
+            <div class="card-title" style="color:#c77dff;">🃏 My Spy Cards — Use This Turn</div>
+            <div class="rn">Play a card during Summer. Cards that target ships or fleets require you to pick a target.
+              The GM will apply the effect.</div>
+            <div id="p-mycard-list"></div>
+            <div id="p-mycard-msg" class="hidden mt8"></div>
           </div>
         </div>
       </div>
@@ -1428,6 +1580,8 @@
           <button class="tab" onclick="showTab('gt-troops',this)">Troops</button>
           <button class="tab" onclick="showTab('gt-bases',this)">Bases</button>
           <button class="tab" onclick="showTab('gt-economy',this)">Economy</button>
+          <button class="tab" onclick="showTab('gt-cards',this)">Spy Cards<span id="cards-dot"></span></button>
+          <button class="tab" onclick="showTab('gt-events',this)">Events</button>
           <button class="tab" onclick="showTab('gt-setup',this)">Setup</button>
           <button class="tab" onclick="showTab('gt-settings',this)">Settings</button>
         </div>
@@ -1549,6 +1703,97 @@
             </div>
           </div>
         </div>
+        <div id="gt-cards" class="tp">
+          <div class="card">
+            <div class="card-title">Spy Card Control
+              <div class="fl" style="gap:6px;">
+                <span class="spy-badge" style="font-size:10px;" id="cards-enabled-badge">Cards: DISABLED</span>
+                <button class="btn btn-sm btn-o" onclick="gmToggleCards()">Enable/Disable Cards</button>
+              </div>
+            </div>
+            <div class="rn">Enable cards to allow players to purchase them (6g each). Each card type can be toggled
+              individually. Cards marked Used are deleted after GM confirms the effect.</div>
+            <div class="stl mt8">Card Types — Enable/Disable Individually</div>
+            <div id="gm-card-types"></div>
+            <div class="dv"></div>
+            <div class="stl">All Purchased Cards</div>
+            <div id="gm-cards-list"></div>
+          </div>
+          <div class="card">
+            <div class="card-title">Issue Card to Player</div>
+            <div class="g2">
+              <div class="fg"><label>Country</label><select id="issue-c" title="Country to give card to">
+                  <option>China</option>
+                  <option>Taiwan</option>
+                  <option>Philippines</option>
+                  <option>Malaysia</option>
+                  <option>Indonesia</option>
+                  <option>Thailand</option>
+                  <option>Cambodia</option>
+                  <option>Vietnam</option>
+                </select></div>
+              <div class="fg"><label>Card Type</label><select id="issue-t" title="Card type to issue"></select></div>
+            </div>
+            <button class="btn btn-o btn-sm" onclick="gmIssueCard()">Issue Free Card</button>
+            <div id="issue-msg" class="mt8 hidden"></div>
+          </div>
+        </div>
+        <div id="gt-events" class="tp">
+          <div class="card">
+            <div class="card-title">Special Event Controls</div>
+            <div class="rn">Use these tools when an outside event changes the game state — sanction a country, apply
+              event modifiers, disable fishing boats, etc.</div>
+            <div class="stl mt8">Disable / Enable a Fishing Boat</div>
+            <div class="event-row">
+              <div class="fg" style="margin:0;flex:1;"><label>Ship ID</label><input type="text" id="ev-fb-id"
+                  placeholder="VNM_FB-01" style="width:130px;"></div>
+              <button class="btn btn-o btn-sm" onclick="gmEvDisableShip(true)">Disable</button>
+              <button class="btn btn-o btn-sm" onclick="gmEvDisableShip(false)">Re-enable</button>
+            </div>
+            <div id="ev-fb-msg" class="hidden mt8"></div>
+            <div class="dv"></div>
+            <div class="stl">Disabling Attack (mark ship as non-attacking)</div>
+            <div class="rn" style="margin-bottom:8px;">A disabled-attack ship can still move but cannot initiate combat.
+              GM sets this manually after a spy card or event.</div>
+            <div class="event-row">
+              <div class="fg" style="margin:0;flex:1;"><label>Ship ID</label><input type="text" id="ev-atk-id"
+                  placeholder="CHN_DD-01" style="width:130px;"></div>
+              <button class="btn btn-o btn-sm" onclick="gmEvDisableAttack(true)">Disable Attack</button>
+              <button class="btn btn-o btn-sm" onclick="gmEvDisableAttack(false)">Restore</button>
+            </div>
+            <div id="ev-atk-msg" class="hidden mt8"></div>
+            <div class="dv"></div>
+            <div class="stl">Bulk Edit — Any Ship Field</div>
+            <div class="event-row" style="flex-wrap:wrap;gap:8px;">
+              <div class="fg" style="margin:0;"><label>Ship ID</label><input type="text" id="ev-field-id"
+                  placeholder="CHN_DD-01" style="width:110px;"></div>
+              <div class="fg" style="margin:0;"><label>Field</label>
+                <select id="ev-field-name" style="width:130px;" title="Select field to edit">
+                  <option value="tile">Tile</option>
+                  <option value="hp">HP</option>
+                  <option value="max_hp">Max HP</option>
+                  <option value="disabled">Disabled (true/false)</option>
+                  <option value="attack_disabled">Attack Disabled</option>
+                  <option value="nearest_base">Nearest Base</option>
+                  <option value="type">Ship Type</option>
+                </select>
+              </div>
+              <div class="fg" style="margin:0;"><label>Value</label><input type="text" id="ev-field-val"
+                  placeholder="new value" style="width:100px;"></div>
+              <button class="btn btn-o btn-sm" onclick="gmEvEditField()">Apply</button>
+            </div>
+            <div id="ev-field-msg" class="hidden mt8"></div>
+            <div class="dv"></div>
+            <div class="stl">Broadcast Event Message to All Players</div>
+            <div class="event-row" style="flex-wrap:wrap;gap:8px;">
+              <div class="fg" style="margin:0;flex:1;"><label>Message</label><input type="text" id="ev-msg-text"
+                  placeholder="Special event: oil spill in Blue Zone — no fishing this turn" style="min-width:200px;">
+              </div>
+              <button class="btn btn-o btn-sm" onclick="gmBroadcast()">Broadcast</button>
+            </div>
+            <div id="ev-msg-res" class="hidden mt8"></div>
+          </div>
+        </div>
         <div id="gt-setup" class="tp">
           <div class="card">
             <div class="card-title">Setup Progress</div>
@@ -1562,7 +1807,7 @@
             <div class="card-title">Tile Config</div>
             <div class="rn">Push tile data once at game start so the database knows zone + adjacency for each tile.
             </div>
-            <button class="btn btn-g btn-sm" onclick="pushTilesToDB()">Push 79 Tiles to Database</button>
+            <button class="btn btn-g btn-sm" onclick="pushTilesToDB()">Push Tiles to Database</button>
             <div id="tile-msg" class="mt8 hidden"></div>
           </div>
         </div>
@@ -1661,6 +1906,47 @@
         style="display:flex;flex-direction:column;gap:6px;max-height:280px;overflow-y:auto;margin-bottom:14px;"></div>
       <button class="btn btn-g w100" onclick="saveFleet()">Save Fleet</button>
     </div>
+    <div id="m-playcard" class="mbox hidden">
+      <div class="fb" style="margin-bottom:12px;">
+        <span
+          style="font-family:var(--fh);font-size:14px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:#c77dff;">🃏
+          Play Spy Card</span>
+        <button class="btn btn-o btn-sm" onclick="closeMod()">✕</button>
+      </div>
+      <div id="playcard-info" style="margin-bottom:12px;"></div>
+      <div id="playcard-target-section">
+        <div class="fg"><label>Target Country</label>
+          <select id="pc-target-c" title="Target country" onchange="pcTargetCountryChange()">
+            <option value="">— select —</option>
+            <option>China</option>
+            <option>Taiwan</option>
+            <option>Philippines</option>
+            <option>Malaysia</option>
+            <option>Indonesia</option>
+            <option>Thailand</option>
+            <option>Cambodia</option>
+            <option>Vietnam</option>
+          </select>
+        </div>
+        <div id="pc-ship-row" class="fg hidden"><label>Target Ship</label>
+          <select id="pc-target-ship" title="Target ship"></select>
+        </div>
+        <div id="pc-fleet-row" class="fg hidden"><label>Target Fleet</label>
+          <select id="pc-target-fleet" title="Target fleet"></select>
+        </div>
+        <div id="pc-base-row" class="fg hidden"><label>Target Base Tile</label>
+          <input type="text" id="pc-target-base" placeholder="tile #">
+        </div>
+        <div id="pc-gold-row" class="fg hidden"><label>Gold to Steal</label>
+          <input type="number" id="pc-gold-amt" value="3" min="1" max="20" style="width:90px;">
+        </div>
+      </div>
+      <div class="fg"><label>Optional note to GM</label>
+        <input type="text" id="pc-note" placeholder="e.g. targeting CHN_DD-01 at tile 7">
+      </div>
+      <button class="btn btn-g w100" onclick="confirmPlayCard()">Submit Card Play to GM</button>
+      <div id="pc-msg" class="hidden mt8"></div>
+    </div>
   </div>
 
   <script>
@@ -1688,6 +1974,16 @@
     // Icons used for the turn status indicator
     const SEASON_ICONS = { setup: '◈', fall: '◆', winter: '❄', spring: '◉', summer: '⚔' };
     const SHIP_STATS = { 'Fishing Boat': { cost: 3, attack: 0, hp: 1, speed: 2, range: 2, notes: '1 fish/turn' }, 'Coast Guard': { cost: 3, attack: 3, hp: 3, speed: 4, range: 2, notes: 'Territorial waters' }, 'FAC': { cost: 6, attack: 6, hp: 1, speed: 5, range: 5, notes: '50% first-strike' }, 'Destroyer': { cost: 13, attack: 6, hp: 8, speed: 4, range: 1e9, notes: 'Unlimited range' } };
+
+    // Spy card definitions — id, icon, name, description, needs_target type
+    const SPY_CARDS = {
+      'upgrade_dice': { icon: '🎲', name: 'Upgrade Dice', desc: 'Your next combat roll uses a higher dice tier. GM deletes after use.', target: 'none' },
+      'extended_move': { icon: '💨', name: 'Extended Move', desc: 'One fleet or ship moves up to double its normal speed this Spring.', target: 'self_unit' },
+      'steal_gold': { icon: '💰', name: 'Steal Gold', desc: 'Steal up to 5g from a target country.', target: 'country_gold' },
+      'destroy_base': { icon: '💥', name: 'Destroy Base', desc: 'Secretly order the destruction of a target base. GM resolves.', target: 'enemy_base' },
+      'sink_ship': { icon: '⚓', name: 'Sink Ship', desc: 'Eliminate one enemy ship. GM removes it from the board.', target: 'enemy_ship' },
+      'disable_unit': { icon: '🔒', name: 'Disable Unit', desc: 'Prevent a ship or fleet from moving or attacking for 1 full turn.', target: 'enemy_unit' },
+    };
     const ZONE_COLORS = { "China": "#c1121f", "Vietnam": "#d4a017", "Taiwan": "#3a86ff", "Philippines": "#8338ec", "Malaysia": "#fb5607", "Indonesia": "#06d6a0", "Cambodia": "#bc6c25", "Thailand": "#e9c46a", "Blue Neutral Zone": "#4cc9f0", "Purple Neutral Zone": "#9d4edd", "Orange Neutral Zone": "#f77f00", "Green Neutral Zone": "#2d9e5f" };
     const TILE_DATA = { "1": { "z": "Vietnam", "a": ["2", "5", "6", "7"] }, "2": { "z": "China", "a": ["1", "3", "6", "7", "8"] }, "3": { "z": "China", "a": ["2", "7", "8", "9"] }, "4": { "z": "Thailand", "a": ["5", "12", "13"] }, "5": { "z": "Vietnam", "a": ["1", "4", "6", "13", "14"] }, "6": { "z": "China", "a": ["1", "2", "5", "7", "14", "15"] }, "7": { "z": "China", "a": ["1", "2", "3", "6", "8", "15", "16", "17"] }, "8": { "z": "China", "a": ["2", "3", "7", "9", "17", "18"] }, "9": { "z": "China", "a": ["3", "8", "10", "17", "18"] }, "10": { "z": "China", "a": ["9", "11", "18", "19"] }, "11": { "z": "China", "a": ["10", "19", "20"] }, "12": { "z": "Thailand", "a": ["4", "13", "21", "22"] }, "13": { "z": "Thailand", "a": ["4", "5", "12", "22", "23"] }, "14": { "z": "Vietnam", "a": ["5", "6", "13", "15", "23", "24", "25"] }, "15": { "z": "Blue Neutral Zone", "a": ["6", "7", "14", "16", "24", "25"] }, "16": { "z": "Blue Neutral Zone", "a": ["7", "15", "17", "25", "26", "27"] }, "17": { "z": "Blue Neutral Zone", "a": ["7", "8", "9", "16", "18", "26", "27", "28"] }, "18": { "z": "Purple Neutral Zone", "a": ["8", "9", "10", "17", "19", "28", "29"] }, "19": { "z": "Taiwan", "a": ["10", "11", "18", "20", "29", "30"] }, "20": { "z": "Taiwan", "a": ["11", "19", "30"] }, "21": { "z": "Thailand", "a": ["12", "22", "31", "32"] }, "22": { "z": "Green Neutral Zone", "a": ["12", "13", "21", "23", "32", "33"] }, "23": { "z": "Cambodia", "a": ["13", "14", "22", "24", "33", "34", "35"] }, "24": { "z": "Vietnam", "a": ["14", "15", "23", "25", "34", "35", "36"] }, "25": { "z": "Blue Neutral Zone", "a": ["14", "15", "16", "24", "26", "35", "36", "37"] }, "26": { "z": "Blue Neutral Zone", "a": ["16", "17", "25", "27", "36", "37", "38"] }, "27": { "z": "Blue Neutral Zone", "a": ["16", "17", "26", "28", "37", "38", "39"] }, "28": { "z": "Purple Neutral Zone", "a": ["17", "18", "27", "29", "38", "39", "40"] }, "29": { "z": "Purple Neutral Zone", "a": ["18", "19", "28", "30", "39", "40", "41"] }, "30": { "z": "Taiwan", "a": ["19", "20", "29", "40", "41"] }, "31": { "z": "Thailand", "a": ["21", "32", "42"] }, "32": { "z": "Green Neutral Zone", "a": ["21", "22", "31", "33", "42", "43"] }, "33": { "z": "Cambodia", "a": ["22", "23", "32", "34", "43", "44"] }, "34": { "z": "Cambodia", "a": ["23", "24", "33", "35", "44", "45"] }, "35": { "z": "Vietnam", "a": ["23", "24", "25", "34", "36", "45", "46"] }, "36": { "z": "Blue Neutral Zone", "a": ["24", "25", "26", "35", "37", "45", "46", "47"] }, "37": { "z": "Blue Neutral Zone", "a": ["25", "26", "27", "36", "38", "46", "47", "48"] }, "38": { "z": "Blue Neutral Zone", "a": ["26", "27", "28", "37", "39", "47", "48", "49"] }, "39": { "z": "Purple Neutral Zone", "a": ["27", "28", "29", "38", "40", "48", "49", "50"] }, "40": { "z": "Purple Neutral Zone", "a": ["28", "29", "30", "39", "41", "49", "50", "51"] }, "41": { "z": "Philippines", "a": ["29", "30", "40", "50", "51"] }, "42": { "z": "Thailand", "a": ["31", "32", "43", "52", "53"] }, "43": { "z": "Green Neutral Zone", "a": ["32", "33", "42", "44", "53", "54"] }, "44": { "z": "Green Neutral Zone", "a": ["33", "34", "43", "45", "54", "55"] }, "45": { "z": "Green Neutral Zone", "a": ["34", "35", "36", "44", "46", "54", "55", "56"] }, "46": { "z": "Orange Neutral Zone", "a": ["35", "36", "37", "45", "47", "55", "56", "57"] }, "47": { "z": "Blue Neutral Zone", "a": ["36", "37", "38", "46", "48", "56", "57", "58"] }, "48": { "z": "Purple Neutral Zone", "a": ["37", "38", "39", "47", "49", "57", "58", "59"] }, "49": { "z": "Purple Neutral Zone", "a": ["38", "39", "40", "48", "50", "58", "59", "60"] }, "50": { "z": "Purple Neutral Zone", "a": ["39", "40", "41", "49", "51", "59", "60"] }, "51": { "z": "Philippines", "a": ["40", "41", "50", "60"] }, "52": { "z": "Indonesia", "a": ["42", "53", "61", "62"] }, "53": { "z": "Green Neutral Zone", "a": ["42", "43", "52", "54", "62", "63"] }, "54": { "z": "Green Neutral Zone", "a": ["43", "44", "45", "53", "55", "63", "64"] }, "55": { "z": "Orange Neutral Zone", "a": ["44", "45", "46", "54", "56", "63", "64", "65"] }, "56": { "z": "Orange Neutral Zone", "a": ["45", "46", "47", "55", "57", "64", "65", "66"] }, "57": { "z": "Purple Neutral Zone", "a": ["46", "47", "48", "56", "58", "65", "66", "67"] }, "58": { "z": "Purple Neutral Zone", "a": ["47", "48", "49", "57", "59", "66", "67", "68"] }, "59": { "z": "Purple Neutral Zone", "a": ["48", "49", "50", "58", "60", "67", "68", "69"] }, "60": { "z": "Philippines", "a": ["49", "50", "51", "59", "68", "69"] }, "61": { "z": "Indonesia", "a": ["52", "62", "70"] }, "62": { "z": "Green Neutral Zone", "a": ["52", "53", "61", "63", "70", "71"] }, "63": { "z": "Green Neutral Zone", "a": ["53", "54", "55", "62", "64", "71", "72"] }, "64": { "z": "Orange Neutral Zone", "a": ["54", "55", "56", "63", "65", "71", "72", "73"] }, "65": { "z": "Orange Neutral Zone", "a": ["55", "56", "57", "64", "66", "72", "73", "74"] }, "66": { "z": "Orange Neutral Zone", "a": ["56", "57", "58", "65", "67", "73", "74", "75"] }, "67": { "z": "Purple Neutral Zone", "a": ["57", "58", "59", "66", "68", "74", "75"] }, "68": { "z": "Philippines", "a": ["58", "59", "60", "67", "69", "75"] }, "69": { "z": "Philippines", "a": ["59", "60", "68"] }, "70": { "z": "Indonesia", "a": ["61", "62", "71"] }, "71": { "z": "Indonesia", "a": ["62", "63", "64", "70", "72"] }, "72": { "z": "Orange Neutral Zone", "a": ["63", "64", "65", "66", "71", "73", "76", "77"] }, "73": { "z": "Orange Neutral Zone", "a": ["64", "65", "66", "67", "72", "74", "77", "78"] }, "74": { "z": "Orange Neutral Zone", "a": ["65", "66", "67", "68", "73", "75", "78", "79"] }, "75": { "z": "Orange Neutral Zone", "a": ["66", "67", "68", "74", "79"] }, "76": { "z": "Malaysia", "a": ["72", "77"] }, "77": { "z": "Malaysia", "a": ["72", "73", "76", "78"] }, "78": { "z": "Malaysia", "a": ["73", "74", "77", "79"] }, "79": { "z": "Malaysia", "a": ["74", "75", "78"] } };
     /* ─── DATA ACCESS HELPERS ─────────────────────────────────────── */
@@ -1718,7 +2014,8 @@
     let SB_SVC = null, SESSION_PIN = null, CU = null;
     let D = {
       cfg: null, myEco: null, myTroops: [], myBases: [], myOrders: [], myFleets: [],
-      allTroops: [], allBases: [], allEco: [], allOrders: [], allEcoLog: [], allFleets: [], pins: []
+      allTroops: [], allBases: [], allEco: [], allOrders: [], allEcoLog: [], allFleets: [], pins: [],
+      myCards: [], allCards: [], cardConfig: { enabled: false, allowed_types: [] }, broadcast: null
     };
 
     const SEASON_ORDER = ['fall', 'winter', 'spring', 'summer'];
@@ -1768,12 +2065,17 @@
       const tx = { 'Fishing Boat': 'FB', 'Coast Guard': 'CG', 'FAC': 'FAC', 'Destroyer': 'DD' };
       const key = (px[country] || country.slice(0, 3).toUpperCase()) + '_' + (tx[type] || 'XX');
       try {
+        // Insert with a unique nonce to prevent race collisions between simultaneous buyers
+        const nonce = Date.now().toString(36) + Math.random().toString(36).slice(2, 5);
         await sb('ship_counter', { method: 'POST', prefer: 'resolution=ignore-duplicates,return=minimal', body: { key, val: 1 } });
         const rows = await sb('ship_counter?key=eq.' + encodeURIComponent(key));
         const cur = rows?.[0]?.val || 1;
         await sb('ship_counter?key=eq.' + encodeURIComponent(key), { method: 'PATCH', prefer: 'return=minimal', body: { val: cur + 1 } });
         return key + '-' + String(cur).padStart(2, '0');
-      } catch (e) { return key + '-' + Date.now().toString(36).slice(-4).toUpperCase(); }
+      } catch (e) {
+        // Fallback: timestamp + random suffix guarantees uniqueness even without DB
+        return key + '-' + Date.now().toString(36).slice(-4).toUpperCase() + Math.random().toString(36).slice(2, 4).toUpperCase();
+      }
     }
 
     // ─── UI HELPERS ──────────────────────────────────────────────────
@@ -1857,28 +2159,40 @@
 
     // ─── DATA LOADING ────────────────────────────────────────────────
     async function loadPlayerData() {
-      const [eR, tR, bR, oR, fR] = await Promise.all([
+      const [eR, tR, bR, oR, fR, cR, cfgR, bcR] = await Promise.all([
         rpc('get_my_economy', { p_country: CU.country, p_pin: SESSION_PIN }),
         rpc('get_my_troops', { p_country: CU.country, p_pin: SESSION_PIN }),
         rpc('get_my_bases', { p_country: CU.country, p_pin: SESSION_PIN }),
         rpc('get_my_orders', { p_country: CU.country, p_pin: SESSION_PIN, p_season: D.cfg.season, p_turn: D.cfg.turn }),
         rpc('get_my_fleets', { p_country: CU.country, p_pin: SESSION_PIN }),
+        sb('spy_cards?country=eq.' + encodeURIComponent(CU.country) + '&select=*'),
+        sb('spy_card_config?id=eq.1&select=enabled,allowed_types'),
+        sb('game_broadcast?select=*&order=created_at.desc&limit=1'),
       ]);
       if (!eR?.ok) throw new Error(eR?.error || 'Economy load failed');
       D.myEco = { gold: eR.gold }; D.myTroops = tR?.troops || []; D.myBases = bR?.bases || [];
       D.myOrders = oR?.orders || []; D.myFleets = fR?.fleets || [];
+      D.myCards = cR || [];
+      D.cardConfig = cfgR?.[0] || { enabled: false, allowed_types: [] };
+      D.broadcast = bcR?.[0] || null;
     }
 
     async function loadGMData() {
-      const [eA, tA, bA, oA, lA, pA, fA] = await Promise.all([
+      const [eA, tA, bA, oA, lA, pA, fA, cA, ccA, bcA] = await Promise.all([
         sb('economy?select=*'), sb('troops?select=*'), sb('bases?select=*'),
         sb('pending_orders?select=*&season=eq.' + D.cfg.season + '&turn=eq.' + D.cfg.turn),
         sb('economy_log?select=*&order=created_at.desc&limit=100'),
         sb('pins?select=country,pin_hash'),
         sb('fleets?select=*'),
+        sb('spy_cards?select=*&order=created_at.desc'),
+        sb('spy_card_config?id=eq.1&select=*'),
+        sb('game_broadcast?select=*&order=created_at.desc&limit=5'),
       ]);
       D.allEco = eA || []; D.allTroops = tA || []; D.allBases = bA || []; D.allOrders = oA || [];
       D.allEcoLog = lA || []; D.pins = pA || []; D.allFleets = fA || [];
+      D.allCards = cA || [];
+      D.cardConfig = ccA?.[0] || { enabled: false, allowed_types: [] };
+      D.broadcasts = bcA || [];
     }
 
     async function handleRefresh() {
@@ -1896,6 +2210,7 @@
 
     // ─── PLAYER RENDER ───────────────────────────────────────────────
     function renderPlayer() {
+      if (!D.cfg) return;
       const c = CU.country, s = D.cfg.season;
       document.getElementById('p-gold').textContent = D.myEco?.gold ?? '—';
       document.getElementById('p-ships').textContent = D.myTroops.length;
@@ -1903,6 +2218,7 @@
       document.getElementById('p-inc').textContent = '+' + BASE_INCOME[c];
       setSeasonChip(s);
       renderSidebar();
+      renderBroadcastBanner();
       ['setup', 'fall', 'winter', 'spring', 'summer'].forEach(x => document.getElementById('panel-' + x).classList.add('hidden'));
       if (s !== 'setup' && D.myOrders.length > 0) {
         const msgEl = document.getElementById('p-msg');
@@ -2134,6 +2450,7 @@
           + '<button onclick="adjCart(\'' + n + '\',1)">+</button>'
           + '</div></div></div>';
       }).join(''); updCart();
+      rCardShop();
     }
     function adjCart(n, d) { const i = document.getElementById('cart-' + n.replace(/ /g, '_')); if (!i) return; i.value = Math.max(0, parseInt(i.value || 0) + d); updCart(); }
     function updCart() {
@@ -2281,6 +2598,7 @@
         ? cons.map(b => '<div class="al aw">Base at tile <b>' + b.tile + '</b> (anchor: ' + (b.anchor_ship || '—') + ') can be attacked.</div>').join('')
         : '<div class="al as">No bases under construction.</div>';
       document.getElementById('summer-conf').innerHTML = '<div class="al ai">GM will contact you if combat is triggered.</div>';
+      rPlayerCards();
     }
 
     // ─── FLEET MANAGEMENT ────────────────────────────────────────────
@@ -2353,11 +2671,12 @@
 
     // ═══ GM RENDER ═══════════════════════════════════════════════════
     function renderGM() {
+      if (!D.cfg) return;
       const s = D.cfg.season;
       document.getElementById('gm-turn').textContent = D.cfg.turn;
       document.getElementById('gm-sv').textContent = s.charAt(0).toUpperCase() + s.slice(1);
       setSeasonChip(s);
-      rConflicts(); rGMOverview(); renderOrders(); renderTroops(); renderBases(); renderEconomy(); rPins(); rSetupTab();
+      rConflicts(); rGMOverview(); renderOrders(); renderTroops(); renderBases(); renderEconomy(); rPins(); rSetupTab(); renderGMCards(); renderBroadcasts();
       const cnt = D.allOrders.length;
       document.getElementById('orders-dot').innerHTML = cnt > 0 ? '<span class="nd"></span>' : '';
       // Update next-season button label
@@ -2444,11 +2763,12 @@
           '<td class="fs10" style="color:' + (ZONE_COLORS[zone] || 'var(--text2)') + ';">' + (zone || '—') + '</td>' +
           '<td>' + (fl ? '<span class="badge bam fs9">⚓' + fl.name + '</span>' : '—') + '</td>' +
           '<td><div class="fb gap3"><span class="tm fs10">' + ship.hp + '/' + (info.hp || '?') + '</span><div class="hpb"><div class="hpf ' + hc + '" style="width:' + pct + '%"></div></div></div></td>' +
-          '<td>' + (inC ? '<span class="badge br">!</span> ' : '') + (anc ? '<span class="badge bam">⚓</span> ' : '') + (ship.disabled ? '<span class="badge bgo">OFF</span>' : '<span class="badge bgr">ON</span>') + '</td>' +
+          '<td>' + (inC ? '<span class="badge br">!</span> ' : '') + (anc ? '<span class="badge bam">⚓</span> ' : '') + (ship.disabled ? '<span class="badge bgo">MOVE OFF</span> ' : '<span class="badge bgr">ON</span> ') + (ship.attack_disabled ? '<span class="badge br">ATK OFF</span>' : '') + '</td>' +
           '<td><div class="fl gap3">' +
           '<button class="btn btn-o btn-sm" onclick="gmHP(\'' + ship.id + '\')">HP</button>' +
           '<button class="btn btn-o btn-sm" onclick="gmMv(\'' + ship.id + '\')">MV</button>' +
-          '<button class="btn btn-o btn-sm" onclick="gmDis(\'' + ship.id + '\')">' + (ship.disabled ? 'ON' : 'OFF') + '</button>' +
+          '<button class="btn btn-o btn-sm" onclick="gmDis(\'' + ship.id + '\')" title="Toggle move disabled">' + (ship.disabled ? 'MOV ON' : 'MOV OFF') + '</button>' +
+          '<button class="btn btn-o btn-sm" onclick="gmDisAtk(\'' + ship.id + '\')" title="Toggle attack disabled">' + (ship.attack_disabled ? 'ATK ON' : 'ATK OFF') + '</button>' +
           '<button class="btn btn-d btn-sm" onclick="gmSink(\'' + ship.id + '\')">✕</button>' +
           '</div></td></tr>';
       }).join('');
@@ -2511,6 +2831,7 @@
     // ─── GM ACTIONS ──────────────────────────────────────────────────
     // Single "Approve & Next Season" button — auto-cycles, turn++ after Summer
     async function approveTurn() {
+      if (!D.cfg) return;
       const s = D.cfg.season, turn = D.cfg.turn, orders = D.allOrders, log = [];
       const resEl = document.getElementById('approve-res'); showLoad('Processing…');
       try {
@@ -2655,6 +2976,10 @@
       const s = D.allTroops.find(x => x.id === id); if (!s) return; showLoad('…');
       try { await sb('troops?id=eq.' + id, { method: 'PATCH', prefer: 'return=minimal', body: { disabled: !s.disabled } }); await loadGMData(); hideLoad(); renderTroops(); } catch (e) { hideLoad(); alert(e.message); }
     }
+    async function gmDisAtk(id) {
+      const s = D.allTroops.find(x => x.id === id); if (!s) return; showLoad('…');
+      try { await sb('troops?id=eq.' + id, { method: 'PATCH', prefer: 'return=minimal', body: { attack_disabled: !s.attack_disabled } }); await loadGMData(); hideLoad(); renderTroops(); } catch (e) { hideLoad(); alert(e.message); }
+    }
     async function gmSink(id) {
       const base = D.allBases.find(b => b.anchor_ship === id && b.status === 'construction');
       let dB = false; if (base) dB = confirm(id + ' anchoring base at tile ' + base.tile + '. Destroy too?');
@@ -2718,7 +3043,7 @@
         await sb('tiles?id=not.is.null', { method: 'DELETE', prefer: 'return=minimal' });
         const rows = Object.entries(TILE_DATA).map(([id, t]) => ({ id, zone: t.z, adjacent: t.a }));
         await sb('tiles', { method: 'POST', prefer: 'return=minimal', body: rows }); hideLoad();
-        const m = document.getElementById('tile-msg'); showAl(m, '79 tiles pushed.', 'as'); setTimeout(() => m.classList.add('hidden'), 4000);
+        const m = document.getElementById('tile-msg'); showAl(m, rows.length + ' tiles pushed.', 'as'); setTimeout(() => m.classList.add('hidden'), 4000);
       } catch (e) { hideLoad(); alert(e.message); }
     }
     async function gmReset() {
@@ -2732,11 +3057,15 @@
         await sb('ship_counter?key=not.is.null', { method: 'DELETE', prefer: 'return=minimal' });
         await sb('economy?country=not.is.null', { method: 'DELETE', prefer: 'return=minimal' });
         await sb('game_config?id=not.is.null', { method: 'DELETE', prefer: 'return=minimal' });
+        await sb('spy_cards?id=not.is.null', { method: 'DELETE', prefer: 'return=minimal' });
+        await sb('spy_card_config?id=not.is.null', { method: 'DELETE', prefer: 'return=minimal' });
+        await sb('game_broadcast?id=not.is.null', { method: 'DELETE', prefer: 'return=minimal' });
 
         const sg = { China: 5, Taiwan: 3, Philippines: 4, Malaysia: 3, Indonesia: 3, Thailand: 4, Cambodia: 3, Vietnam: 4 };
         const initEco = COUNTRIES.map(c => ({ country: c, gold: sg[c] }));
         await sb('economy', { method: 'POST', prefer: 'return=minimal', body: initEco });
         await sb('game_config', { method: 'POST', prefer: 'return=minimal', body: { id: 1, turn: 1, season: 'setup' } });
+        await sb('spy_card_config', { method: 'POST', prefer: 'return=minimal', body: { id: 1, enabled: false, allowed_types: [] } });
 
         D.cfg = { turn: 1, season: 'setup' }; await loadGMData(); hideLoad(); renderGM();
       } catch (e) { hideLoad(); alert(e.message); }
@@ -2752,6 +3081,446 @@
     function exTroops() { const rows = [['ID', 'Country', 'Type', 'Tile', 'Zone', 'Fleet', 'HP', 'MaxHP']]; D.allTroops.forEach(s => { const fl = D.allFleets.find(f => f.ship_ids && f.ship_ids.includes(s.id)); rows.push([s.id, s.country, s.type, s.tile, tz(s.tile) || '', fl ? fl.name : '', s.hp, s.max_hp]); }); dlCSV(rows, 'troops_t' + D.cfg.turn + '.csv'); }
     function exEco() { const rows = [['Country', 'Gold', 'BaseIncome']]; D.allEco.forEach(e => rows.push([e.country, e.gold, BASE_INCOME[e.country]])); dlCSV(rows, 'eco_t' + D.cfg.turn + '.csv'); }
     function exBases() { const rows = [['ID', 'Country', 'Tile', 'Zone', 'Status']]; D.allBases.forEach(b => rows.push([b.id, b.country, b.tile, tz(b.tile) || '', b.status])); dlCSV(rows, 'bases_t' + D.cfg.turn + '.csv'); }
+
+    // ─── UTILS ──────────────────────────────────────────────────────
+    function getConflicts() {
+      const bt = {}; D.allTroops.forEach(s => { if (!s.tile) return; if (!bt[s.tile]) bt[s.tile] = []; bt[s.tile].push(s); });
+      return Object.entries(bt).map(([tile, ships]) => { const cs = [...new Set(ships.map(s => s.country))]; return cs.length > 1 ? { tile, countries: cs, ships } : null; }).filter(Boolean);
+    }
+
+    // ─── SPY CARDS — PLAYER ─────────────────────────────────────────
+
+    /** Renders the card shop in the Winter panel */
+    function rCardShop() {
+      const shopEl = document.getElementById('p-card-shop-list');
+      const msgEl = document.getElementById('p-card-shop-msg');
+      if (!shopEl) return;
+      if (!D.cardConfig?.enabled) {
+        shopEl.innerHTML = '<div class="al ai" style="font-size:12px;">Spy cards are not yet available. The GM will enable them when the time comes.</div>';
+        return;
+      }
+      const allowed = D.cardConfig.allowed_types || [];
+      const gold = D.myEco?.gold || 0;
+      let html = '';
+      Object.entries(SPY_CARDS).forEach(([key, card]) => {
+        const isLocked = allowed.length > 0 && !allowed.includes(key);
+        const canAfford = gold >= 6;
+        html += '<div class="spy-shop-row' + (isLocked ? ' locked-card' : '') + '" onclick="' + (isLocked ? '' : 'buySpyCard(\'' + key + '\')') + '">'
+          + '<div class="scs-icon">' + card.icon + '</div>'
+          + '<div class="scs-info"><div class="scs-name">' + card.name + (isLocked ? ' <span class="spy-badge locked">LOCKED</span>' : '') + '</div>'
+          + '<div class="scs-desc">' + card.desc + '</div></div>'
+          + '<div class="scs-cost">' + (isLocked ? '—' : '6g') + '</div>'
+          + '</div>';
+      });
+      if (!canAfford && !html.includes('locked-card')) {
+        shopEl.innerHTML = html + '<div class="al aw" style="font-size:11px;margin-top:6px;">You need 6g to purchase a card.</div>';
+      } else {
+        shopEl.innerHTML = html;
+      }
+    }
+
+    /** Player buys a spy card — deducts 6g and creates the card record */
+    async function buySpyCard(cardKey) {
+      const gold = D.myEco?.gold || 0;
+      if (gold < 6) { showAl(document.getElementById('p-card-shop-msg'), 'Not enough gold (need 6g).', 'ae'); document.getElementById('p-card-shop-msg').classList.remove('hidden'); return; }
+      if (!confirm('Purchase ' + SPY_CARDS[cardKey]?.name + ' for 6g?')) return;
+      showLoad('Purchasing…');
+      try {
+        // Deduct gold
+        await sb('economy?country=eq.' + encodeURIComponent(CU.country), { method: 'PATCH', prefer: 'return=minimal', body: { gold: gold - 6 } });
+        await sb('economy_log', { method: 'POST', prefer: 'return=minimal', body: { country: CU.country, turn: D.cfg.turn, type: 'card', amount: -6, note: '-6g: spy card (' + cardKey + ')' } });
+        // Create card record
+        const cardId = CU.country.slice(0, 3).toUpperCase() + '-SC-' + Date.now().toString(36).toUpperCase().slice(-5);
+        await sb('spy_cards', { method: 'POST', prefer: 'return=minimal', body: { id: cardId, country: CU.country, card_type: cardKey, status: 'held', turn_purchased: D.cfg.turn } });
+        await loadPlayerData(); hideLoad();
+        showAl(document.getElementById('p-card-shop-msg'), SPY_CARDS[cardKey].icon + ' ' + SPY_CARDS[cardKey].name + ' purchased! Use it in Summer.', 'as');
+        document.getElementById('p-card-shop-msg').classList.remove('hidden');
+        rCardShop();
+      } catch (e) { hideLoad(); alert('Purchase error: ' + e.message); }
+    }
+
+    /** Renders the player's held cards for use during Summer */
+    function rPlayerCards() {
+      const el = document.getElementById('p-mycard-list');
+      if (!el) return;
+      const held = D.myCards.filter(c => c.status === 'held');
+      const played = D.myCards.filter(c => c.status === 'played');
+      const used = D.myCards.filter(c => c.status === 'used');
+      if (!D.myCards.length) { el.innerHTML = '<div class="mu" style="font-size:12px;">No spy cards. Purchase them during Winter.</div>'; return; }
+      let html = '';
+      if (held.length) {
+        html += '<div class="stl" style="margin-bottom:8px;">Ready to Play</div>';
+        held.forEach(card => {
+          const def = SPY_CARDS[card.card_type] || { icon: '🃏', name: card.card_type, desc: '' };
+          html += '<div class="spy-card">'
+            + '<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;">'
+            + '<div><div style="font-size:22px;line-height:1;margin-bottom:4px;">' + def.icon + '</div>'
+            + '<div class="spy-card-name">' + def.name + '</div>'
+            + '<div class="spy-card-desc">' + def.desc + '</div></div>'
+            + '<button class="btn btn-sm" style="background:rgba(157,78,221,.25);border:1px solid rgba(157,78,221,.5);color:#c77dff;white-space:nowrap;" onclick="openPlayCard(\'' + card.id + '\',\'' + card.card_type + '\')">Play Card</button>'
+            + '</div></div>';
+        });
+      }
+      if (played.length) {
+        html += '<div class="stl" style="margin:12px 0 8px;">Awaiting GM Resolution</div>';
+        played.forEach(card => {
+          const def = SPY_CARDS[card.card_type] || { icon: '🃏', name: card.card_type, desc: '' };
+          html += '<div class="spy-card" style="opacity:.6;border-color:rgba(244,162,97,.3);">'
+            + '<div style="display:flex;align-items:center;gap:10px;">'
+            + '<span style="font-size:20px;">' + def.icon + '</span>'
+            + '<div><div class="spy-card-name" style="color:var(--gold);">' + def.name + '</div>'
+            + '<div class="spy-card-desc">Submitted — GM is resolving this card.</div></div>'
+            + '<span class="spy-badge" style="background:rgba(244,162,97,.15);border-color:rgba(244,162,97,.3);color:var(--gold);margin-left:auto;">PENDING</span>'
+            + '</div></div>';
+        });
+      }
+      if (used.length) {
+        html += '<div class="stl" style="margin:12px 0 8px;">Used</div>';
+        used.forEach(card => {
+          const def = SPY_CARDS[card.card_type] || { icon: '🃏', name: card.card_type, desc: '' };
+          html += '<div class="spy-card used">'
+            + '<div style="display:flex;align-items:center;gap:10px;">'
+            + '<span style="font-size:18px;">' + def.icon + '</span>'
+            + '<div><div class="spy-card-name">' + def.name + '</div>'
+            + '<div class="spy-card-desc">Turn ' + card.turn_purchased + ' · Effect applied by GM.</div></div>'
+            + '<span class="spy-badge used" style="margin-left:auto;">USED</span>'
+            + '</div></div>';
+        });
+      }
+      el.innerHTML = html;
+    }
+
+    let _playCardId = null, _playCardType = null;
+
+    /** Opens the play card modal with context-sensitive target fields */
+    function openPlayCard(cardId, cardType) {
+      _playCardId = cardId; _playCardType = cardType;
+      const def = SPY_CARDS[cardType] || { icon: '🃏', name: cardType, desc: '' };
+      document.getElementById('playcard-info').innerHTML =
+        '<div class="spy-card" style="margin-bottom:0;">'
+        + '<div style="font-size:22px;margin-bottom:4px;">' + def.icon + '</div>'
+        + '<div class="spy-card-name">' + def.name + '</div>'
+        + '<div class="spy-card-desc">' + def.desc + '</div></div>';
+      // Show/hide target fields based on card type
+      const t = def.target || 'none';
+      document.getElementById('pc-target-c').value = '';
+      document.getElementById('pc-ship-row').classList.toggle('hidden', !['enemy_ship', 'enemy_unit', 'self_unit'].includes(t));
+      document.getElementById('pc-fleet-row').classList.toggle('hidden', !['enemy_unit', 'self_unit'].includes(t));
+      document.getElementById('pc-base-row').classList.toggle('hidden', t !== 'enemy_base');
+      document.getElementById('pc-gold-row').classList.toggle('hidden', t !== 'country_gold');
+      // For self_unit cards, pre-fill country
+      const cSel = document.getElementById('pc-target-c');
+      if (t === 'self_unit' || t === 'none') { cSel.closest('.fg').classList.add('hidden'); } else { cSel.closest('.fg').classList.remove('hidden'); }
+      document.getElementById('pc-note').value = '';
+      document.getElementById('pc-msg').classList.add('hidden');
+      openMod('m-playcard');
+      // Populate own ships for self_unit
+      if (t === 'self_unit') pcPopulateShips(CU.country);
+    }
+
+    /** Populates ship/fleet dropdowns when target country changes */
+    function pcTargetCountryChange() {
+      const c = document.getElementById('pc-target-c').value;
+      if (!c) return;
+      const def = SPY_CARDS[_playCardType] || {};
+      const t = def.target || 'none';
+      if (['enemy_ship', 'enemy_unit'].includes(t)) pcPopulateShips(c);
+      if (['enemy_unit'].includes(t)) pcPopulateFleets(c);
+    }
+
+    function pcPopulateShips(country) {
+      // For own ships use local data; for enemies show a text input since ship list is private
+      const sel = document.getElementById('pc-target-ship');
+      if (country === CU.country) {
+        sel.innerHTML = D.myTroops.map(s => '<option value="' + s.id + '">' + s.id + ' — ' + s.type + ' (tile ' + (s.tile || '?') + ')</option>').join('');
+      } else {
+        sel.innerHTML = '<option value="">Type ship ID in the note field below</option>';
+      }
+      document.getElementById('pc-ship-row').classList.remove('hidden');
+    }
+
+    function pcPopulateFleets(country) {
+      const sel = document.getElementById('pc-target-fleet');
+      if (country === CU.country) {
+        sel.innerHTML = D.myFleets.map(f => '<option value="' + f.id + '">' + f.name + ' (' + (f.ship_ids || []).length + ' ships)</option>').join('') || '<option value="">No fleets</option>';
+      } else {
+        sel.innerHTML = '<option value="">Specify in note field</option>';
+      }
+      document.getElementById('pc-fleet-row').classList.remove('hidden');
+    }
+
+    /** Submits the card play to the database — sets status to 'played' */
+    async function confirmPlayCard() {
+      if (!_playCardId) return;
+      const def = SPY_CARDS[_playCardType] || {};
+      const t = def.target || 'none';
+      const targetC = document.getElementById('pc-target-c').value;
+      const targetShip = document.getElementById('pc-target-ship')?.value || '';
+      const targetFleet = document.getElementById('pc-target-fleet')?.value || '';
+      const targetBase = document.getElementById('pc-target-base')?.value?.trim() || '';
+      const goldAmt = document.getElementById('pc-gold-amt')?.value || '3';
+      const note = document.getElementById('pc-note').value.trim();
+      // Basic validation
+      if (t !== 'none' && t !== 'self_unit' && !targetC) { showAl(document.getElementById('pc-msg'), 'Select a target country.', 'aw'); document.getElementById('pc-msg').classList.remove('hidden'); return; }
+      showLoad('Playing card…');
+      try {
+        const details = { target_country: targetC || null, target_ship: targetShip || null, target_fleet: targetFleet || null, target_base_tile: targetBase || null, gold_amount: t === 'country_gold' ? parseInt(goldAmt) : null, note };
+        await sb('spy_cards?id=eq.' + encodeURIComponent(_playCardId), { method: 'PATCH', prefer: 'return=minimal', body: { status: 'played', play_details: details, turn_played: D.cfg.turn } });
+        await loadPlayerData(); hideLoad(); closeMod(); rPlayerCards();
+        showMsg('Card played — GM will apply the effect this turn.', 'as');
+      } catch (e) { hideLoad(); alert('Error: ' + e.message); }
+    }
+
+    // ─── SPY CARDS — GM ─────────────────────────────────────────────
+
+    /** Renders the GM spy cards tab */
+    function renderGMCards() {
+      const cfgEl = document.getElementById('cards-enabled-badge');
+      const enabled = D.cardConfig?.enabled;
+      if (cfgEl) { cfgEl.textContent = 'Cards: ' + (enabled ? 'ENABLED' : 'DISABLED'); cfgEl.style.background = enabled ? 'rgba(46,196,182,.15)' : 'rgba(255,255,255,.06)'; cfgEl.style.borderColor = enabled ? 'rgba(46,196,182,.3)' : 'rgba(255,255,255,.1)'; cfgEl.style.color = enabled ? 'var(--green)' : 'var(--text2)'; }
+      const dot = document.getElementById('cards-dot');
+      const pending = D.allCards.filter(c => c.status === 'played').length;
+      if (dot) dot.innerHTML = pending > 0 ? '<span class="nd"></span>' : '';
+      // Card types toggle list
+      const allowed = D.cardConfig?.allowed_types || [];
+      const typesEl = document.getElementById('gm-card-types');
+      if (typesEl) {
+        typesEl.innerHTML = Object.entries(SPY_CARDS).map(([key, card]) => {
+          const on = allowed.length === 0 || allowed.includes(key);
+          return '<div class="event-row" style="gap:10px;">'
+            + '<span style="font-size:18px;">' + card.icon + '</span>'
+            + '<div style="flex:1;"><div style="font-family:var(--fh);font-size:13px;font-weight:600;color:#c77dff;">' + card.name + '</div>'
+            + '<div style="font-family:var(--fm);font-size:10px;color:var(--text2);">' + card.desc + '</div></div>'
+            + '<span class="spy-badge ' + (on ? '' : 'locked') + '">' + (on ? 'ALLOWED' : 'LOCKED') + '</span>'
+            + '<button class="btn btn-o btn-sm" onclick="gmToggleCardType(\'' + key + '\')">' + (on ? 'Lock' : 'Unlock') + '</button>'
+            + '</div>';
+        }).join('');
+      }
+      // Issue card type dropdown
+      const issueT = document.getElementById('issue-t');
+      if (issueT) issueT.innerHTML = Object.entries(SPY_CARDS).map(([k, v]) => '<option value="' + k + '">' + v.icon + ' ' + v.name + '</option>').join('');
+      // All cards list
+      const listEl = document.getElementById('gm-cards-list');
+      if (!listEl) return;
+      if (!D.allCards.length) { listEl.innerHTML = '<div class="mu fs12">No cards purchased yet.</div>'; return; }
+      listEl.innerHTML = D.allCards.map(card => {
+        const def = SPY_CARDS[card.card_type] || { icon: '🃏', name: card.card_type, desc: '' };
+        const statusColor = { held: 'spy-badge', played: 'spy-badge" style="background:rgba(244,162,97,.15);border-color:rgba(244,162,97,.3);color:var(--gold)', used: 'spy-badge used' }[card.status] || 'spy-badge';
+        const d = card.play_details || {};
+        const detailStr = card.status === 'played' ? [d.target_country && 'Target: ' + d.target_country, d.target_ship && 'Ship: ' + d.target_ship, d.target_fleet && 'Fleet: ' + d.target_fleet, d.target_base_tile && 'Base tile: ' + d.target_base_tile, d.gold_amount && 'Gold: ' + d.gold_amount, d.note && 'Note: ' + d.note].filter(Boolean).join(' · ') : '';
+        return '<div class="spy-card ' + (card.status === 'used' ? 'used' : '') + '">'
+          + '<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;flex-wrap:wrap;">'
+          + '<div style="display:flex;align-items:center;gap:8px;">'
+          + '<span style="font-size:20px;">' + def.icon + '</span>'
+          + '<div><div class="spy-card-name">' + (FLAGS[card.country] || '') + ' ' + card.country + ' — ' + def.name + '</div>'
+          + '<div class="spy-card-desc">T' + card.turn_purchased + (card.turn_played ? ' · Played T' + card.turn_played : '') + (detailStr ? '<br>' + detailStr : '') + '</div></div>'
+          + '</div>'
+          + '<div style="display:flex;gap:5px;align-items:center;flex-wrap:wrap;">'
+          + '<span class="' + statusColor + '">' + card.status.toUpperCase() + '</span>'
+          + (card.status === 'played' ? '<button class="btn btn-sm" style="background:rgba(46,196,182,.15);border:1px solid rgba(46,196,182,.3);color:var(--green);" onclick="gmResolveCard(\'' + card.id + '\',\'' + card.card_type + '\',\'' + (card.country) + '\')">Resolve</button>' : '')
+          + (card.status !== 'used' ? '<button class="btn btn-d btn-sm" onclick="gmDeleteCard(\'' + card.id + '\')">✕</button>' : '')
+          + '</div></div></div>';
+      }).join('');
+    }
+
+    /** GM toggles the global cards-enabled flag */
+    async function gmToggleCards() {
+      const cur = D.cardConfig?.enabled || false; showLoad('…');
+      try {
+        await sb('spy_card_config?id=eq.1', { method: 'PATCH', prefer: 'return=minimal', body: { enabled: !cur } });
+        await loadGMData(); hideLoad(); renderGMCards();
+      } catch (e) {
+        // Row may not exist yet — upsert it
+        try { await sb('spy_card_config', { method: 'POST', prefer: 'return=minimal', body: { id: 1, enabled: !cur, allowed_types: [] } }); await loadGMData(); hideLoad(); renderGMCards(); }
+        catch (e2) { hideLoad(); alert(e2.message); }
+      }
+    }
+
+    /** GM locks/unlocks a specific card type */
+    async function gmToggleCardType(key) {
+      showLoad('…');
+      try {
+        let allowed = [...(D.cardConfig?.allowed_types || [])];
+        // Empty array means all allowed — populate full list first
+        if (allowed.length === 0) allowed = Object.keys(SPY_CARDS);
+        const idx = allowed.indexOf(key);
+        if (idx >= 0) allowed.splice(idx, 1); else allowed.push(key);
+        await sb('spy_card_config?id=eq.1', { method: 'PATCH', prefer: 'return=minimal', body: { allowed_types: allowed } });
+        await loadGMData(); hideLoad(); renderGMCards();
+      } catch (e) { hideLoad(); alert(e.message); }
+    }
+
+    /** GM issues a free card to a player */
+    async function gmIssueCard() {
+      const c = document.getElementById('issue-c').value;
+      const t = document.getElementById('issue-t').value;
+      const msgEl = document.getElementById('issue-msg');
+      if (!c || !t) return;
+      showLoad('…');
+      try {
+        const cardId = c.slice(0, 3).toUpperCase() + '-SC-GM-' + Date.now().toString(36).toUpperCase().slice(-4);
+        await sb('spy_cards', { method: 'POST', prefer: 'return=minimal', body: { id: cardId, country: c, card_type: t, status: 'held', turn_purchased: D.cfg.turn } });
+        await loadGMData(); hideLoad(); renderGMCards();
+        showAl(msgEl, 'Issued ' + SPY_CARDS[t]?.name + ' to ' + c + '.', 'as'); msgEl.classList.remove('hidden');
+        setTimeout(() => msgEl.classList.add('hidden'), 3000);
+      } catch (e) { hideLoad(); alert(e.message); }
+    }
+
+    /**
+     * GM resolves a played card — applies the mechanical effect then marks it used.
+     * Steal Gold is handled automatically; all others prompt the GM.
+     */
+    async function gmResolveCard(cardId, cardType, ownerCountry) {
+      const card = D.allCards.find(c => c.id === cardId);
+      if (!card) return;
+      const def = SPY_CARDS[cardType] || {};
+      const d = card.play_details || {};
+
+      // Auto-apply steal gold
+      if (cardType === 'steal_gold') {
+        const amt = d.gold_amount || 3;
+        const targetC = d.target_country;
+        if (!targetC) { alert('No target country set on this card.'); return; }
+        if (!confirm('Steal ' + amt + 'g from ' + targetC + ' and give to ' + ownerCountry + '?')) return;
+        showLoad('Applying…');
+        try {
+          const fromEco = D.allEco.find(e => e.country === targetC) || { gold: 0 };
+          const toEco = D.allEco.find(e => e.country === ownerCountry) || { gold: 0 };
+          const actualAmt = Math.min(amt, fromEco.gold);
+          await sb('economy?country=eq.' + encodeURIComponent(targetC), { method: 'PATCH', prefer: 'return=minimal', body: { gold: fromEco.gold - actualAmt } });
+          await sb('economy?country=eq.' + encodeURIComponent(ownerCountry), { method: 'PATCH', prefer: 'return=minimal', body: { gold: toEco.gold + actualAmt } });
+          await sb('economy_log', { method: 'POST', prefer: 'return=minimal', body: { country: targetC, turn: D.cfg.turn, type: 'card', amount: -actualAmt, note: '-' + actualAmt + 'g: stolen by ' + ownerCountry + ' (spy card)' } });
+          await sb('economy_log', { method: 'POST', prefer: 'return=minimal', body: { country: ownerCountry, turn: D.cfg.turn, type: 'card', amount: actualAmt, note: '+' + actualAmt + 'g: stolen from ' + targetC + ' (spy card)' } });
+          await sb('spy_cards?id=eq.' + cardId, { method: 'PATCH', prefer: 'return=minimal', body: { status: 'used' } });
+          await loadGMData(); hideLoad(); renderGMCards(); renderEconomy();
+        } catch (e) { hideLoad(); alert(e.message); }
+        return;
+      }
+
+      // For all other cards: show confirmation prompt then mark used
+      const actionDesc = {
+        'upgrade_dice': 'Upgrade dice confirmed for ' + ownerCountry + '. Delete this card after the combat roll.',
+        'extended_move': 'Extended move granted. Manually apply double speed for ' + ownerCountry + ' this Spring.',
+        'sink_ship': 'Sink ship ' + (d.target_ship || '?') + '? This will NOT auto-delete — use the Troops tab to remove it.',
+        'destroy_base': 'Destroy base at tile ' + (d.target_base_tile || '?') + '? Use the Bases tab to remove it.',
+        'disable_unit': 'Disable ship ' + (d.target_ship || '') + ' / fleet ' + (d.target_fleet || '') + '? Use the Troops tab to disable movement/attack.',
+      }[cardType] || 'Resolve this card effect?';
+
+      if (!confirm(actionDesc + '\n\nMark card as USED after you apply the effect manually?')) return;
+      showLoad('…');
+      try {
+        await sb('spy_cards?id=eq.' + cardId, { method: 'PATCH', prefer: 'return=minimal', body: { status: 'used' } });
+        await loadGMData(); hideLoad(); renderGMCards();
+      } catch (e) { hideLoad(); alert(e.message); }
+    }
+
+    /** GM deletes a card (e.g. after upgrade dice is used in combat) */
+    async function gmDeleteCard(cardId) {
+      if (!confirm('Delete this card?')) return; showLoad('…');
+      try {
+        await sb('spy_cards?id=eq.' + cardId, { method: 'DELETE', prefer: 'return=minimal' });
+        await loadGMData(); hideLoad(); renderGMCards();
+      } catch (e) { hideLoad(); alert(e.message); }
+    }
+
+    // ─── EVENTS TAB — GM ────────────────────────────────────────────
+
+    /** GM disables/enables a fishing boat (move-disabled) */
+    async function gmEvDisableShip(disable) {
+      const id = document.getElementById('ev-fb-id').value.trim();
+      const msgEl = document.getElementById('ev-fb-msg');
+      if (!id) { showAl(msgEl, 'Enter a ship ID.', 'aw'); msgEl.classList.remove('hidden'); return; }
+      showLoad('…');
+      try {
+        await sb('troops?id=eq.' + encodeURIComponent(id), { method: 'PATCH', prefer: 'return=minimal', body: { disabled: disable } });
+        await loadGMData(); hideLoad(); renderTroops();
+        showAl(msgEl, id + (disable ? ' disabled.' : ' re-enabled.'), 'as'); msgEl.classList.remove('hidden');
+        setTimeout(() => msgEl.classList.add('hidden'), 3000);
+      } catch (e) { hideLoad(); alert(e.message); }
+    }
+
+    /** GM disables/enables a ship's attack */
+    async function gmEvDisableAttack(disable) {
+      const id = document.getElementById('ev-atk-id').value.trim();
+      const msgEl = document.getElementById('ev-atk-msg');
+      if (!id) { showAl(msgEl, 'Enter a ship ID.', 'aw'); msgEl.classList.remove('hidden'); return; }
+      showLoad('…');
+      try {
+        await sb('troops?id=eq.' + encodeURIComponent(id), { method: 'PATCH', prefer: 'return=minimal', body: { attack_disabled: disable } });
+        await loadGMData(); hideLoad(); renderTroops();
+        showAl(msgEl, id + (disable ? ' attack disabled.' : ' attack restored.'), 'as'); msgEl.classList.remove('hidden');
+        setTimeout(() => msgEl.classList.add('hidden'), 3000);
+      } catch (e) { hideLoad(); alert(e.message); }
+    }
+
+    /** GM edits any arbitrary field on a ship */
+    async function gmEvEditField() {
+      const id = document.getElementById('ev-field-id').value.trim();
+      const field = document.getElementById('ev-field-name').value;
+      let val = document.getElementById('ev-field-val').value.trim();
+      const msgEl = document.getElementById('ev-field-msg');
+      if (!id || !field || val === '') { showAl(msgEl, 'Fill all fields.', 'aw'); msgEl.classList.remove('hidden'); return; }
+      // Type coerce
+      if (field === 'hp' || field === 'max_hp') val = parseInt(val);
+      else if (field === 'disabled' || field === 'attack_disabled') val = val === 'true' || val === '1';
+      showLoad('…');
+      try {
+        await sb('troops?id=eq.' + encodeURIComponent(id), { method: 'PATCH', prefer: 'return=minimal', body: { [field]: val } });
+        await loadGMData(); hideLoad(); renderTroops();
+        showAl(msgEl, id + ' · ' + field + ' → ' + val, 'as'); msgEl.classList.remove('hidden');
+        setTimeout(() => msgEl.classList.add('hidden'), 3000);
+      } catch (e) { hideLoad(); alert(e.message); }
+    }
+
+    /** GM broadcasts a message that all players see on their next refresh */
+    async function gmBroadcast() {
+      const text = document.getElementById('ev-msg-text').value.trim();
+      const resEl = document.getElementById('ev-msg-res');
+      if (!text) return;
+      showLoad('…');
+      try {
+        await sb('game_broadcast', { method: 'POST', prefer: 'return=minimal', body: { message: text, turn: D.cfg.turn, season: D.cfg.season } });
+        await loadGMData(); hideLoad(); renderBroadcasts();
+        document.getElementById('ev-msg-text').value = '';
+        showAl(resEl, 'Broadcast sent.', 'as'); resEl.classList.remove('hidden');
+        setTimeout(() => resEl.classList.add('hidden'), 3000);
+      } catch (e) { hideLoad(); alert(e.message); }
+    }
+
+    /** Renders recent broadcasts in the Events tab (GM view) */
+    function renderBroadcasts() {
+      const bc = D.broadcasts || [];
+      if (!bc.length) return;
+      const existing = document.getElementById('gm-broadcasts');
+      if (existing) { existing.innerHTML = bc.map(b => '<div class="al aw" style="margin-bottom:6px;font-size:12px;"><b>T' + b.turn + ' ' + b.season + ':</b> ' + b.message + '</div>').join(''); return; }
+      // Insert broadcast history section into Events tab if not present
+      const evCard = document.querySelector('#gt-events .card:last-child');
+      if (evCard) {
+        const div = document.createElement('div');
+        div.className = 'card'; div.id = 'gm-broadcasts-card';
+        div.innerHTML = '<div class="card-title">Recent Broadcasts</div><div id="gm-broadcasts">'
+          + bc.map(b => '<div class="al aw" style="margin-bottom:6px;font-size:12px;"><b>T' + b.turn + ' ' + b.season + ':</b> ' + b.message + '</div>').join('') + '</div>';
+        evCard.parentNode.insertBefore(div, evCard.nextSibling);
+      }
+    }
+
+    // ─── PLAYER BROADCAST BANNER ────────────────────────────────────
+    /** Shows a broadcast event banner at the top of the player view */
+    function renderBroadcastBanner() {
+      const bc = D.broadcast;
+      const msgEl = document.getElementById('p-msg');
+      if (bc && msgEl && D.myOrders.length === 0) {
+        const existing = document.getElementById('p-broadcast-banner');
+        if (!existing) {
+          const banner = document.createElement('div');
+          banner.id = 'p-broadcast-banner';
+          banner.className = 'al aw';
+          banner.style.cssText = 'margin-bottom:10px;border-color:rgba(244,162,97,.5);';
+          banner.innerHTML = '📢 <b>GM Event — Turn ' + bc.turn + ':</b> ' + bc.message;
+          msgEl.parentNode.insertBefore(banner, msgEl);
+        }
+      }
+    }
 
     // ─── UTILS ──────────────────────────────────────────────────────
     function getConflicts() {
