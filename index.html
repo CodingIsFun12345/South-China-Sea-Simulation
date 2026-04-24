@@ -3359,29 +3359,35 @@
 
     /** GM toggles the global cards-enabled flag */
     async function gmToggleCards() {
-      const cur = D.cardConfig?.enabled || false; showLoad('…');
+      const cur = D.cardConfig?.enabled || false;
+      const allowed = D.cardConfig?.allowed_types || [];
+      showLoad('…');
       try {
-        await sb('spy_card_config?id=eq.1', { method: 'PATCH', prefer: 'return=minimal', body: { enabled: !cur } });
+        await sb('spy_card_config', {
+          method: 'POST',
+          prefer: 'resolution=merge-duplicates,return=minimal',
+          body: { id: 1, enabled: !cur, allowed_types: allowed }
+        });
         await loadGMData(); hideLoad(); renderGMCards();
-      } catch (e) {
-        // Row may not exist yet — upsert it
-        try { await sb('spy_card_config', { method: 'POST', prefer: 'return=minimal', body: { id: 1, enabled: !cur, allowed_types: [] } }); await loadGMData(); hideLoad(); renderGMCards(); }
-        catch (e2) { hideLoad(); alert(e2.message); }
-      }
+      } catch (e) { hideLoad(); alert('Toggle failed: ' + e.message); }
     }
 
-    /** GM locks/unlocks a specific card type */
     async function gmToggleCardType(key) {
       showLoad('…');
       try {
+        const enabled = D.cardConfig?.enabled || false;
         let allowed = [...(D.cardConfig?.allowed_types || [])];
-        // Empty array means all allowed — populate full list first
+        // Empty array means all types are allowed — seed the full list before removing one
         if (allowed.length === 0) allowed = Object.keys(SPY_CARDS);
         const idx = allowed.indexOf(key);
         if (idx >= 0) allowed.splice(idx, 1); else allowed.push(key);
-        await sb('spy_card_config?id=eq.1', { method: 'PATCH', prefer: 'return=minimal', body: { allowed_types: allowed } });
+        await sb('spy_card_config', {
+          method: 'POST',
+          prefer: 'resolution=merge-duplicates,return=minimal',
+          body: { id: 1, enabled, allowed_types: allowed }
+        });
         await loadGMData(); hideLoad(); renderGMCards();
-      } catch (e) { hideLoad(); alert(e.message); }
+      } catch (e) { hideLoad(); alert('Card type toggle failed: ' + e.message); }
     }
 
     /** GM issues a free card to a player */
