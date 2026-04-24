@@ -1940,6 +1940,23 @@
         <div id="pc-gold-row" class="fg hidden"><label>Gold to Steal</label>
           <input type="number" id="pc-gold-amt" value="3" min="1" max="20" style="width:90px;">
         </div>
+        <div id="pc-zone-row" class="fg hidden"><label>Target Fishing Zone</label>
+          <select id="pc-target-zone" title="Target fishing zone">
+            <option value="">— select zone —</option>
+            <option>China</option>
+            <option>Taiwan</option>
+            <option>Philippines</option>
+            <option>Malaysia</option>
+            <option>Indonesia</option>
+            <option>Thailand</option>
+            <option>Cambodia</option>
+            <option>Vietnam</option>
+            <option>Green Neutral Zone</option>
+            <option>Blue Neutral Zone</option>
+            <option>Purple Neutral Zone</option>
+            <option>Orange Neutral Zone</option>
+          </select>
+        </div>
       </div>
       <div class="fg"><label>Optional note to GM</label>
         <input type="text" id="pc-note" placeholder="e.g. targeting CHN_DD-01 at tile 7">
@@ -1977,12 +1994,18 @@
 
     // Spy card definitions — id, icon, name, description, needs_target type
     const SPY_CARDS = {
-      'upgrade_dice': { icon: '🎲', name: 'Upgrade Dice', desc: 'Your next combat roll uses a higher dice tier. GM deletes after use.', target: 'none' },
-      'extended_move': { icon: '💨', name: 'Extended Move', desc: 'One fleet or ship moves up to double its normal speed this Spring.', target: 'self_unit' },
-      'steal_gold': { icon: '💰', name: 'Steal Gold', desc: 'Steal up to 5g from a target country.', target: 'country_gold' },
-      'destroy_base': { icon: '💥', name: 'Destroy Base', desc: 'Secretly order the destruction of a target base. GM resolves.', target: 'enemy_base' },
-      'sink_ship': { icon: '⚓', name: 'Sink Ship', desc: 'Eliminate one enemy ship. GM removes it from the board.', target: 'enemy_ship' },
-      'disable_unit': { icon: '🔒', name: 'Disable Unit', desc: 'Prevent a ship or fleet from moving or attacking for 1 full turn.', target: 'enemy_unit' },
+      'upgrade_dice': { icon: '🎲', name: 'Upgrade Dice', desc: 'Your next combat roll uses a higher dice tier. Play before combat. GM deletes after use.', target: 'none' },
+      'extended_move': { icon: '💨', name: 'Extended Move', desc: 'One fleet or ship moves up to double its normal speed. Play during Spring.', target: 'self_unit' },
+      'steal_gold': { icon: '💰', name: 'Steal Gold', desc: 'Steal up to 5g from a target country. Play anytime.', target: 'country_gold' },
+      'destroy_base': { icon: '💥', name: 'Destroy Base', desc: 'Destroy a target enemy base. GM resolves. Play anytime.', target: 'enemy_base' },
+      'sink_ship': { icon: '⚓', name: 'Sink Ship', desc: 'Eliminate one enemy ship. GM removes it from the board. Play anytime.', target: 'enemy_ship' },
+      'disable_unit': { icon: '🔒', name: 'Disable Unit', desc: 'Prevent a ship or fleet from moving or attacking for 1 full turn. Play anytime.', target: 'enemy_unit' },
+      'toxic_spill': { icon: '☣️', name: 'Toxic Spill', desc: 'Target a fishing zone — no one can fish there next Fall. Play anytime.', target: 'fishing_zone' },
+      'bonus_fish': { icon: '🐟', name: 'Bonus Fish', desc: 'Add 2 fish to a target fishing zone, raising its stock. Play anytime.', target: 'fishing_zone' },
+      'sabotage_base': { icon: '🔧', name: 'Sabotage Base', desc: 'Target enemy base cannot spawn new ships for one Winter. GM resolves. Play anytime.', target: 'enemy_base' },
+      'spy': { icon: '🕵️', name: 'Spy', desc: 'See one country\'s currently held spy cards. GM tells you privately. Play anytime.', target: 'enemy_country' },
+      'sanction': { icon: '📜', name: 'Sanction', desc: 'Target country earns 1 less base income next Fall. Play anytime.', target: 'enemy_country' },
+      'naval_superiority': { icon: '⚔️', name: 'Naval Superiority', desc: 'Your ships gain +1 attack for one combat this turn. Play before combat.', target: 'none' },
     };
     const ZONE_COLORS = { "China": "#c1121f", "Vietnam": "#d4a017", "Taiwan": "#3a86ff", "Philippines": "#8338ec", "Malaysia": "#fb5607", "Indonesia": "#06d6a0", "Cambodia": "#bc6c25", "Thailand": "#e9c46a", "Blue Neutral Zone": "#4cc9f0", "Purple Neutral Zone": "#9d4edd", "Orange Neutral Zone": "#f77f00", "Green Neutral Zone": "#2d9e5f" };
     const TILE_DATA = { "1": { "z": "Vietnam", "a": ["2", "5", "6", "7"] }, "2": { "z": "China", "a": ["1", "3", "6", "7", "8"] }, "3": { "z": "China", "a": ["2", "7", "8", "9"] }, "4": { "z": "Thailand", "a": ["5", "12", "13"] }, "5": { "z": "Vietnam", "a": ["1", "4", "6", "13", "14"] }, "6": { "z": "China", "a": ["1", "2", "5", "7", "14", "15"] }, "7": { "z": "China", "a": ["1", "2", "3", "6", "8", "15", "16", "17"] }, "8": { "z": "China", "a": ["2", "3", "7", "9", "17", "18"] }, "9": { "z": "China", "a": ["3", "8", "10", "17", "18"] }, "10": { "z": "China", "a": ["9", "11", "18", "19"] }, "11": { "z": "China", "a": ["10", "19", "20"] }, "12": { "z": "Thailand", "a": ["4", "13", "21", "22"] }, "13": { "z": "Thailand", "a": ["4", "5", "12", "22", "23"] }, "14": { "z": "Vietnam", "a": ["5", "6", "13", "15", "23", "24", "25"] }, "15": { "z": "Blue Neutral Zone", "a": ["6", "7", "14", "16", "24", "25"] }, "16": { "z": "Blue Neutral Zone", "a": ["7", "15", "17", "25", "26", "27"] }, "17": { "z": "Blue Neutral Zone", "a": ["7", "8", "9", "16", "18", "26", "27", "28"] }, "18": { "z": "Purple Neutral Zone", "a": ["8", "9", "10", "17", "19", "28", "29"] }, "19": { "z": "Taiwan", "a": ["10", "11", "18", "20", "29", "30"] }, "20": { "z": "Taiwan", "a": ["11", "19", "30"] }, "21": { "z": "Thailand", "a": ["12", "22", "31", "32"] }, "22": { "z": "Green Neutral Zone", "a": ["12", "13", "21", "23", "32", "33"] }, "23": { "z": "Cambodia", "a": ["13", "14", "22", "24", "33", "34", "35"] }, "24": { "z": "Vietnam", "a": ["14", "15", "23", "25", "34", "35", "36"] }, "25": { "z": "Blue Neutral Zone", "a": ["14", "15", "16", "24", "26", "35", "36", "37"] }, "26": { "z": "Blue Neutral Zone", "a": ["16", "17", "25", "27", "36", "37", "38"] }, "27": { "z": "Blue Neutral Zone", "a": ["16", "17", "26", "28", "37", "38", "39"] }, "28": { "z": "Purple Neutral Zone", "a": ["17", "18", "27", "29", "38", "39", "40"] }, "29": { "z": "Purple Neutral Zone", "a": ["18", "19", "28", "30", "39", "40", "41"] }, "30": { "z": "Taiwan", "a": ["19", "20", "29", "40", "41"] }, "31": { "z": "Thailand", "a": ["21", "32", "42"] }, "32": { "z": "Green Neutral Zone", "a": ["21", "22", "31", "33", "42", "43"] }, "33": { "z": "Cambodia", "a": ["22", "23", "32", "34", "43", "44"] }, "34": { "z": "Cambodia", "a": ["23", "24", "33", "35", "44", "45"] }, "35": { "z": "Vietnam", "a": ["23", "24", "25", "34", "36", "45", "46"] }, "36": { "z": "Blue Neutral Zone", "a": ["24", "25", "26", "35", "37", "45", "46", "47"] }, "37": { "z": "Blue Neutral Zone", "a": ["25", "26", "27", "36", "38", "46", "47", "48"] }, "38": { "z": "Blue Neutral Zone", "a": ["26", "27", "28", "37", "39", "47", "48", "49"] }, "39": { "z": "Purple Neutral Zone", "a": ["27", "28", "29", "38", "40", "48", "49", "50"] }, "40": { "z": "Purple Neutral Zone", "a": ["28", "29", "30", "39", "41", "49", "50", "51"] }, "41": { "z": "Philippines", "a": ["29", "30", "40", "50", "51"] }, "42": { "z": "Thailand", "a": ["31", "32", "43", "52", "53"] }, "43": { "z": "Green Neutral Zone", "a": ["32", "33", "42", "44", "53", "54"] }, "44": { "z": "Green Neutral Zone", "a": ["33", "34", "43", "45", "54", "55"] }, "45": { "z": "Green Neutral Zone", "a": ["34", "35", "36", "44", "46", "54", "55", "56"] }, "46": { "z": "Orange Neutral Zone", "a": ["35", "36", "37", "45", "47", "55", "56", "57"] }, "47": { "z": "Blue Neutral Zone", "a": ["36", "37", "38", "46", "48", "56", "57", "58"] }, "48": { "z": "Purple Neutral Zone", "a": ["37", "38", "39", "47", "49", "57", "58", "59"] }, "49": { "z": "Purple Neutral Zone", "a": ["38", "39", "40", "48", "50", "58", "59", "60"] }, "50": { "z": "Purple Neutral Zone", "a": ["39", "40", "41", "49", "51", "59", "60"] }, "51": { "z": "Philippines", "a": ["40", "41", "50", "60"] }, "52": { "z": "Indonesia", "a": ["42", "53", "61", "62"] }, "53": { "z": "Green Neutral Zone", "a": ["42", "43", "52", "54", "62", "63"] }, "54": { "z": "Green Neutral Zone", "a": ["43", "44", "45", "53", "55", "63", "64"] }, "55": { "z": "Orange Neutral Zone", "a": ["44", "45", "46", "54", "56", "63", "64", "65"] }, "56": { "z": "Orange Neutral Zone", "a": ["45", "46", "47", "55", "57", "64", "65", "66"] }, "57": { "z": "Purple Neutral Zone", "a": ["46", "47", "48", "56", "58", "65", "66", "67"] }, "58": { "z": "Purple Neutral Zone", "a": ["47", "48", "49", "57", "59", "66", "67", "68"] }, "59": { "z": "Purple Neutral Zone", "a": ["48", "49", "50", "58", "60", "67", "68", "69"] }, "60": { "z": "Philippines", "a": ["49", "50", "51", "59", "68", "69"] }, "61": { "z": "Indonesia", "a": ["52", "62", "70"] }, "62": { "z": "Green Neutral Zone", "a": ["52", "53", "61", "63", "70", "71"] }, "63": { "z": "Green Neutral Zone", "a": ["53", "54", "55", "62", "64", "71", "72"] }, "64": { "z": "Orange Neutral Zone", "a": ["54", "55", "56", "63", "65", "71", "72", "73"] }, "65": { "z": "Orange Neutral Zone", "a": ["55", "56", "57", "64", "66", "72", "73", "74"] }, "66": { "z": "Orange Neutral Zone", "a": ["56", "57", "58", "65", "67", "73", "74", "75"] }, "67": { "z": "Purple Neutral Zone", "a": ["57", "58", "59", "66", "68", "74", "75"] }, "68": { "z": "Philippines", "a": ["58", "59", "60", "67", "69", "75"] }, "69": { "z": "Philippines", "a": ["59", "60", "68"] }, "70": { "z": "Indonesia", "a": ["61", "62", "71"] }, "71": { "z": "Indonesia", "a": ["62", "63", "64", "70", "72"] }, "72": { "z": "Orange Neutral Zone", "a": ["63", "64", "65", "66", "71", "73", "76", "77"] }, "73": { "z": "Orange Neutral Zone", "a": ["64", "65", "66", "67", "72", "74", "77", "78"] }, "74": { "z": "Orange Neutral Zone", "a": ["65", "66", "67", "68", "73", "75", "78", "79"] }, "75": { "z": "Orange Neutral Zone", "a": ["66", "67", "68", "74", "79"] }, "76": { "z": "Malaysia", "a": ["72", "77"] }, "77": { "z": "Malaysia", "a": ["72", "73", "76", "78"] }, "78": { "z": "Malaysia", "a": ["73", "74", "77", "79"] }, "79": { "z": "Malaysia", "a": ["74", "75", "78"] } };
@@ -3206,11 +3229,15 @@
       document.getElementById('pc-target-c').value = '';
       document.getElementById('pc-ship-row').classList.toggle('hidden', !['enemy_ship', 'enemy_unit', 'self_unit'].includes(t));
       document.getElementById('pc-fleet-row').classList.toggle('hidden', !['enemy_unit', 'self_unit'].includes(t));
-      document.getElementById('pc-base-row').classList.toggle('hidden', t !== 'enemy_base');
+      document.getElementById('pc-base-row').classList.toggle('hidden', !['enemy_base'].includes(t));
       document.getElementById('pc-gold-row').classList.toggle('hidden', t !== 'country_gold');
-      // For self_unit cards, pre-fill country
+      document.getElementById('pc-zone-row').classList.toggle('hidden', t !== 'fishing_zone');
+      // Country picker: hide for self_unit/none/fishing_zone, show for everything that targets an enemy
       const cSel = document.getElementById('pc-target-c');
-      if (t === 'self_unit' || t === 'none') { cSel.closest('.fg').classList.add('hidden'); } else { cSel.closest('.fg').classList.remove('hidden'); }
+      const hideCountry = t === 'self_unit' || t === 'none' || t === 'fishing_zone';
+      if (hideCountry) { cSel.closest('.fg').classList.add('hidden'); } else { cSel.closest('.fg').classList.remove('hidden'); }
+      // Relabel country picker for spy/sanction
+      cSel.previousElementSibling && (cSel.closest('.fg').querySelector('label').textContent = t === 'enemy_country' ? 'Target Country' : 'Target Country');
       document.getElementById('pc-note').value = '';
       document.getElementById('pc-msg').classList.add('hidden');
       openMod('m-playcard');
@@ -3226,6 +3253,7 @@
       const t = def.target || 'none';
       if (['enemy_ship', 'enemy_unit'].includes(t)) pcPopulateShips(c);
       if (['enemy_unit'].includes(t)) pcPopulateFleets(c);
+      // enemy_country cards (spy, sanction) need no ship/fleet picker
     }
 
     function pcPopulateShips(country) {
@@ -3259,12 +3287,18 @@
       const targetFleet = document.getElementById('pc-target-fleet')?.value || '';
       const targetBase = document.getElementById('pc-target-base')?.value?.trim() || '';
       const goldAmt = document.getElementById('pc-gold-amt')?.value || '3';
+      const targetZone = document.getElementById('pc-target-zone')?.value || '';
       const note = document.getElementById('pc-note').value.trim();
       // Basic validation
-      if (t !== 'none' && t !== 'self_unit' && !targetC) { showAl(document.getElementById('pc-msg'), 'Select a target country.', 'aw'); document.getElementById('pc-msg').classList.remove('hidden'); return; }
+      if (['enemy_ship', 'enemy_unit', 'enemy_base', 'country_gold', 'enemy_country'].includes(t) && !targetC) {
+        showAl(document.getElementById('pc-msg'), 'Select a target country.', 'aw'); document.getElementById('pc-msg').classList.remove('hidden'); return;
+      }
+      if (t === 'fishing_zone' && !targetZone) {
+        showAl(document.getElementById('pc-msg'), 'Select a target fishing zone.', 'aw'); document.getElementById('pc-msg').classList.remove('hidden'); return;
+      }
       showLoad('Playing card…');
       try {
-        const details = { target_country: targetC || null, target_ship: targetShip || null, target_fleet: targetFleet || null, target_base_tile: targetBase || null, gold_amount: t === 'country_gold' ? parseInt(goldAmt) : null, note };
+        const details = { target_country: targetC || null, target_ship: targetShip || null, target_fleet: targetFleet || null, target_base_tile: targetBase || null, gold_amount: t === 'country_gold' ? parseInt(goldAmt) : null, target_zone: targetZone || null, note };
         await sb('spy_cards?id=eq.' + encodeURIComponent(_playCardId), { method: 'PATCH', prefer: 'return=minimal', body: { status: 'played', play_details: details, turn_played: D.cfg.turn } });
         await loadPlayerData(); hideLoad(); closeMod(); rPlayerCards();
         showMsg('Card played — GM will apply the effect this turn.', 'as');
@@ -3397,16 +3431,37 @@
         return;
       }
 
+      // Auto-apply sanction — flag economy row with a sanction_turns_remaining counter
+      if (cardType === 'sanction') {
+        const targetC = d.target_country;
+        if (!targetC) { alert('No target country set on this card.'); return; }
+        if (!confirm('Apply sanction to ' + targetC + '? They earn 1 less income next Fall. You will need to manually reduce their base income by 1 when Fall is processed.')) return;
+        showLoad('Applying…');
+        try {
+          await sb('economy_log', { method: 'POST', prefer: 'return=minimal', body: { country: targetC, turn: D.cfg.turn, type: 'card', amount: 0, note: 'SANCTIONED by ' + ownerCountry + ' — -1 base income next Fall (GM: apply manually)' } });
+          await sb('spy_cards?id=eq.' + cardId, { method: 'PATCH', prefer: 'return=minimal', body: { status: 'used' } });
+          // Broadcast the sanction publicly
+          await sb('game_broadcast', { method: 'POST', prefer: 'return=minimal', body: { message: '📜 ' + targetC + ' has been sanctioned! They earn 1 less income next Fall.', turn: D.cfg.turn, season: D.cfg.season } });
+          await loadGMData(); hideLoad(); renderGMCards(); renderEconomy();
+        } catch (e) { hideLoad(); alert(e.message); }
+        return;
+      }
+
       // For all other cards: show confirmation prompt then mark used
       const actionDesc = {
-        'upgrade_dice': 'Upgrade dice confirmed for ' + ownerCountry + '. Delete this card after the combat roll.',
-        'extended_move': 'Extended move granted. Manually apply double speed for ' + ownerCountry + ' this Spring.',
-        'sink_ship': 'Sink ship ' + (d.target_ship || '?') + '? This will NOT auto-delete — use the Troops tab to remove it.',
-        'destroy_base': 'Destroy base at tile ' + (d.target_base_tile || '?') + '? Use the Bases tab to remove it.',
-        'disable_unit': 'Disable ship ' + (d.target_ship || '') + ' / fleet ' + (d.target_fleet || '') + '? Use the Troops tab to disable movement/attack.',
-      }[cardType] || 'Resolve this card effect?';
+        'upgrade_dice': 'Upgrade Dice confirmed for ' + ownerCountry + '. Delete this card after the combat roll.',
+        'extended_move': 'Extended Move granted. Manually apply double speed for ' + ownerCountry + ' this Spring.',
+        'sink_ship': 'Sink ship ' + (d.target_ship || d.note || '?') + '? Use the Troops tab to remove it after confirming.',
+        'destroy_base': 'Destroy base at tile ' + (d.target_base_tile || d.note || '?') + '? Use the Bases tab to remove it after confirming.',
+        'sabotage_base': 'Sabotage base at tile ' + (d.target_base_tile || d.note || '?') + ': mark it so it cannot spawn ships next Winter. Note this in the Economy Log.',
+        'disable_unit': 'Disable ship ' + (d.target_ship || '') + ' / fleet ' + (d.target_fleet || '') + '. Use the Troops tab to toggle MOV OFF / ATK OFF.',
+        'toxic_spill': 'Toxic Spill in zone "' + (d.target_zone || '?') + '". Remember to block fishing there next Fall when processing orders.',
+        'bonus_fish': 'Bonus Fish in zone "' + (d.target_zone || '?') + '". Add 2 to the fish stock for that zone in your records.',
+        'spy': ownerCountry + ' spied on ' + (d.target_country || '?') + '. Tell ' + ownerCountry + ' privately what cards ' + (d.target_country || 'that country') + ' currently holds.',
+        'naval_superiority': 'Naval Superiority for ' + ownerCountry + ': apply +1 attack bonus to all their ships in the next combat this turn.',
+      }[cardType] || 'Resolve this card effect and mark it used?';
 
-      if (!confirm(actionDesc + '\n\nMark card as USED after you apply the effect manually?')) return;
+      if (!confirm(actionDesc + '\n\nMark card as USED?')) return;
       showLoad('…');
       try {
         await sb('spy_cards?id=eq.' + cardId, { method: 'PATCH', prefer: 'return=minimal', body: { status: 'used' } });
