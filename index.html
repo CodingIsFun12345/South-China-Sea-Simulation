@@ -6,9 +6,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
   <title>SCS Sim</title>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Share+Tech+Mono&family=Nunito:wght@400;600;700&display=swap"
-    rel="stylesheet">
+  <style>
+    /* System font fallbacks so the game works fully offline / file:// */
+    @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Share+Tech+Mono&family=Nunito:wght@400;600;700&display=swap');
+  </style>
   <style>
     :root {
       --bg: #060f1e;
@@ -1036,6 +1037,220 @@
       margin-bottom: 6px;
     }
 
+    /* ── Fish Zone Widget ── */
+    .fz-card {
+      border: 1px solid var(--bdr);
+      border-radius: 10px;
+      margin-bottom: 10px;
+      overflow: hidden;
+    }
+
+    .fz-card-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 11px 14px;
+      background: rgba(255, 255, 255, .03);
+    }
+
+    .fz-card-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .fz-card-name {
+      font-family: var(--fh);
+      font-size: 14px;
+      font-weight: 600;
+      flex: 1;
+    }
+
+    .fz-card-health {
+      font-family: var(--fm);
+      font-size: 10px;
+      padding: 2px 7px;
+      border-radius: 3px;
+      border: 1px solid transparent;
+    }
+
+    .fz-card-body {
+      padding: 10px 14px;
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 8px;
+    }
+
+    .fz-stat {
+      text-align: center;
+    }
+
+    .fz-stat-v {
+      font-family: var(--fh);
+      font-size: 20px;
+      font-weight: 700;
+      line-height: 1;
+    }
+
+    .fz-stat-l {
+      font-family: var(--fm);
+      font-size: 9px;
+      color: var(--text2);
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      margin-top: 2px;
+    }
+
+    .fz-bar-wrap {
+      padding: 0 14px 12px;
+    }
+
+    .fz-bar-bg {
+      background: rgba(255, 255, 255, .07);
+      border-radius: 3px;
+      height: 6px;
+      overflow: hidden;
+    }
+
+    .fz-bar-fill {
+      height: 6px;
+      border-radius: 3px;
+      transition: width .3s;
+    }
+
+    .fz-bar-labels {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 3px;
+      font-family: var(--fm);
+      font-size: 9px;
+      color: var(--text2);
+    }
+
+    .fz-boats {
+      padding: 0 14px 10px;
+      font-family: var(--fm);
+      font-size: 10px;
+      color: var(--text2);
+      line-height: 1.6;
+    }
+
+    .fz-proj {
+      padding: 0 14px 12px;
+      display: flex;
+      gap: 6px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .fz-proj-box {
+      background: rgba(255, 255, 255, .05);
+      border: 1px solid var(--bdr);
+      border-radius: 6px;
+      padding: 6px 10px;
+      text-align: center;
+    }
+
+    .fz-proj-v {
+      font-family: var(--fh);
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .fz-proj-l {
+      font-family: var(--fm);
+      font-size: 9px;
+      color: var(--text2);
+    }
+
+    /* Simulator */
+    .fz-sim {
+      padding: 10px 14px 14px;
+      border-top: 1px solid var(--bdr);
+      margin-top: 2px;
+    }
+
+    .fz-sim-title {
+      font-family: var(--fh);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: .5px;
+      color: var(--text2);
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .fz-sim-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+    }
+
+    .fz-sim-label {
+      font-family: var(--fm);
+      font-size: 10px;
+      color: var(--text2);
+      white-space: nowrap;
+    }
+
+    .fz-sim-input {
+      background: rgba(255, 255, 255, .06);
+      border: 1px solid var(--bdr);
+      border-radius: 5px;
+      color: var(--text);
+      font-family: var(--fm);
+      font-size: 12px;
+      padding: 4px 8px;
+      width: 64px;
+      text-align: center;
+    }
+
+    .fz-sim-input:focus {
+      outline: none;
+      border-color: var(--teal);
+    }
+
+    .fz-sim-chart {
+      display: flex;
+      align-items: flex-end;
+      gap: 4px;
+      height: 64px;
+      padding: 0 0 4px;
+    }
+
+    .fz-sim-bar-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      flex: 1;
+    }
+
+    .fz-sim-bar {
+      width: 100%;
+      border-radius: 3px 3px 0 0;
+      min-height: 3px;
+      transition: height .25s, background .25s;
+    }
+
+    .fz-sim-bar-lbl {
+      font-family: var(--fm);
+      font-size: 8px;
+      color: var(--text2);
+      white-space: nowrap;
+    }
+
+    .fz-sim-warn {
+      font-family: var(--fm);
+      font-size: 10px;
+      color: #e63946;
+      margin-top: 6px;
+      line-height: 1.5;
+    }
+
     .ni {
       display: flex;
       align-items: center;
@@ -1435,6 +1650,8 @@
         <div id="p-fleet"></div>
         <div id="p-cons"></div>
         <div class="border-top-bdr mt14">
+          <button class="btn btn-o btn-sm btn-full" style="margin-bottom:6px;" onclick="toggleFishZonesPanel()">Fish
+            Zone Status</button>
           <button class="btn btn-o btn-sm btn-full" onclick="handleRefresh()">↻ Refresh</button>
         </div>
       </div>
@@ -1539,6 +1756,17 @@
             <div id="p-mycard-msg" class="hidden mt8"></div>
           </div>
         </div>
+        <div id="panel-fish-zones" class="hidden">
+          <div class="card">
+            <div class="card-title">Fish Zone Status
+              <button class="btn btn-o btn-sm" onclick="loadPlayerData().then(()=>renderFishZones('p-fz'))">↻
+                Refresh</button>
+            </div>
+            <div class="rn">Current fish stocks, carrying capacity, and projected next-turn populations based on current
+              fishing pressure.</div>
+            <div id="p-fz"></div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -1580,6 +1808,7 @@
           <button class="tab" onclick="showTab('gt-troops',this)">Troops</button>
           <button class="tab" onclick="showTab('gt-bases',this)">Bases</button>
           <button class="tab" onclick="showTab('gt-economy',this)">Economy</button>
+          <button class="tab" onclick="showTab('gt-fish',this)">Fish Zones</button>
           <button class="tab" onclick="showTab('gt-cards',this)">Spy Cards<span id="cards-dot"></span></button>
           <button class="tab" onclick="showTab('gt-events',this)">Events</button>
           <button class="tab" onclick="showTab('gt-setup',this)">Setup</button>
@@ -1701,6 +1930,34 @@
               <button class="btn btn-o btn-sm" onclick="exEco()">Economy</button>
               <button class="btn btn-o btn-sm" onclick="exBases()">Bases</button>
             </div>
+          </div>
+        </div>
+        <div id="gt-fish" class="tp">
+          <div class="card">
+            <div class="card-title">Fish Zone Status
+              <button class="btn btn-o btn-sm" onclick="loadGMData().then(()=>renderFishZones('gm-fz'))">↻
+                Refresh</button>
+            </div>
+            <div class="rn">Live stock levels, carrying capacity, boats present, active effects, and next-turn
+              projections. Edit current stock directly to correct for bonus fish cards or special events.</div>
+            <div id="gm-fz"></div>
+          </div>
+          <div class="card">
+            <div class="card-title">Edit Fish Stock</div>
+            <div class="rn">Manually set the current fish stock for a zone (e.g. after a Bonus Fish card or a special
+              event).</div>
+            <div class="g2 mt8">
+              <div class="fg"><label>Zone</label>
+                <select id="fz-edit-zone" title="Select zone to edit">
+                  <option value="">— select —</option>
+                </select>
+              </div>
+              <div class="fg"><label>New Stock Value</label>
+                <input type="number" id="fz-edit-val" min="0" max="30" placeholder="e.g. 8" style="width:90px;">
+              </div>
+            </div>
+            <button class="btn btn-o btn-sm" onclick="gmSetFishStock()">Update Stock</button>
+            <div id="fz-edit-msg" class="hidden mt8"></div>
           </div>
         </div>
         <div id="gt-cards" class="tp">
@@ -2008,6 +2265,42 @@
       'naval_superiority': { icon: '⚔️', name: 'Naval Superiority', desc: 'Your ships gain +1 attack for one combat this turn. Play before combat.', target: 'none' },
     };
     const ZONE_COLORS = { "China": "#c1121f", "Vietnam": "#d4a017", "Taiwan": "#3a86ff", "Philippines": "#8338ec", "Malaysia": "#fb5607", "Indonesia": "#06d6a0", "Cambodia": "#bc6c25", "Thailand": "#e9c46a", "Blue Neutral Zone": "#4cc9f0", "Purple Neutral Zone": "#9d4edd", "Orange Neutral Zone": "#f77f00", "Green Neutral Zone": "#2d9e5f" };
+
+    // Carrying capacity and initial fish per zone (from rulebook)
+    const ZONE_FISH_DATA = {
+      'China': { cap: 7, initial: 3 },
+      'Taiwan': { cap: 4, initial: 2 },
+      'Philippines': { cap: 6, initial: 2 },
+      'Malaysia': { cap: 5, initial: 2 },
+      'Indonesia': { cap: 5, initial: 3 },
+      'Thailand': { cap: 6, initial: 3 },
+      'Cambodia': { cap: 4, initial: 2 },
+      'Vietnam': { cap: 6, initial: 2 },
+      'Green Neutral Zone': { cap: 15, initial: 6 },
+      'Orange Neutral Zone': { cap: 15, initial: 6 },
+      'Blue Neutral Zone': { cap: 15, initial: 6 },
+      'Purple Neutral Zone': { cap: 15, initial: 6 },
+    };
+
+    /**
+     * Logistic growth model: next turn's fish population.
+     * Uses standard fisheries logistic: N(t+1) = N(t) + r*N(t)*(1 - N(t)/K) - harvest
+     * Growth rate r = 0.4 (moderate replenishment each turn)
+     */
+    function projectFish(current, cap, harvest) {
+      const r = 0.4;
+      const growth = r * current * (1 - current / cap);
+      return Math.max(0, Math.round((current + growth - harvest) * 10) / 10);
+    }
+
+    /** Returns health label and color for a stock level */
+    function fishHealth(current, cap) {
+      const ratio = current / cap;
+      if (ratio >= 0.7) return { label: 'Healthy', color: '#2ec4b6' };
+      if (ratio >= 0.4) return { label: 'Moderate', color: '#e9c46a' };
+      if (ratio >= 0.2) return { label: 'Low', color: '#f4a261' };
+      return { label: 'Critical', color: '#e63946' };
+    }
     const TILE_DATA = { "1": { "z": "Vietnam", "a": ["2", "5", "6", "7"] }, "2": { "z": "China", "a": ["1", "3", "6", "7", "8"] }, "3": { "z": "China", "a": ["2", "7", "8", "9"] }, "4": { "z": "Thailand", "a": ["5", "12", "13"] }, "5": { "z": "Vietnam", "a": ["1", "4", "6", "13", "14"] }, "6": { "z": "China", "a": ["1", "2", "5", "7", "14", "15"] }, "7": { "z": "China", "a": ["1", "2", "3", "6", "8", "15", "16", "17"] }, "8": { "z": "China", "a": ["2", "3", "7", "9", "17", "18"] }, "9": { "z": "China", "a": ["3", "8", "10", "17", "18"] }, "10": { "z": "China", "a": ["9", "11", "18", "19"] }, "11": { "z": "China", "a": ["10", "19", "20"] }, "12": { "z": "Thailand", "a": ["4", "13", "21", "22"] }, "13": { "z": "Thailand", "a": ["4", "5", "12", "22", "23"] }, "14": { "z": "Vietnam", "a": ["5", "6", "13", "15", "23", "24", "25"] }, "15": { "z": "Blue Neutral Zone", "a": ["6", "7", "14", "16", "24", "25"] }, "16": { "z": "Blue Neutral Zone", "a": ["7", "15", "17", "25", "26", "27"] }, "17": { "z": "Blue Neutral Zone", "a": ["7", "8", "9", "16", "18", "26", "27", "28"] }, "18": { "z": "Purple Neutral Zone", "a": ["8", "9", "10", "17", "19", "28", "29"] }, "19": { "z": "Taiwan", "a": ["10", "11", "18", "20", "29", "30"] }, "20": { "z": "Taiwan", "a": ["11", "19", "30"] }, "21": { "z": "Thailand", "a": ["12", "22", "31", "32"] }, "22": { "z": "Green Neutral Zone", "a": ["12", "13", "21", "23", "32", "33"] }, "23": { "z": "Cambodia", "a": ["13", "14", "22", "24", "33", "34", "35"] }, "24": { "z": "Vietnam", "a": ["14", "15", "23", "25", "34", "35", "36"] }, "25": { "z": "Blue Neutral Zone", "a": ["14", "15", "16", "24", "26", "35", "36", "37"] }, "26": { "z": "Blue Neutral Zone", "a": ["16", "17", "25", "27", "36", "37", "38"] }, "27": { "z": "Blue Neutral Zone", "a": ["16", "17", "26", "28", "37", "38", "39"] }, "28": { "z": "Purple Neutral Zone", "a": ["17", "18", "27", "29", "38", "39", "40"] }, "29": { "z": "Purple Neutral Zone", "a": ["18", "19", "28", "30", "39", "40", "41"] }, "30": { "z": "Taiwan", "a": ["19", "20", "29", "40", "41"] }, "31": { "z": "Thailand", "a": ["21", "32", "42"] }, "32": { "z": "Green Neutral Zone", "a": ["21", "22", "31", "33", "42", "43"] }, "33": { "z": "Cambodia", "a": ["22", "23", "32", "34", "43", "44"] }, "34": { "z": "Cambodia", "a": ["23", "24", "33", "35", "44", "45"] }, "35": { "z": "Vietnam", "a": ["23", "24", "25", "34", "36", "45", "46"] }, "36": { "z": "Blue Neutral Zone", "a": ["24", "25", "26", "35", "37", "45", "46", "47"] }, "37": { "z": "Blue Neutral Zone", "a": ["25", "26", "27", "36", "38", "46", "47", "48"] }, "38": { "z": "Blue Neutral Zone", "a": ["26", "27", "28", "37", "39", "47", "48", "49"] }, "39": { "z": "Purple Neutral Zone", "a": ["27", "28", "29", "38", "40", "48", "49", "50"] }, "40": { "z": "Purple Neutral Zone", "a": ["28", "29", "30", "39", "41", "49", "50", "51"] }, "41": { "z": "Philippines", "a": ["29", "30", "40", "50", "51"] }, "42": { "z": "Thailand", "a": ["31", "32", "43", "52", "53"] }, "43": { "z": "Green Neutral Zone", "a": ["32", "33", "42", "44", "53", "54"] }, "44": { "z": "Green Neutral Zone", "a": ["33", "34", "43", "45", "54", "55"] }, "45": { "z": "Green Neutral Zone", "a": ["34", "35", "36", "44", "46", "54", "55", "56"] }, "46": { "z": "Orange Neutral Zone", "a": ["35", "36", "37", "45", "47", "55", "56", "57"] }, "47": { "z": "Blue Neutral Zone", "a": ["36", "37", "38", "46", "48", "56", "57", "58"] }, "48": { "z": "Purple Neutral Zone", "a": ["37", "38", "39", "47", "49", "57", "58", "59"] }, "49": { "z": "Purple Neutral Zone", "a": ["38", "39", "40", "48", "50", "58", "59", "60"] }, "50": { "z": "Purple Neutral Zone", "a": ["39", "40", "41", "49", "51", "59", "60"] }, "51": { "z": "Philippines", "a": ["40", "41", "50", "60"] }, "52": { "z": "Indonesia", "a": ["42", "53", "61", "62"] }, "53": { "z": "Green Neutral Zone", "a": ["42", "43", "52", "54", "62", "63"] }, "54": { "z": "Green Neutral Zone", "a": ["43", "44", "45", "53", "55", "63", "64"] }, "55": { "z": "Orange Neutral Zone", "a": ["44", "45", "46", "54", "56", "63", "64", "65"] }, "56": { "z": "Orange Neutral Zone", "a": ["45", "46", "47", "55", "57", "64", "65", "66"] }, "57": { "z": "Purple Neutral Zone", "a": ["46", "47", "48", "56", "58", "65", "66", "67"] }, "58": { "z": "Purple Neutral Zone", "a": ["47", "48", "49", "57", "59", "66", "67", "68"] }, "59": { "z": "Purple Neutral Zone", "a": ["48", "49", "50", "58", "60", "67", "68", "69"] }, "60": { "z": "Philippines", "a": ["49", "50", "51", "59", "68", "69"] }, "61": { "z": "Indonesia", "a": ["52", "62", "70"] }, "62": { "z": "Green Neutral Zone", "a": ["52", "53", "61", "63", "70", "71"] }, "63": { "z": "Green Neutral Zone", "a": ["53", "54", "55", "62", "64", "71", "72"] }, "64": { "z": "Orange Neutral Zone", "a": ["54", "55", "56", "63", "65", "71", "72", "73"] }, "65": { "z": "Orange Neutral Zone", "a": ["55", "56", "57", "64", "66", "72", "73", "74"] }, "66": { "z": "Orange Neutral Zone", "a": ["56", "57", "58", "65", "67", "73", "74", "75"] }, "67": { "z": "Purple Neutral Zone", "a": ["57", "58", "59", "66", "68", "74", "75"] }, "68": { "z": "Philippines", "a": ["58", "59", "60", "67", "69", "75"] }, "69": { "z": "Philippines", "a": ["59", "60", "68"] }, "70": { "z": "Indonesia", "a": ["61", "62", "71"] }, "71": { "z": "Indonesia", "a": ["62", "63", "64", "70", "72"] }, "72": { "z": "Orange Neutral Zone", "a": ["63", "64", "65", "66", "71", "73", "76", "77"] }, "73": { "z": "Orange Neutral Zone", "a": ["64", "65", "66", "67", "72", "74", "77", "78"] }, "74": { "z": "Orange Neutral Zone", "a": ["65", "66", "67", "68", "73", "75", "78", "79"] }, "75": { "z": "Orange Neutral Zone", "a": ["66", "67", "68", "74", "79"] }, "76": { "z": "Malaysia", "a": ["72", "77"] }, "77": { "z": "Malaysia", "a": ["72", "73", "76", "78"] }, "78": { "z": "Malaysia", "a": ["73", "74", "77", "79"] }, "79": { "z": "Malaysia", "a": ["74", "75", "78"] } };
     /* ─── DATA ACCESS HELPERS ─────────────────────────────────────── */
 
@@ -2038,7 +2331,8 @@
     let D = {
       cfg: null, myEco: null, myTroops: [], myBases: [], myOrders: [], myFleets: [],
       allTroops: [], allBases: [], allEco: [], allOrders: [], allEcoLog: [], allFleets: [], pins: [],
-      myCards: [], allCards: [], cardConfig: { enabled: false, allowed_types: [] }, broadcast: null
+      myCards: [], allCards: [], cardConfig: { enabled: false, allowed_types: [] }, broadcast: null,
+      activeEffects: [], myActiveEffects: [], myNotifications: []
     };
 
     const SEASON_ORDER = ['fall', 'winter', 'spring', 'summer'];
@@ -2052,13 +2346,21 @@
      * @param {object} opts - Fetch options (method, body, headers, prefer)
      */
     async function sb(path, opts = {}) {
-      const res = await fetch(SB_URL.replace(/[^\x20-\x7E]/g, '') + '/rest/v1/' + path, {
-        headers: {
-          'apikey': apiKey(), 'Authorization': 'Bearer ' + apiKey(),
-          'Content-Type': 'application/json', 'Prefer': opts.prefer || 'return=representation',
-          ...(opts.headers || {})
-        },
-        method: opts.method || 'GET', body: opts.body ? JSON.stringify(opts.body) : undefined
+      const url = SB_URL + '/rest/v1/' + path;
+      const headers = {
+        'apikey': apiKey(),
+        'Authorization': 'Bearer ' + apiKey(),
+        'Content-Type': 'application/json',
+        'Prefer': opts.prefer || 'return=representation',
+        'X-Client-Info': 'scs-sim/1.0',
+        ...(opts.headers || {})
+      };
+      const res = await fetch(url, {
+        method: opts.method || 'GET',
+        headers,
+        body: opts.body ? JSON.stringify(opts.body) : undefined,
+        mode: 'cors',
+        credentials: 'omit'
       });
       if (!res.ok) { const e = await res.text(); throw new Error(e); }
       const t = await res.text(); return t ? JSON.parse(t) : null;
@@ -2106,7 +2408,13 @@
     function hideLoad() { document.getElementById('loading').classList.add('hidden'); }
     function showAl(el, m, c) { el.innerHTML = '<div class="al ' + c + '">' + m + '</div>'; el.classList.remove('hidden'); }
     function showScreen(n) { document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); document.getElementById('screen-' + n).classList.add('active'); }
-    function showTab(id, btn) { document.querySelectorAll('.tp').forEach(t => t.classList.remove('on')); document.querySelectorAll('.tab').forEach(b => b.classList.remove('on')); document.getElementById(id).classList.add('on'); if (btn) btn.classList.add('on'); }
+    function showTab(id, btn) {
+      document.querySelectorAll('.tp').forEach(t => t.classList.remove('on'));
+      document.querySelectorAll('.tab').forEach(b => b.classList.remove('on'));
+      document.getElementById(id).classList.add('on');
+      if (btn) btn.classList.add('on');
+      if (id === 'gt-fish') renderFishZones('gm-fz');
+    }
     function openMod(id) { document.getElementById('moverlay').classList.remove('hidden'); document.querySelectorAll('.mbox').forEach(m => m.classList.add('hidden')); document.getElementById(id).classList.remove('hidden'); }
     function closeMod() { document.getElementById('moverlay').classList.add('hidden'); }
     function togglePw(inputId, btn) { const el = document.getElementById(inputId); el.type = el.type === 'password' ? 'text' : 'password'; btn.textContent = el.type === 'password' ? '👁' : '🙈'; }
@@ -2182,7 +2490,7 @@
 
     // ─── DATA LOADING ────────────────────────────────────────────────
     async function loadPlayerData() {
-      const [eR, tR, bR, oR, fR, cR, cfgR, bcR] = await Promise.all([
+      const [eR, tR, bR, oR, fR, cR, cfgR, bcR, efR, nR, fsR] = await Promise.all([
         rpc('get_my_economy', { p_country: CU.country, p_pin: SESSION_PIN }),
         rpc('get_my_troops', { p_country: CU.country, p_pin: SESSION_PIN }),
         rpc('get_my_bases', { p_country: CU.country, p_pin: SESSION_PIN }),
@@ -2191,6 +2499,9 @@
         sb('spy_cards?country=eq.' + encodeURIComponent(CU.country) + '&select=*'),
         sb('spy_card_config?id=eq.1&select=enabled,allowed_types'),
         sb('game_broadcast?select=*&order=created_at.desc&limit=1'),
+        sb('active_effects?select=*'),
+        sb('player_notifications?target_country=eq.' + encodeURIComponent(CU.country) + '&dismissed=eq.false&select=*&order=created_at.desc'),
+        sb('fish_zones?select=*'),
       ]);
       if (!eR?.ok) throw new Error(eR?.error || 'Economy load failed');
       D.myEco = { gold: eR.gold }; D.myTroops = tR?.troops || []; D.myBases = bR?.bases || [];
@@ -2198,10 +2509,13 @@
       D.myCards = cR || [];
       D.cardConfig = cfgR?.[0] || { enabled: false, allowed_types: [] };
       D.broadcast = bcR?.[0] || null;
+      D.activeEffects = efR || [];
+      D.myNotifications = nR || [];
+      D.fishStocks = fsR || [];
     }
 
     async function loadGMData() {
-      const [eA, tA, bA, oA, lA, pA, fA, cA, ccA, bcA] = await Promise.all([
+      const [eA, tA, bA, oA, lA, pA, fA, cA, ccA, bcA, efA, fsA] = await Promise.all([
         sb('economy?select=*'), sb('troops?select=*'), sb('bases?select=*'),
         sb('pending_orders?select=*&season=eq.' + D.cfg.season + '&turn=eq.' + D.cfg.turn),
         sb('economy_log?select=*&order=created_at.desc&limit=100'),
@@ -2210,12 +2524,16 @@
         sb('spy_cards?select=*&order=created_at.desc'),
         sb('spy_card_config?id=eq.1&select=*'),
         sb('game_broadcast?select=*&order=created_at.desc&limit=5'),
+        sb('active_effects?select=*'),
+        sb('fish_zones?select=*'),
       ]);
       D.allEco = eA || []; D.allTroops = tA || []; D.allBases = bA || []; D.allOrders = oA || [];
       D.allEcoLog = lA || []; D.pins = pA || []; D.allFleets = fA || [];
       D.allCards = cA || [];
       D.cardConfig = ccA?.[0] || { enabled: false, allowed_types: [] };
       D.broadcasts = bcA || [];
+      D.activeEffects = efA || [];
+      D.fishStocks = fsA || [];
     }
 
     async function handleRefresh() {
@@ -2242,7 +2560,7 @@
       setSeasonChip(s);
       renderSidebar();
       renderBroadcastBanner();
-      ['setup', 'fall', 'winter', 'spring', 'summer'].forEach(x => document.getElementById('panel-' + x).classList.add('hidden'));
+      ['setup', 'fall', 'winter', 'spring', 'summer', 'fish-zones'].forEach(x => document.getElementById('panel-' + x)?.classList.add('hidden'));
       if (s !== 'setup' && D.myOrders.length > 0) {
         const msgEl = document.getElementById('p-msg');
         msgEl.innerHTML = '<div class="al as"><b>Orders Submitted!</b> Waiting for GM approval. <button class="btn btn-sm btn-o" style="margin-left:10px;vertical-align:middle;padding:3px 8px;font-size:10px;" onclick="cancelMyOrders()">Withdraw Orders</button></div>';
@@ -2398,6 +2716,8 @@
       try {
         const res = await rpc('place_starting_base', { p_country: CU.country, p_pin: SESSION_PIN, p_tile: selectedSetupTile });
         if (!res?.ok) { hideLoad(); showAl(document.getElementById('setup-selected-info'), res?.error || 'Error placing base.', 'ae'); return; }
+        // Mark this base as a protected starting base
+        await sb('bases?country=eq.' + encodeURIComponent(CU.country) + '&tile=eq.' + encodeURIComponent(selectedSetupTile), { method: 'PATCH', prefer: 'return=minimal', body: { is_starting: true } });
         await loadPlayerData(); hideLoad(); renderPlayer();
         showMsg('Starting base placed at tile ' + selectedSetupTile + '. Waiting for all countries.', 'as');
       } catch (e) { hideLoad(); alert('Error: ' + e.message); }
@@ -2412,21 +2732,35 @@
       document.getElementById('f-tot').textContent = bi;
       if (!boats.length) { document.getElementById('fall-no-boats').classList.remove('hidden'); document.getElementById('fall-zones').innerHTML = ''; return; }
       document.getElementById('fall-no-boats').classList.add('hidden');
+      // Collect active effects that block or modify fishing
+      const toxicZones = new Set((D.activeEffects || []).filter(e => e.type === 'toxic_spill').map(e => e.target_zone));
+      const bonusZones = {};
+      (D.activeEffects || []).filter(e => e.type === 'bonus_fish').forEach(e => { bonusZones[e.target_zone] = (bonusZones[e.target_zone] || 0) + 2; });
       const byZone = {}; boats.forEach(s => { const z = tz(s.tile); if (z) { if (!byZone[z]) byZone[z] = []; byZone[z].push(s); } });
       const unmapped = boats.filter(s => !tz(s.tile));
       let html = '';
+      // Show any active effect warnings at top
+      if (toxicZones.size > 0) {
+        html += '<div class="al ae" style="font-size:11px;margin-bottom:8px;">☣️ <b>Toxic Spill active:</b> ' + [...toxicZones].join(', ') + ' — fishing blocked this turn.</div>';
+      }
+      if (Object.keys(bonusZones).length > 0) {
+        html += '<div class="al as" style="font-size:11px;margin-bottom:8px;">🐟 <b>Bonus Fish active:</b> ' + Object.entries(bonusZones).map(([z, v]) => z + ' (+' + v + ' fish stock)').join(', ') + '</div>';
+      }
       ALL_ZONES.forEach(z => {
-        const cnt = (byZone[z] || []).length; const on = cnt > 0;
-        const boatIds = on ? (byZone[z] || []).map(s => s.id).join(', ') : '';
-        html += '<div class="fz-row ' + (on ? 'on' : 'off') + '">'
-          + '<div class="fz-dot" style="background:' + (ZONE_COLORS[z] || '#444') + ';"></div>'
-          + '<div style="flex:1;"><div class="fz-nm">' + z + '</div>'
-          + (on ? '<div style="font-family:var(--fm);font-size:9px;color:var(--text2);">' + boatIds + '</div>' : '')
+        const cnt = (byZone[z] || []).length;
+        const isToxic = toxicZones.has(z);
+        // Blocked if toxic OR no boats
+        const on = cnt > 0 && !isToxic;
+        const boatIds = cnt > 0 ? (byZone[z] || []).map(s => s.id).join(', ') : '';
+        html += '<div class="fz-row ' + (isToxic ? 'off' : on ? 'on' : 'off') + '" ' + (isToxic ? 'style="opacity:.5;border-color:rgba(231,111,81,.3);"' : '') + '>'
+          + '<div class="fz-dot" style="background:' + (ZONE_COLORS[z] || '#444') + ';' + (isToxic ? 'filter:grayscale(1);' : '') + '"></div>'
+          + '<div style="flex:1;"><div class="fz-nm">' + z + (isToxic ? ' <span class="spy-badge" style="background:rgba(231,111,81,.2);border-color:rgba(231,111,81,.4);color:#e76f51;">☣️ TOXIC</span>' : '') + '</div>'
+          + (cnt > 0 ? '<div style="font-family:var(--fm);font-size:9px;color:var(--text2);">' + boatIds + '</div>' : '')
           + '</div>'
-          + '<div class="fz-ct">' + (on ? cnt + ' boat' + (cnt > 1 ? 's' : '') : 'none') + '</div>'
+          + '<div class="fz-ct">' + (isToxic ? 'blocked' : cnt > 0 ? cnt + ' boat' + (cnt > 1 ? 's' : '') : 'none') + '</div>'
           + '<div class="ni">'
           + '<button onclick="adjFish(\'' + z + '\',-1)" ' + (on ? '' : 'disabled') + '>-</button>'
-          + '<input type="number" id="fish-' + zi(z) + '" value="0" min="0" max="' + cnt + '" style="width:36px;text-align:center;" ' + (on ? '' : 'disabled') + ' oninput="updFish()">'
+          + '<input type="number" id="fish-' + zi(z) + '" value="0" min="0" max="' + (on ? cnt : 0) + '" style="width:36px;text-align:center;" ' + (on ? '' : 'disabled') + ' oninput="updFish()">'
           + '<button onclick="adjFish(\'' + z + '\',1)" ' + (on ? '' : 'disabled') + '>+</button>'
           + '</div></div>';
       });
@@ -2804,14 +3138,15 @@
       if (!D.allBases.length) { tbody.innerHTML = '<tr><td colspan="7" class="mu p12">No bases.</td></tr>'; return; }
       tbody.innerHTML = D.allBases.map(b => {
         const z = tz(b.tile);
+        const startingBadge = b.is_starting ? ' <span class="badge" style="background:rgba(46,196,182,.15);border:1px solid rgba(46,196,182,.3);color:var(--green);font-size:8px;">HOME</span>' : '';
         return '<tr><td>' + (FLAGS[b.country] || '') + ' ' + b.country + '</td><td class="tm">' + b.tile + '</td>' +
           '<td class="fs10" style="color:' + (ZONE_COLORS[z] || 'var(--text2)') + ';">' + (z || '—') + '</td>' +
-          '<td>' + (b.status === 'active' ? '<span class="badge bgr">Active</span>' : '<span class="badge bam">Building</span>') + '</td>' +
+          '<td>' + (b.status === 'active' ? '<span class="badge bgr">Active</span>' : '<span class="badge bam">Building</span>') + startingBadge + '</td>' +
           '<td class="tm fs10">' + (b.anchor_ship || '—') + '</td>' +
           '<td class="tm">' + (b.turn_started || '—') + '</td>' +
           '<td><div class="fl gap3">' +
           (b.status === 'construction' ? '<button class="btn btn-o btn-sm" onclick="gmActBase(\'' + b.id + '\')">Activate</button>' : '') +
-          '<button class="btn btn-d btn-sm" onclick="gmDelBase(\'' + b.id + '\')">✕</button>' +
+          (b.is_starting ? '<span class="mu" style="font-size:10px;padding:0 4px;" title="Protected — cannot be deleted">🛡</span>' : '<button class="btn btn-d btn-sm" onclick="gmDelBase(\'' + b.id + '\')">✕</button>') +
           '</div></td></tr>';
       }).join('');
     }
@@ -2860,9 +3195,20 @@
       try {
         // ── Process current season ──
         if (s === 'fall') {
+          // Read active effects
+          const toxicZones = new Set((D.activeEffects || []).filter(e => e.type === 'toxic_spill').map(e => e.target_zone));
+          const bonusZones = {};
+          (D.activeEffects || []).filter(e => e.type === 'bonus_fish').forEach(e => { bonusZones[e.target_zone] = (bonusZones[e.target_zone] || 0) + 2; });
+          const sanctionedCountries = new Set((D.activeEffects || []).filter(e => e.type === 'sanction').map(e => e.target_country));
+
           for (const c of COUNTRIES) {
             const ord = orders.find(o => o.country === c);
-            const fish = ord ? Object.values(ord.payload.fish || {}).reduce((a, b) => a + b, 0) : 0;
+            // Strip fish orders from toxic zones before counting
+            const rawFish = ord?.payload?.fish || {};
+            const fish = Object.entries(rawFish).reduce((sum, [zone, amt]) => {
+              if (toxicZones.has(zone)) { log.push('☣️ ' + zone + ': ' + c + ' fishing BLOCKED (toxic spill)'); return sum; }
+              return sum + amt;
+            }, 0);
             if (fish > 0) {
               const eco = D.allEco.find(e => e.country === c) || { gold: 0 };
               await sb('economy?country=eq.' + encodeURIComponent(c), { method: 'PATCH', prefer: 'return=minimal', body: { gold: eco.gold + fish } });
@@ -2870,7 +3216,29 @@
               log.push((FLAGS[c] || '') + ' ' + c + ': +' + fish + 'g (fish)');
             }
           }
+          // Log bonus fish zones (informational — GM adjusts zone stock manually or via events)
+          Object.entries(bonusZones).forEach(([z, v]) => log.push('🐟 Bonus fish in ' + z + ': +' + v + ' stock (noted)'));
+          // Expire fall-season effects (toxic_spill, bonus_fish, sanction all last 1 fall)
+          const fallEffectIds = (D.activeEffects || []).filter(e => ['toxic_spill', 'bonus_fish', 'sanction'].includes(e.type)).map(e => e.id);
+          for (const id of fallEffectIds) {
+            await sb('active_effects?id=eq.' + id, { method: 'DELETE', prefer: 'return=minimal' });
+            log.push('Effect #' + id + ' expired.');
+          }
+          // Update fish stocks in DB after harvest (logistic growth applied)
+          for (const z of ALL_ZONES) {
+            const row = (D.fishStocks || []).find(f => f.zone === z);
+            const curStock = row ? row.stock : (ZONE_FISH_DATA[z]?.initial ?? 0);
+            const capVal = row ? row.capacity : (ZONE_FISH_DATA[z]?.cap ?? 15);
+            const zoneOrders = orders.filter(o => !toxicZones.has(z));
+            const harvestForZone = zoneOrders.reduce((sum, o) => sum + (o.payload?.fish?.[z] || 0), 0);
+            const nextStock = projectFish(curStock, capVal, harvestForZone);
+            await sb('fish_zones', { method: 'POST', prefer: 'resolution=merge-duplicates,return=minimal', body: { zone: z, stock: nextStock, capacity: capVal, last_updated_turn: turn } });
+          }
+          log.push('Fish stocks updated for all zones.');
         } else if (s === 'winter') {
+          // Sabotaged bases cannot spawn ships this winter
+          const sabotageBaseIds = new Set((D.activeEffects || []).filter(e => e.type === 'sabotage_base').map(e => e.target_base_id));
+
           for (const b of D.allBases.filter(bb => bb.status === 'construction' && bb.turn_started < turn)) {
             await sb('bases?id=eq.' + b.id, { method: 'PATCH', prefer: 'return=minimal', body: { status: 'active', anchor_ship: null } });
             log.push(b.country + ': base tile ' + b.tile + ' ACTIVE');
@@ -2880,10 +3248,17 @@
             const eco = D.allEco.find(e => e.country === c) || { gold: 0 };
             if (p.purchases) {
               if (eco.gold < p.total) { log.push(c + ': purchase SKIPPED (no gold)'); continue; }
+              const spawnTile = p.spawnBase || (D.allBases.find(b => b.country === c && b.status === 'active') || {}).tile || '';
+              const spawnBase = D.allBases.find(b => b.tile === spawnTile && b.country === c);
+              // Block spawning if this base is sabotaged
+              if (spawnBase && sabotageBaseIds.has(spawnBase.id)) {
+                log.push('🔧 ' + c + ': ship purchase BLOCKED — base tile ' + spawnTile + ' is sabotaged this turn!');
+                // Still deduct gold (sabotage wastes the purchase) — or skip deduction based on your rules
+                // Here we skip the deduction so it's fairer
+                continue;
+              }
               await sb('economy?country=eq.' + encodeURIComponent(c), { method: 'PATCH', prefer: 'return=minimal', body: { gold: eco.gold - p.total } });
               await sb('economy_log', { method: 'POST', prefer: 'return=minimal', body: { country: c, turn, type: 'purchase', amount: -p.total, note: '-' + p.total + 'g: ' + p.purchases.map(x => x.qty + '×' + x.type).join(', ') } });
-              // Use player's chosen spawn base, fallback to first active base
-              const spawnTile = p.spawnBase || (D.allBases.find(b => b.country === c && b.status === 'active') || {}).tile || '';
               for (const px of p.purchases) {
                 for (let i = 0; i < px.qty; i++) {
                   const id = await genID(c, px.type); const info = SHIP_STATS[px.type] || {};
@@ -2904,6 +3279,12 @@
               log.push(c + ': -8g → base @ tile ' + ship.tile);
             }
           }
+          // Expire sabotage effects after winter
+          const sabotageEffectIds = (D.activeEffects || []).filter(e => e.type === 'sabotage_base').map(e => e.id);
+          for (const id of sabotageEffectIds) {
+            await sb('active_effects?id=eq.' + id, { method: 'DELETE', prefer: 'return=minimal' });
+            log.push('Sabotage effect #' + id + ' expired.');
+          }
         } else if (s === 'spring') {
           // Spring Phase: Execute movement orders for all fleets and individual ships
           for (const ord of orders) {
@@ -2917,13 +3298,16 @@
           getConflicts().forEach(x => log.push('⚠ CONFLICT tile ' + x.tile + ': ' + x.countries.join(' vs ')));
         } else if (s === 'summer') {
           // Summer Phase: Resolve combat manually and prepare for Fall income
-          log.push('Summer acknowledged. Give base income and resolve combat manually.');
+          const sanctionedCountries = new Set((D.activeEffects || []).filter(e => e.type === 'sanction').map(e => e.target_country));
+          log.push('Summer acknowledged. Resolve combat manually.');
           for (const c of COUNTRIES) {
             const eco = D.allEco.find(e => e.country === c) || { gold: 0 };
-            const income = BASE_INCOME[c];
+            const baseInc = BASE_INCOME[c];
+            const sanctioned = sanctionedCountries.has(c);
+            const income = Math.max(0, baseInc - (sanctioned ? 1 : 0));
             await sb('economy?country=eq.' + encodeURIComponent(c), { method: 'PATCH', prefer: 'return=minimal', body: { gold: eco.gold + income } });
-            await sb('economy_log', { method: 'POST', prefer: 'return=minimal', body: { country: c, turn: turn + 1, type: 'income', amount: income, note: '+' + income + 'g (fall base income)' } });
-            log.push(c + ': +' + income + 'g (base)');
+            await sb('economy_log', { method: 'POST', prefer: 'return=minimal', body: { country: c, turn: turn + 1, type: 'income', amount: income, note: '+' + income + 'g (base income' + (sanctioned ? ', -1 sanctioned' : '') + ')' } });
+            log.push(c + ': +' + income + 'g (base)' + (sanctioned ? ' ⚠ SANCTIONED (-1)' : ''));
           }
         }
 
@@ -3083,6 +3467,7 @@
         await sb('spy_cards?id=not.is.null', { method: 'DELETE', prefer: 'return=minimal' });
         await sb('spy_card_config?id=not.is.null', { method: 'DELETE', prefer: 'return=minimal' });
         await sb('game_broadcast?id=not.is.null', { method: 'DELETE', prefer: 'return=minimal' });
+        await sb('active_effects?id=not.is.null', { method: 'DELETE', prefer: 'return=minimal' });
 
         const sg = { China: 5, Taiwan: 3, Philippines: 4, Malaysia: 3, Indonesia: 3, Thailand: 4, Cambodia: 3, Vietnam: 4 };
         const initEco = COUNTRIES.map(c => ({ country: c, gold: sg[c] }));
@@ -3105,7 +3490,233 @@
     function exEco() { const rows = [['Country', 'Gold', 'BaseIncome']]; D.allEco.forEach(e => rows.push([e.country, e.gold, BASE_INCOME[e.country]])); dlCSV(rows, 'eco_t' + D.cfg.turn + '.csv'); }
     function exBases() { const rows = [['ID', 'Country', 'Tile', 'Zone', 'Status']]; D.allBases.forEach(b => rows.push([b.id, b.country, b.tile, tz(b.tile) || '', b.status])); dlCSV(rows, 'bases_t' + D.cfg.turn + '.csv'); }
 
-    // ─── UTILS ──────────────────────────────────────────────────────
+    // ─── FISH ZONES ──────────────────────────────────────────────────
+
+    /**
+     * Renders the fish zone status widget into a container element by id.
+     * Works for both player (containerId='p-fz') and GM (containerId='gm-fz').
+     * Uses D.allTroops (GM) or D.myTroops + D.allTroops if available.
+     */
+    function renderFishZones(containerId) {
+      const el = document.getElementById(containerId);
+      if (!el) return;
+
+      const troops = D.allTroops?.length ? D.allTroops : D.myTroops;
+      const fishingBoats = troops.filter(s => s.type === 'Fishing Boat');
+      const boatsByZone = {};
+      fishingBoats.forEach(s => { const z = tz(s.tile); if (!z) return; if (!boatsByZone[z]) boatsByZone[z] = []; boatsByZone[z].push(s); });
+
+      const toxicZones = new Set((D.activeEffects || []).filter(e => e.type === 'toxic_spill').map(e => e.target_zone));
+      const bonusZones = {};
+      (D.activeEffects || []).filter(e => e.type === 'bonus_fish').forEach(e => { bonusZones[e.target_zone] = (bonusZones[e.target_zone] || 0) + 2; });
+
+      const getZoneRow = z => (D.fishStocks || []).find(f => f.zone === z);
+      const getStock = z => { const r = getZoneRow(z); return r ? r.stock : (ZONE_FISH_DATA[z]?.initial ?? 0); };
+      const getCap = z => { const r = getZoneRow(z); return r ? r.capacity : (ZONE_FISH_DATA[z]?.cap ?? 15); };
+
+      // Build a stable zone ID safe for use in element ids
+      const zid = z => 'fz-' + containerId + '-' + z.replace(/[^a-z0-9]/gi, '_');
+
+      let html = '';
+      ALL_ZONES.forEach(z => {
+        const stock = getStock(z) + (bonusZones[z] || 0);
+        const cap = getCap(z);
+        const boats = boatsByZone[z] || [];
+        const boatCount = boats.length;
+        const isToxic = toxicZones.has(z);
+        const hasBonus = !!bonusZones[z];
+        const baseHarvest = isToxic ? 0 : boatCount;
+        const health = fishHealth(stock, cap);
+        const fillPct = Math.min(100, Math.round(stock / cap * 100));
+        const id = zid(z);
+
+        // Default projection at current harvest rate (5 turns)
+        const projDefault = [];
+        let cur = stock;
+        for (let i = 0; i < 5; i++) { cur = projectFish(cur, cap, baseHarvest); projDefault.push(cur); }
+
+        const effectBadges =
+          (isToxic ? '<span class="spy-badge" style="background:rgba(231,111,81,.15);border-color:rgba(231,111,81,.3);color:#e76f51;margin-left:6px;">TOXIC</span>' : '')
+          + (hasBonus ? '<span class="spy-badge" style="background:rgba(46,196,182,.12);border-color:rgba(46,196,182,.3);color:var(--green);margin-left:4px;">+' + bonusZones[z] + ' BONUS</span>' : '');
+
+        const boatListHtml = boatCount > 0
+          ? '<div class="fz-boats">' + boats.map(s => '<span>' + (FLAGS[s.country] || '') + ' ' + s.id + ' (T' + (s.tile || '?') + ')</span>').join(' · ') + '</div>'
+          : '';
+
+        html += '<div class="fz-card" id="' + id + '-card">'
+
+          // Header
+          + '<div class="fz-card-header">'
+          + '<div class="fz-card-dot" style="background:' + (ZONE_COLORS[z] || '#555') + ';"></div>'
+          + '<div class="fz-card-name">' + z + effectBadges + '</div>'
+          + '<span class="fz-card-health" style="color:' + health.color + ';background:' + health.color + '18;border-color:' + health.color + '44;">' + health.label + '</span>'
+          + '</div>'
+
+          // Stock bar
+          + '<div class="fz-bar-wrap">'
+          + '<div class="fz-bar-bg"><div class="fz-bar-fill" id="' + id + '-bar" style="width:' + fillPct + '%;background:' + health.color + ';"></div></div>'
+          + '<div class="fz-bar-labels"><span id="' + id + '-stk">' + stock + ' fish</span><span>Cap: ' + cap + '</span></div>'
+          + '</div>'
+
+          // Stats row
+          + '<div class="fz-card-body">'
+          + '<div class="fz-stat"><div class="fz-stat-v" style="color:' + health.color + ';">' + stock + '</div><div class="fz-stat-l">Current Stock</div></div>'
+          + '<div class="fz-stat"><div class="fz-stat-v">' + cap + '</div><div class="fz-stat-l">Carrying Cap</div></div>'
+          + '<div class="fz-stat"><div class="fz-stat-v" style="color:' + (boatCount > 0 ? (isToxic ? 'var(--text2)' : '#f4a261') : 'var(--text2)') + ';">' + (isToxic ? '—' : boatCount) + '</div><div class="fz-stat-l">Fishing Boats</div></div>'
+          + '</div>'
+
+          + boatListHtml
+
+          // Current projection row (static, based on actual boats)
+          + '<div class="fz-proj">'
+          + '<div style="font-family:var(--fm);font-size:10px;color:var(--text2);margin-right:2px;align-self:center;">Actual →</div>'
+          + projDefault.map((v, i) => {
+            const ph = fishHealth(v, cap);
+            const prev = i === 0 ? stock : projDefault[i - 1];
+            const arrow = v - prev > 0.1 ? '↑' : v - prev < -0.1 ? '↓' : '→';
+            return '<div class="fz-proj-box"><div class="fz-proj-v" style="color:' + ph.color + ';">' + v + '</div>'
+              + '<div class="fz-proj-l">T+' + (i + 1) + ' ' + arrow + '</div></div>';
+          }).join('')
+          + '</div>'
+
+          // ── Interactive simulator ──
+          + '<div class="fz-sim">'
+          + '<div class="fz-sim-title">Harvest Simulator</div>'
+          + '<div class="fz-sim-row">'
+          + '<span class="fz-sim-label">Fish removed per turn:</span>'
+          + '<input class="fz-sim-input" id="' + id + '-inp" type="number" min="0" max="' + cap + '" value="' + baseHarvest + '" oninput="updateFzSim(\'' + z + '\',\'' + containerId + '\')" />'
+          + '<span class="fz-sim-label" id="' + id + '-hinf" style="color:#f4a261;"></span>'
+          + '</div>'
+          + '<div class="fz-sim-chart" id="' + id + '-chart"></div>'
+          + '<div class="fz-sim-warn" id="' + id + '-warn"></div>'
+          + '</div>'
+
+          + '</div>'; // end fz-card
+      });
+
+      el.innerHTML = html;
+
+      // Run initial simulator render for each zone
+      ALL_ZONES.forEach(z => updateFzSim(z, containerId));
+
+      // Populate GM edit dropdown if present
+      const sel = document.getElementById('fz-edit-zone');
+      if (sel) {
+        sel.innerHTML = '<option value="">— select —</option>'
+          + ALL_ZONES.map(z => '<option value="' + z + '">' + z + ' (' + getStock(z) + '/' + getCap(z) + ')</option>').join('');
+      }
+    }
+
+    /**
+     * Updates the harvest simulator chart for a single zone.
+     * Called on input change — reads the harvest input, recalculates
+     * 8-turn projection, redraws bar chart, and updates warnings.
+     */
+    function updateFzSim(zone, containerId) {
+      const id = 'fz-' + containerId + '-' + zone.replace(/[^a-z0-9]/gi, '_');
+      const inp = document.getElementById(id + '-inp');
+      const chart = document.getElementById(id + '-chart');
+      const warnEl = document.getElementById(id + '-warn');
+      const hinfEl = document.getElementById(id + '-hinf');
+      if (!inp || !chart) return;
+
+      const harvest = Math.max(0, parseInt(inp.value) || 0);
+      const getZoneRow = z => (D.fishStocks || []).find(f => f.zone === z);
+      const bonusZones = {};
+      (D.activeEffects || []).filter(e => e.type === 'bonus_fish').forEach(e => { bonusZones[e.target_zone] = (bonusZones[e.target_zone] || 0) + 2; });
+      const isToxic = (D.activeEffects || []).some(e => e.type === 'toxic_spill' && e.target_zone === zone);
+      const row = getZoneRow(zone);
+      const stock = (row ? row.stock : (ZONE_FISH_DATA[zone]?.initial ?? 0)) + (bonusZones[zone] || 0);
+      const cap = row ? row.capacity : (ZONE_FISH_DATA[zone]?.cap ?? 15);
+      const effectiveHarvest = isToxic ? 0 : harvest;
+
+      // Project 8 turns
+      const TURNS = 8;
+      const series = [stock];
+      let cur = stock;
+      for (let i = 0; i < TURNS; i++) { cur = projectFish(cur, cap, effectiveHarvest); series.push(cur); }
+
+      // Find max for bar scaling
+      const maxVal = Math.max(cap, ...series);
+
+      // Render bar chart
+      chart.innerHTML = series.map((v, i) => {
+        const h = fishHealth(v, cap);
+        const pct = maxVal > 0 ? Math.max(3, Math.round(v / maxVal * 100)) : 3;
+        const label = i === 0 ? 'Now' : 'T+' + i;
+        return '<div class="fz-sim-bar-wrap">'
+          + '<div style="font-family:var(--fm);font-size:8px;color:' + h.color + ';margin-bottom:2px;">' + v + '</div>'
+          + '<div class="fz-sim-bar" style="height:' + pct + '%;background:' + h.color + ';"></div>'
+          + '<div class="fz-sim-bar-lbl" style="color:' + (i === 0 ? 'var(--text)' : 'var(--text2)') + ';">' + label + '</div>'
+          + '</div>';
+      }).join('');
+
+      // Sustainability info
+      const growthAtStock = 0.4 * stock * (1 - stock / cap);
+      const maxSustainable = Math.floor(growthAtStock + 0.001);
+      if (hinfEl) hinfEl.textContent = '(max sustainable: ~' + maxSustainable + '/turn)';
+
+      // Warnings
+      let warn = '';
+      if (isToxic) {
+        warn = 'Toxic spill active — fishing yields 0 this turn regardless.';
+      } else if (harvest > stock) {
+        warn = 'Harvest exceeds current stock. Zone will be depleted immediately.';
+      } else if (series[series.length - 1] < 1) {
+        warn = 'Zone collapses to 0 within ' + TURNS + ' turns at this harvest rate.';
+      } else if (series[series.length - 1] < cap * 0.2) {
+        warn = 'Population falls to critical levels within ' + TURNS + ' turns. Consider reducing fishing pressure.';
+      } else if (harvest > maxSustainable) {
+        warn = 'Harvest exceeds natural growth — population will slowly decline each turn.';
+      }
+      if (warnEl) warnEl.textContent = warn;
+    }
+
+    /** Toggles the fish zone panel in player view */
+    function toggleFishZonesPanel() {
+      const el = document.getElementById('panel-fish-zones');
+      if (!el) return;
+      const isHidden = el.classList.contains('hidden');
+      // Hide all season panels first
+      ['setup', 'fall', 'winter', 'spring', 'summer', 'fish-zones'].forEach(x => document.getElementById('panel-' + x)?.classList.add('hidden'));
+      if (isHidden) {
+        el.classList.remove('hidden');
+        renderFishZones('p-fz');
+      }
+    }
+
+    /** GM sets fish stock for a zone directly in the DB */
+    async function gmSetFishStock() {
+      const zone = document.getElementById('fz-edit-zone').value;
+      const val = parseInt(document.getElementById('fz-edit-val').value);
+      const msgEl = document.getElementById('fz-edit-msg');
+      if (!zone || isNaN(val) || val < 0) { showAl(msgEl, 'Select a zone and enter a valid value.', 'aw'); msgEl.classList.remove('hidden'); return; }
+      const cap = getCap ? getCap(zone) : (ZONE_FISH_DATA[zone]?.cap || 15);
+      const capVal = (D.fishStocks || []).find(f => f.zone === zone)?.capacity || ZONE_FISH_DATA[zone]?.cap || 15;
+      if (val > capVal) { showAl(msgEl, 'Value exceeds carrying capacity (' + capVal + ') for this zone.', 'aw'); msgEl.classList.remove('hidden'); return; }
+      showLoad('Updating…');
+      try {
+        await sb('fish_zones', {
+          method: 'POST',
+          prefer: 'resolution=merge-duplicates,return=minimal',
+          body: { zone, stock: val, capacity: capVal, last_updated_turn: D.cfg?.turn || 0 }
+        });
+        await loadGMData(); hideLoad();
+        renderFishZones('gm-fz');
+        const sel = document.getElementById('fz-edit-zone');
+        if (sel) sel.innerHTML = '<option value="">— select —</option>'
+          + ALL_ZONES.map(z => {
+            const row = (D.fishStocks || []).find(f => f.zone === z);
+            const s = row ? row.stock : (ZONE_FISH_DATA[z]?.initial ?? '?');
+            const c = row ? row.capacity : (ZONE_FISH_DATA[z]?.cap ?? 15);
+            return '<option value="' + z + '">' + z + ' (' + s + '/' + c + ')</option>';
+          }).join('');
+        showAl(msgEl, zone + ' stock set to ' + val + '.', 'as'); msgEl.classList.remove('hidden');
+        setTimeout(() => msgEl.classList.add('hidden'), 3000);
+      } catch (e) { hideLoad(); alert('Error: ' + e.message); }
+    }
+
+    // ─── GETCONFLICTS ──────────────────────────────────────────────────────
     function getConflicts() {
       const bt = {}; D.allTroops.forEach(s => { if (!s.tile) return; if (!bt[s.tile]) bt[s.tile] = []; bt[s.tile].push(s); });
       return Object.entries(bt).map(([tile, ships]) => { const cs = [...new Set(ships.map(s => s.country))]; return cs.length > 1 ? { tile, countries: cs, ships } : null; }).filter(Boolean);
@@ -3124,18 +3735,18 @@
       }
       const allowed = D.cardConfig.allowed_types || [];
       const gold = D.myEco?.gold || 0;
+      const canAfford = gold >= 6;
       let html = '';
       Object.entries(SPY_CARDS).forEach(([key, card]) => {
         const isLocked = allowed.length > 0 && !allowed.includes(key);
-        const canAfford = gold >= 6;
-        html += '<div class="spy-shop-row' + (isLocked ? ' locked-card' : '') + '" onclick="' + (isLocked ? '' : 'buySpyCard(\'' + key + '\')') + '">'
+        html += '<div class="spy-shop-row' + (isLocked ? ' locked-card' : (!canAfford ? ' cant' : '')) + '" onclick="' + (isLocked || !canAfford ? '' : 'buySpyCard(\'' + key + '\')') + '">'
           + '<div class="scs-icon">' + card.icon + '</div>'
           + '<div class="scs-info"><div class="scs-name">' + card.name + (isLocked ? ' <span class="spy-badge locked">LOCKED</span>' : '') + '</div>'
           + '<div class="scs-desc">' + card.desc + '</div></div>'
           + '<div class="scs-cost">' + (isLocked ? '—' : '6g') + '</div>'
           + '</div>';
       });
-      if (!canAfford && !html.includes('locked-card')) {
+      if (!canAfford) {
         shopEl.innerHTML = html + '<div class="al aw" style="font-size:11px;margin-top:6px;">You need 6g to purchase a card.</div>';
       } else {
         shopEl.innerHTML = html;
@@ -3277,7 +3888,7 @@
       document.getElementById('pc-fleet-row').classList.remove('hidden');
     }
 
-    /** Submits the card play to the database — sets status to 'played' */
+    /** Submits the card play — auto-applies mechanical effects, flags GM-only cards as played */
     async function confirmPlayCard() {
       if (!_playCardId) return;
       const def = SPY_CARDS[_playCardType] || {};
@@ -3289,20 +3900,146 @@
       const goldAmt = document.getElementById('pc-gold-amt')?.value || '3';
       const targetZone = document.getElementById('pc-target-zone')?.value || '';
       const note = document.getElementById('pc-note').value.trim();
-      // Basic validation
+      const msgEl = document.getElementById('pc-msg');
+
+      // Validation
       if (['enemy_ship', 'enemy_unit', 'enemy_base', 'country_gold', 'enemy_country'].includes(t) && !targetC) {
-        showAl(document.getElementById('pc-msg'), 'Select a target country.', 'aw'); document.getElementById('pc-msg').classList.remove('hidden'); return;
+        showAl(msgEl, 'Select a target country.', 'aw'); msgEl.classList.remove('hidden'); return;
       }
       if (t === 'fishing_zone' && !targetZone) {
-        showAl(document.getElementById('pc-msg'), 'Select a target fishing zone.', 'aw'); document.getElementById('pc-msg').classList.remove('hidden'); return;
+        showAl(msgEl, 'Select a target fishing zone.', 'aw'); msgEl.classList.remove('hidden'); return;
       }
+      if (['enemy_ship', 'sink_ship'].includes(_playCardType) && !targetShip && !note) {
+        showAl(msgEl, 'Specify a target ship ID in the note.', 'aw'); msgEl.classList.remove('hidden'); return;
+      }
+
       showLoad('Playing card…');
       try {
         const details = { target_country: targetC || null, target_ship: targetShip || null, target_fleet: targetFleet || null, target_base_tile: targetBase || null, gold_amount: t === 'country_gold' ? parseInt(goldAmt) : null, target_zone: targetZone || null, note };
+
+        // ── AUTO-APPLY: Cards that the engine enforces mechanically ──
+
+        if (_playCardType === 'toxic_spill') {
+          // Write an active_effect row — rFall and approveTurn will enforce it
+          await sb('active_effects', { method: 'POST', prefer: 'return=minimal', body: { type: 'toxic_spill', owner_country: CU.country, target_zone: targetZone, turn_played: D.cfg.turn } });
+          // Broadcast so everyone knows
+          await sb('game_broadcast', { method: 'POST', prefer: 'return=minimal', body: { message: '☣️ Toxic Spill! ' + targetZone + ' is contaminated — no fishing there this Fall.', turn: D.cfg.turn, season: D.cfg.season } });
+          await markCardUsed(_playCardId, details);
+          hideLoad(); closeMod(); await loadPlayerData(); rFall(CU.country);
+          showMsg('☣️ Toxic Spill applied to ' + targetZone + '. Fishing is blocked there this Fall.', 'as');
+          return;
+        }
+
+        if (_playCardType === 'bonus_fish') {
+          await sb('active_effects', { method: 'POST', prefer: 'return=minimal', body: { type: 'bonus_fish', owner_country: CU.country, target_zone: targetZone, turn_played: D.cfg.turn } });
+          await sb('game_broadcast', { method: 'POST', prefer: 'return=minimal', body: { message: '🐟 Bonus Fish! 2 extra fish added to ' + targetZone + ' this Fall.', turn: D.cfg.turn, season: D.cfg.season } });
+          await markCardUsed(_playCardId, details);
+          hideLoad(); closeMod(); await loadPlayerData(); rFall(CU.country);
+          showMsg('🐟 Bonus fish added to ' + targetZone + '.', 'as');
+          return;
+        }
+
+        if (_playCardType === 'sanction') {
+          await sb('active_effects', { method: 'POST', prefer: 'return=minimal', body: { type: 'sanction', owner_country: CU.country, target_country: targetC, turn_played: D.cfg.turn } });
+          await sb('game_broadcast', { method: 'POST', prefer: 'return=minimal', body: { message: '📜 ' + targetC + ' has been sanctioned! They earn 1 less income next turn.', turn: D.cfg.turn, season: D.cfg.season } });
+          await notifyPlayer(targetC, '📜 Your country has been <b>sanctioned</b> — you will earn 1 less base income next turn.');
+          await markCardUsed(_playCardId, details);
+          hideLoad(); closeMod(); await loadPlayerData();
+          showMsg('📜 Sanction applied to ' + targetC + '. Their income is reduced next turn.', 'as');
+          return;
+        }
+
+        if (_playCardType === 'steal_gold') {
+          // Fetch live gold values for both countries
+          const [fromArr, toArr] = await Promise.all([
+            sb('economy?country=eq.' + encodeURIComponent(targetC) + '&select=gold'),
+            sb('economy?country=eq.' + encodeURIComponent(CU.country) + '&select=gold'),
+          ]);
+          const fromGold = fromArr?.[0]?.gold || 0;
+          const toGold = toArr?.[0]?.gold || 0;
+          const amt = Math.min(parseInt(goldAmt) || 3, fromGold);
+          if (amt <= 0) { hideLoad(); showAl(msgEl, targetC + ' has no gold to steal.', 'aw'); msgEl.classList.remove('hidden'); return; }
+          await sb('economy?country=eq.' + encodeURIComponent(targetC), { method: 'PATCH', prefer: 'return=minimal', body: { gold: fromGold - amt } });
+          await sb('economy?country=eq.' + encodeURIComponent(CU.country), { method: 'PATCH', prefer: 'return=minimal', body: { gold: toGold + amt } });
+          await sb('economy_log', { method: 'POST', prefer: 'return=minimal', body: { country: targetC, turn: D.cfg.turn, type: 'card', amount: -amt, note: '-' + amt + 'g stolen by ' + CU.country } });
+          await sb('economy_log', { method: 'POST', prefer: 'return=minimal', body: { country: CU.country, turn: D.cfg.turn, type: 'card', amount: amt, note: '+' + amt + 'g stolen from ' + targetC } });
+          await notifyPlayer(targetC, '💰 <b>' + amt + 'g</b> was stolen from your treasury by a spy operation.');
+          await markCardUsed(_playCardId, details);
+          hideLoad(); closeMod(); await loadPlayerData(); renderPlayer();
+          showMsg('💰 Stole ' + amt + 'g from ' + targetC + '.', 'as');
+          return;
+        }
+
+        if (_playCardType === 'sink_ship') {
+          const shipId = targetShip || note;
+          if (!shipId) { hideLoad(); showAl(msgEl, 'Specify the target ship ID.', 'aw'); msgEl.classList.remove('hidden'); return; }
+          await sb('troops?id=eq.' + encodeURIComponent(shipId), { method: 'DELETE', prefer: 'return=minimal' });
+          await sb('game_broadcast', { method: 'POST', prefer: 'return=minimal', body: { message: '⚓ Ship ' + shipId + ' has been sunk by a spy operation!', turn: D.cfg.turn, season: D.cfg.season } });
+          await notifyPlayer(targetC, '⚓ Your ship <b>' + shipId + '</b> was sunk by a spy operation.');
+          await markCardUsed(_playCardId, details);
+          hideLoad(); closeMod(); await loadPlayerData();
+          showMsg('⚓ ' + shipId + ' has been sunk.', 'as');
+          return;
+        }
+
+        if (_playCardType === 'destroy_base') {
+          const baseTile = targetBase || note;
+          if (!baseTile) { hideLoad(); showAl(msgEl, 'Specify the target base tile.', 'aw'); msgEl.classList.remove('hidden'); return; }
+          const baseArr = await sb('bases?tile=eq.' + encodeURIComponent(baseTile) + '&country=eq.' + encodeURIComponent(targetC) + '&select=id,is_starting');
+          if (!baseArr?.length) { hideLoad(); showAl(msgEl, 'No base found at tile ' + baseTile + ' for ' + targetC + '.', 'aw'); msgEl.classList.remove('hidden'); return; }
+          if (baseArr[0].is_starting) { hideLoad(); showAl(msgEl, 'Starting bases are protected and cannot be destroyed.', 'aw'); msgEl.classList.remove('hidden'); return; }
+          await sb('bases?id=eq.' + baseArr[0].id, { method: 'DELETE', prefer: 'return=minimal' });
+          await sb('game_broadcast', { method: 'POST', prefer: 'return=minimal', body: { message: '💥 A base belonging to ' + targetC + ' at tile ' + baseTile + ' has been destroyed!', turn: D.cfg.turn, season: D.cfg.season } });
+          await notifyPlayer(targetC, '💥 Your base at tile <b>' + baseTile + '</b> was destroyed by a spy operation.');
+          await markCardUsed(_playCardId, details);
+          hideLoad(); closeMod(); await loadPlayerData();
+          showMsg('💥 Base at tile ' + baseTile + ' destroyed.', 'as');
+          return;
+        }
+
+        if (_playCardType === 'sabotage_base') {
+          const baseTile = targetBase || note;
+          if (!baseTile) { hideLoad(); showAl(msgEl, 'Specify the target base tile.', 'aw'); msgEl.classList.remove('hidden'); return; }
+          const baseArr = await sb('bases?tile=eq.' + encodeURIComponent(baseTile) + '&country=eq.' + encodeURIComponent(targetC) + '&select=id,is_starting');
+          if (!baseArr?.length) { hideLoad(); showAl(msgEl, 'No base found at tile ' + baseTile + ' for ' + targetC + '.', 'aw'); msgEl.classList.remove('hidden'); return; }
+          if (baseArr[0].is_starting) { hideLoad(); showAl(msgEl, 'Starting bases are protected and cannot be sabotaged.', 'aw'); msgEl.classList.remove('hidden'); return; }
+          await sb('active_effects', { method: 'POST', prefer: 'return=minimal', body: { type: 'sabotage_base', owner_country: CU.country, target_country: targetC, target_base_id: baseArr[0].id, target_base_tile: baseTile, turn_played: D.cfg.turn } });
+          await notifyPlayer(targetC, '🔧 Your base at tile <b>' + baseTile + '</b> has been sabotaged — no ships can be spawned there next Winter.');
+          await markCardUsed(_playCardId, details);
+          hideLoad(); closeMod(); await loadPlayerData();
+          showMsg('🔧 Base at tile ' + baseTile + ' sabotaged — they cannot spawn ships there next Winter.', 'as');
+          return;
+        }
+
+        if (_playCardType === 'disable_unit') {
+          const shipId = targetShip || note;
+          if (!shipId) { hideLoad(); showAl(msgEl, 'Specify the target ship ID.', 'aw'); msgEl.classList.remove('hidden'); return; }
+          await sb('troops?id=eq.' + encodeURIComponent(shipId), { method: 'PATCH', prefer: 'return=minimal', body: { disabled: true, attack_disabled: true } });
+          if (targetFleet) {
+            const fleetArr = await sb('fleets?id=eq.' + encodeURIComponent(targetFleet) + '&select=ship_ids');
+            const shipIds = fleetArr?.[0]?.ship_ids || [];
+            for (const sid of shipIds) {
+              await sb('troops?id=eq.' + encodeURIComponent(sid), { method: 'PATCH', prefer: 'return=minimal', body: { disabled: true, attack_disabled: true } });
+            }
+          }
+          await notifyPlayer(targetC, '🔒 Your ship <b>' + shipId + '</b>' + (targetFleet ? ' and its fleet' : '') + ' has been disabled by a spy operation — it cannot move or attack for 1 turn.');
+          await markCardUsed(_playCardId, details);
+          hideLoad(); closeMod(); await loadPlayerData();
+          showMsg('🔒 ' + shipId + ' has been disabled — cannot move or attack for 1 turn.', 'as');
+          return;
+        }
+
+        // ── GM-INFORMED: Cards the GM needs to apply (combat bonuses, info, movement) ──
         await sb('spy_cards?id=eq.' + encodeURIComponent(_playCardId), { method: 'PATCH', prefer: 'return=minimal', body: { status: 'played', play_details: details, turn_played: D.cfg.turn } });
-        await loadPlayerData(); hideLoad(); closeMod(); rPlayerCards();
-        showMsg('Card played — GM will apply the effect this turn.', 'as');
-      } catch (e) { hideLoad(); alert('Error: ' + e.message); }
+        hideLoad(); closeMod(); await loadPlayerData(); rPlayerCards();
+        showMsg(def.icon + ' ' + def.name + ' played — GM will apply the effect.', 'as');
+
+      } catch (e) { hideLoad(); showAl(msgEl, 'Error: ' + e.message, 'ae'); msgEl.classList.remove('hidden'); }
+    }
+
+    /** Helper: marks a card as used with play details */
+    async function markCardUsed(cardId, details) {
+      await sb('spy_cards?id=eq.' + encodeURIComponent(cardId), { method: 'PATCH', prefer: 'return=minimal', body: { status: 'used', play_details: details, turn_played: D.cfg.turn } });
     }
 
     // ─── SPY CARDS — GM ─────────────────────────────────────────────
@@ -3416,39 +4153,13 @@
       const def = SPY_CARDS[cardType] || {};
       const d = card.play_details || {};
 
-      // Auto-apply steal gold
-      if (cardType === 'steal_gold') {
-        const amt = d.gold_amount || 3;
-        const targetC = d.target_country;
-        if (!targetC) { alert('No target country set on this card.'); return; }
-        if (!confirm('Steal ' + amt + 'g from ' + targetC + ' and give to ' + ownerCountry + '?')) return;
-        showLoad('Applying…');
+      // These card types are now auto-applied by the game engine when played
+      if (['steal_gold', 'toxic_spill', 'bonus_fish', 'sanction', 'sabotage_base', 'sink_ship', 'destroy_base', 'disable_unit'].includes(cardType)) {
+        if (!confirm('This card\'s effect was applied automatically when played. Mark it as used in the log?')) return;
+        showLoad('…');
         try {
-          const fromEco = D.allEco.find(e => e.country === targetC) || { gold: 0 };
-          const toEco = D.allEco.find(e => e.country === ownerCountry) || { gold: 0 };
-          const actualAmt = Math.min(amt, fromEco.gold);
-          await sb('economy?country=eq.' + encodeURIComponent(targetC), { method: 'PATCH', prefer: 'return=minimal', body: { gold: fromEco.gold - actualAmt } });
-          await sb('economy?country=eq.' + encodeURIComponent(ownerCountry), { method: 'PATCH', prefer: 'return=minimal', body: { gold: toEco.gold + actualAmt } });
-          await sb('economy_log', { method: 'POST', prefer: 'return=minimal', body: { country: targetC, turn: D.cfg.turn, type: 'card', amount: -actualAmt, note: '-' + actualAmt + 'g: stolen by ' + ownerCountry + ' (spy card)' } });
-          await sb('economy_log', { method: 'POST', prefer: 'return=minimal', body: { country: ownerCountry, turn: D.cfg.turn, type: 'card', amount: actualAmt, note: '+' + actualAmt + 'g: stolen from ' + targetC + ' (spy card)' } });
           await sb('spy_cards?id=eq.' + cardId, { method: 'PATCH', prefer: 'return=minimal', body: { status: 'used' } });
-          await loadGMData(); hideLoad(); renderGMCards(); renderEconomy();
-        } catch (e) { hideLoad(); alert(e.message); }
-        return;
-      }
-
-      // Auto-apply sanction — flag economy row with a sanction_turns_remaining counter
-      if (cardType === 'sanction') {
-        const targetC = d.target_country;
-        if (!targetC) { alert('No target country set on this card.'); return; }
-        if (!confirm('Apply sanction to ' + targetC + '? They earn 1 less income next Fall. You will need to manually reduce their base income by 1 when Fall is processed.')) return;
-        showLoad('Applying…');
-        try {
-          await sb('economy_log', { method: 'POST', prefer: 'return=minimal', body: { country: targetC, turn: D.cfg.turn, type: 'card', amount: 0, note: 'SANCTIONED by ' + ownerCountry + ' — -1 base income next Fall (GM: apply manually)' } });
-          await sb('spy_cards?id=eq.' + cardId, { method: 'PATCH', prefer: 'return=minimal', body: { status: 'used' } });
-          // Broadcast the sanction publicly
-          await sb('game_broadcast', { method: 'POST', prefer: 'return=minimal', body: { message: '📜 ' + targetC + ' has been sanctioned! They earn 1 less income next Fall.', turn: D.cfg.turn, season: D.cfg.season } });
-          await loadGMData(); hideLoad(); renderGMCards(); renderEconomy();
+          await loadGMData(); hideLoad(); renderGMCards();
         } catch (e) { hideLoad(); alert(e.message); }
         return;
       }
@@ -3566,21 +4277,48 @@
     }
 
     // ─── PLAYER BROADCAST BANNER ────────────────────────────────────
-    /** Shows a broadcast event banner at the top of the player view */
+    /** Shows a broadcast event banner and private spy card notifications */
     function renderBroadcastBanner() {
+      const container = document.getElementById('p-msg');
+      if (!container) return;
+      // Remove old banners first
+      document.querySelectorAll('.p-dyn-banner').forEach(el => el.remove());
+
+      // Global broadcast
       const bc = D.broadcast;
-      const msgEl = document.getElementById('p-msg');
-      if (bc && msgEl && D.myOrders.length === 0) {
-        const existing = document.getElementById('p-broadcast-banner');
-        if (!existing) {
-          const banner = document.createElement('div');
-          banner.id = 'p-broadcast-banner';
-          banner.className = 'al aw';
-          banner.style.cssText = 'margin-bottom:10px;border-color:rgba(244,162,97,.5);';
-          banner.innerHTML = '📢 <b>GM Event — Turn ' + bc.turn + ':</b> ' + bc.message;
-          msgEl.parentNode.insertBefore(banner, msgEl);
-        }
+      if (bc) {
+        const banner = document.createElement('div');
+        banner.className = 'al aw p-dyn-banner';
+        banner.style.cssText = 'margin-bottom:8px;border-color:rgba(244,162,97,.5);';
+        banner.innerHTML = '📢 <b>GM Event — T' + bc.turn + ' ' + bc.season + ':</b> ' + bc.message;
+        container.parentNode.insertBefore(banner, container);
       }
+
+      // Private spy card notifications for this player
+      const notes = D.myNotifications || [];
+      notes.forEach(n => {
+        const banner = document.createElement('div');
+        banner.className = 'al ae p-dyn-banner';
+        banner.style.cssText = 'margin-bottom:8px;border-color:rgba(231,111,81,.5);display:flex;align-items:flex-start;gap:10px;';
+        banner.innerHTML = '<div style="flex:1;">🚨 <b>Action played against you:</b> ' + n.message + '</div>'
+          + '<button onclick="dismissNotification(' + n.id + ', this)" style="background:none;border:1px solid rgba(231,111,81,.4);color:var(--text2);border-radius:4px;padding:2px 7px;cursor:pointer;font-size:10px;flex-shrink:0;">Dismiss</button>';
+        container.parentNode.insertBefore(banner, container);
+      });
+    }
+
+    async function dismissNotification(id, btn) {
+      try {
+        await sb('player_notifications?id=eq.' + id, { method: 'PATCH', prefer: 'return=minimal', body: { dismissed: true } });
+        btn.closest('.p-dyn-banner').remove();
+        D.myNotifications = (D.myNotifications || []).filter(n => n.id !== id);
+      } catch (e) { /* silent */ }
+    }
+
+    /** Helper: writes a private notification to the target country */
+    async function notifyPlayer(targetCountry, message) {
+      try {
+        await sb('player_notifications', { method: 'POST', prefer: 'return=minimal', body: { target_country: targetCountry, message, dismissed: false } });
+      } catch (e) { /* non-fatal */ }
     }
 
     // ─── UTILS ──────────────────────────────────────────────────────

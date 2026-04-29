@@ -5,8 +5,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
   <title>SCS Sim — Live Board</title>
-  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Share+Tech+Mono&display=swap"
-    rel="stylesheet">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Share+Tech+Mono&display=swap');
+  </style>
   <style>
     :root {
       --bg: #040c18;
@@ -286,7 +287,7 @@
 
     .cc-stats {
       display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
+      grid-template-columns: 1fr 1fr;
       gap: 5px;
       margin-bottom: 6px;
     }
@@ -388,6 +389,46 @@
       border-top: 1px solid var(--bdr);
     }
 
+    .fish-panel {
+      border: 1px solid rgba(46, 196, 182, .2);
+      border-radius: 8px;
+      background: rgba(46, 196, 182, .04);
+      overflow: hidden;
+    }
+
+    .fish-panel-hdr {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 7px 10px;
+      border-bottom: 1px solid rgba(46, 196, 182, .15);
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .fish-panel-hdr h3 {
+      font-family: var(--fh);
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--green);
+      letter-spacing: .5px;
+    }
+
+    .fish-panel-body {
+      padding: 10px 10px 4px;
+      max-height: 340px;
+      overflow-y: auto;
+    }
+
+    .fish-panel-body::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    .fish-panel-body::-webkit-scrollbar-thumb {
+      background: rgba(46, 196, 182, .3);
+      border-radius: 2px;
+    }
+
     .spin {
       width: 16px;
       height: 16px;
@@ -399,9 +440,21 @@
       vertical-align: middle;
     }
 
-    .w100 { width: 100%; }
-    .fs10 { font-size: 10px; }
-    .hidden { display: none !important; }
+    .w100 {
+      width: 100%;
+    }
+
+    .fs10 {
+      font-size: 10px;
+    }
+
+    .fs9 {
+      font-size: 9px;
+    }
+
+    .hidden {
+      display: none !important;
+    }
 
     @keyframes spin {
       to {
@@ -434,6 +487,13 @@
         <div id="conf-list"></div>
       </div>
       <div id="country-cards"></div>
+      <div class="fish-panel">
+        <div class="fish-panel-hdr" onclick="this.nextElementSibling.classList.toggle('hidden')">
+          <h3>Fish Zones</h3>
+          <span style="font-family:var(--fm);font-size:9px;color:var(--text2);">▾</span>
+        </div>
+        <div class="fish-panel-body" id="fish-panel-body"></div>
+      </div>
       <div class="legend">
         <h3>Zone Legend</h3>
         <div id="legend-items"></div>
@@ -445,7 +505,7 @@
     // Supabase URL and Anonymous Key for public data fetching
     const SB_URL = 'https://fbvybpxosrjvtrwkdrmr.supabase.co';
     const SB_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZidnlicHhvc3JqdnRyd2tkcm1yIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU5OTk1NjEsImV4cCI6MjA5MTU3NTU2MX0.tH6NYFlpZmH3tE_oh5V9gKe62hC_VCo3cIF2Dym-ydE';
-    
+
     // Core game configuration and dictionaries
     const MAP_SRC = 'Game Board Map.png';
     // Map of country names to flag emojis
@@ -463,48 +523,76 @@
      * @param {string|number} id - Tile ID
      */
     function tz(id) { return TILE_DATA[String(id)]?.z || ''; }
-    /**
-     * Helper: Returns a representative emoji for each unit type
-     * @param {string} t - Unit type
-     */
     function se(t) { return { 'Fishing Boat': '🎣', 'Coast Guard': '⚓', 'FAC': '⚡', 'Destroyer': '🚢' }[t] || '🚢'; }
 
-    let bData = { troops: [], bases: [], fleets: [], config: { turn: 1, season: 'setup' } };
+    const ALL_ZONES = ['China', 'Taiwan', 'Philippines', 'Malaysia', 'Indonesia', 'Thailand', 'Cambodia', 'Vietnam', 'Green Neutral Zone', 'Blue Neutral Zone', 'Purple Neutral Zone', 'Orange Neutral Zone'];
 
-    /**
-     * Public Fetch Wrapper: Retrieves data from Supabase REST API
-     * sanitizes keys to prevent network errors.
-     */
+    // Rulebook values — used as fallback when DB has no row yet
+    const ZONE_FISH_DATA = {
+      'China': { cap: 7, initial: 3 },
+      'Taiwan': { cap: 4, initial: 2 },
+      'Philippines': { cap: 6, initial: 2 },
+      'Malaysia': { cap: 5, initial: 2 },
+      'Indonesia': { cap: 5, initial: 3 },
+      'Thailand': { cap: 6, initial: 3 },
+      'Cambodia': { cap: 4, initial: 2 },
+      'Vietnam': { cap: 6, initial: 2 },
+      'Green Neutral Zone': { cap: 15, initial: 6 },
+      'Orange Neutral Zone': { cap: 15, initial: 6 },
+      'Blue Neutral Zone': { cap: 15, initial: 6 },
+      'Purple Neutral Zone': { cap: 15, initial: 6 },
+    };
+
+    // One representative tile per zone used for placing the fish stock overlay marker
+    const ZONE_LABEL_TILE = {
+      'China': '7', 'Vietnam': '14', 'Taiwan': '19', 'Philippines': '51',
+      'Malaysia': '77', 'Indonesia': '71', 'Thailand': '12', 'Cambodia': '33',
+      'Green Neutral Zone': '44', 'Blue Neutral Zone': '36',
+      'Purple Neutral Zone': '49', 'Orange Neutral Zone': '65',
+    };
+
+    function projectFish(current, cap, harvest) {
+      const r = 0.4;
+      return Math.max(0, Math.round((current + r * current * (1 - current / cap) - harvest) * 10) / 10);
+    }
+
+    function fishHealth(current, cap) {
+      const ratio = current / cap;
+      if (ratio >= 0.7) return { label: 'Healthy', color: '#2ec4b6' };
+      if (ratio >= 0.4) return { label: 'Moderate', color: '#e9c46a' };
+      if (ratio >= 0.2) return { label: 'Low', color: '#f4a261' };
+      return { label: 'Critical', color: '#e63946' };
+    }
+
+    let bData = { troops: [], bases: [], fleets: [], fishZones: [], config: { turn: 1, season: 'setup' } };
+
     async function sbGet(path) {
-      const cleanAnon = SB_ANON.replace(/[^\x20-\x7E]/g, '');
-      const r = await fetch(SB_URL.replace(/[^\x20-\x7E]/g, '') + '/rest/v1/' + path, { headers: { 'apikey': cleanAnon, 'Authorization': 'Bearer ' + cleanAnon } });
+      const r = await fetch(SB_URL + '/rest/v1/' + path, {
+        headers: { 'apikey': SB_ANON, 'Authorization': 'Bearer ' + SB_ANON, 'X-Client-Info': 'scs-sim/1.0' },
+        mode: 'cors', credentials: 'omit'
+      });
       const t = await r.text(); return t ? JSON.parse(t) : [];
     }
-    
-    /**
-     * Main Data Sync: Fetches all game objects and triggers a re-render
-     */
+
     async function loadBoard() {
       document.getElementById('b-st').innerHTML = '<span class="spin"></span>';
       try {
-        const [cfg, tr, bs, fl] = await Promise.all([
+        const [cfg, tr, bs, fl, fz] = await Promise.all([
           sbGet('game_config?select=turn,season'),
           sbGet('troops?select=id,country,type,tile,hp,max_hp,disabled'),
           sbGet('bases?select=id,country,tile,status,anchor_ship'),
           sbGet('fleets?select=id,country,name,ship_ids'),
+          sbGet('fish_zones?select=*'),
         ]);
-        bData = { config: cfg?.[0] || { turn: 1, season: 'setup' }, troops: tr || [], bases: bs || [], fleets: fl || [] };
+        bData = { config: cfg?.[0] || { turn: 1, season: 'setup' }, troops: tr || [], bases: bs || [], fleets: fl || [], fishZones: fz || [] };
         renderBoard();
         document.getElementById('b-st').textContent = '';
         document.getElementById('last-updated').textContent = 'Updated: ' + new Date().toLocaleTimeString();
       } catch (e) { document.getElementById('b-st').textContent = '⚠ ' + e.message; }
     }
 
-    // Replaced getRect with direct percentage usage constraints to keep map responsive
-    
-    // Primary function: Re-draws the map elements based on latest Supabase data
     function renderBoard() {
-      const { config, troops, bases, eco, fleets } = bData;
+      const { config, troops, bases, fleets, fishZones } = bData;
       document.getElementById('b-turn').textContent = config.turn;
       const sL = { setup: '◈ Setup', fall: '◆ Fall', winter: '❄ Winter', spring: '◉ Spring', summer: '⚔ Summer' };
       const sp = document.getElementById('b-sp');
@@ -524,17 +612,57 @@
 
       const overlay = document.getElementById('overlay'); overlay.innerHTML = '';
 
-      /**
-       * Helper: Creates a positioning wrapper for an overlay marker
-       * @param {string} tileId - Target tile ID
-       */
       function mk(tileId) {
         const pct = TILE_PCT[tileId]; if (!pct) return null;
         const el = document.createElement('div'); el.className = 'mk';
-        el.style.left = pct[0] + '%'; 
-        el.style.top = pct[1] + '%';
+        el.style.left = pct[0] + '%'; el.style.top = pct[1] + '%';
         return el;
       }
+
+      // ── Fish stock overlay markers (one per zone) ──
+      const fishByZone = {};
+      fishZones.forEach(f => { fishByZone[f.zone] = f; });
+      const boatsByZone = {};
+      troops.filter(s => s.type === 'Fishing Boat').forEach(s => {
+        const z = tz(s.tile); if (!z) return;
+        boatsByZone[z] = (boatsByZone[z] || 0) + 1;
+      });
+
+      ALL_ZONES.forEach(z => {
+        const labelTile = ZONE_LABEL_TILE[z]; if (!labelTile) return;
+        // Don't render fish marker if ships occupy this tile (avoid overlap)
+        if (byTile[labelTile]) return;
+        const row = fishByZone[z];
+        const stock = row ? row.stock : (ZONE_FISH_DATA[z]?.initial ?? 0);
+        const cap = row ? row.capacity : (ZONE_FISH_DATA[z]?.cap ?? 15);
+        const boats = boatsByZone[z] || 0;
+        const h = fishHealth(stock, cap);
+        const nextStock = projectFish(stock, cap, boats);
+        const delta = nextStock - stock;
+        const arrow = delta > 0.05 ? '↑' : delta < -0.05 ? '↓' : '→';
+        const zc = ZONE_COLORS[z] || '#555';
+        const m = mk(labelTile); if (!m) return;
+        m.style.zIndex = '1'; // Below ship markers
+        m.innerHTML = '<div style="'
+          + 'background:rgba(4,12,24,.82);border:1px solid ' + h.color + '55;border-radius:7px;'
+          + 'padding:3px 5px;text-align:center;min-width:36px;cursor:default;'
+          + '">'
+          + '<div style="font-family:var(--fm);font-size:11px;font-weight:700;color:' + h.color + ';line-height:1.1;">'
+          + '🐟' + stock
+          + '</div>'
+          + '<div style="font-family:var(--fm);font-size:8px;color:' + h.color + '88;line-height:1.1;">'
+          + arrow + nextStock + '/' + cap
+          + '</div>'
+          + (boats > 0 ? '<div style="font-size:8px;color:var(--gold);line-height:1;">🎣' + boats + '</div>' : '')
+          + '</div>'
+          + '<div class="tooltip">'
+          + '<b>' + z + '</b><br>'
+          + 'Stock: ' + stock + ' / ' + cap + ' (' + h.label + ')<br>'
+          + 'Fishing boats: ' + boats + '<br>'
+          + 'Next turn projection: ' + nextStock + ' ' + arrow
+          + '</div>';
+        overlay.appendChild(m);
+      });
 
       // Render all tiles containing ships/units
       Object.entries(byTile).forEach(([tile, ships]) => {
@@ -577,6 +705,7 @@
         overlay.appendChild(m);
       });
 
+      // ── Country cards ──
       document.getElementById('country-cards').innerHTML = COUNTRIES.map(c => {
         const myT = troops.filter(s => s.country === c);
         const myB = bases.filter(b => b.country === c && b.status === 'active');
@@ -587,12 +716,21 @@
         const zc = ZONE_COLORS[c] || 'var(--text)';
         const pips = Object.entries(tc).map(([t, n]) => '<span class="spip">' + se(t) + 'x' + n + '</span>').join('');
         const flPips = myFl.map(f => '<span style="font-family:var(--fm);font-size:9px;color:#ffd166;">⚓' + f.name + '(' + (f.ship_ids || []).length + ')</span>').join(' ');
+        // EEZ fish stock for this country
+        const eezRow = fishByZone[c];
+        const eezStock = eezRow ? eezRow.stock : (ZONE_FISH_DATA[c]?.initial ?? '?');
+        const eezCap = eezRow ? eezRow.capacity : (ZONE_FISH_DATA[c]?.cap ?? '?');
+        const eezH = fishHealth(typeof eezStock === 'number' ? eezStock : 0, typeof eezCap === 'number' ? eezCap : 1);
         return '<div class="cc"' + (inConf ? ' style="border-color:rgba(230,57,70,.5);"' : '') + '>' +
           '<h3 style="color:' + zc + ';">' + (FLAGS[c] || '') + ' ' + c + '</h3>' +
           '<div class="cc-stats">' +
-          '<div class="cs"><div class="csv">?</div><div class="csl">Gold</div></div>' +
           '<div class="cs"><div class="csv">' + myT.length + '</div><div class="csl">Ships</div></div>' +
           '<div class="cs"><div class="csv">' + myB.length + '</div><div class="csl">Bases</div></div>' +
+          '</div>' +
+          '<div style="display:flex;align-items:center;gap:5px;margin-bottom:4px;">' +
+          '<span style="font-family:var(--fm);font-size:9px;color:var(--text2);">EEZ Fish:</span>' +
+          '<span style="font-family:var(--fm);font-size:10px;font-weight:700;color:' + eezH.color + ';">' + eezStock + '/' + eezCap + '</span>' +
+          '<span style="font-family:var(--fm);font-size:8px;color:' + eezH.color + '88;">(' + eezH.label + ')</span>' +
           '</div>' +
           (pips ? '<div class="c-ships">' + pips + '</div>' : '') +
           (flPips ? '<div style="margin-top:4px;">' + flPips + '</div>' : '') +
@@ -604,6 +742,44 @@
       document.getElementById('legend-items').innerHTML = Object.entries(ZONE_COLORS).map(([z, c]) =>
         '<div class="li-item"><div class="li-dot" style="background:' + c + ';opacity:.85;"></div>' + z + '</div>'
       ).join('');
+
+      // ── Fish panel in sidebar ──
+      renderFishPanel(fishZones, boatsByZone);
+    }
+
+    function renderFishPanel(fishZones, boatsByZone) {
+      const el = document.getElementById('fish-panel-body');
+      if (!el) return;
+      const fishByZone = {};
+      (fishZones || []).forEach(f => { fishByZone[f.zone] = f; });
+      el.innerHTML = ALL_ZONES.map(z => {
+        const row = fishByZone[z];
+        const stock = row ? row.stock : (ZONE_FISH_DATA[z]?.initial ?? 0);
+        const cap = row ? row.capacity : (ZONE_FISH_DATA[z]?.cap ?? 15);
+        const boats = boatsByZone[z] || 0;
+        const h = fishHealth(stock, cap);
+        const next = projectFish(stock, cap, boats);
+        const delta = next - stock;
+        const arrow = delta > 0.05 ? '↑' : delta < -0.05 ? '↓' : '→';
+        const pct = Math.min(100, Math.round(stock / cap * 100));
+        const zc = ZONE_COLORS[z] || '#555';
+        return '<div style="margin-bottom:9px;">'
+          + '<div style="display:flex;align-items:center;gap:5px;margin-bottom:3px;">'
+          + '<div style="width:9px;height:9px;border-radius:50%;background:' + zc + ';flex-shrink:0;"></div>'
+          + '<div style="font-family:var(--fh);font-size:11px;font-weight:600;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + z + '</div>'
+          + '<div style="font-family:var(--fm);font-size:10px;color:' + h.color + ';white-space:nowrap;">'
+          + stock + '/' + cap
+          + '</div>'
+          + '</div>'
+          + '<div style="background:rgba(255,255,255,.07);border-radius:2px;height:4px;overflow:hidden;margin-bottom:3px;">'
+          + '<div style="width:' + pct + '%;height:4px;background:' + h.color + ';border-radius:2px;"></div>'
+          + '</div>'
+          + '<div style="display:flex;justify-content:space-between;font-family:var(--fm);font-size:9px;color:var(--text2);">'
+          + '<span>' + (boats > 0 ? '🎣' + boats + ' boat' + (boats > 1 ? 's' : '') : 'no boats') + '</span>'
+          + '<span style="color:' + h.color + '88;">' + arrow + next + ' next</span>'
+          + '</div>'
+          + '</div>';
+      }).join('');
     }
 
     document.getElementById('bmap').src = MAP_SRC;
