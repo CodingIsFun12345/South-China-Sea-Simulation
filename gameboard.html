@@ -403,6 +403,7 @@
       padding: 7px 10px;
       border-bottom: 1px solid rgba(46, 196, 182, .15);
       cursor: pointer;
+      -webkit-user-select: none;
       user-select: none;
     }
 
@@ -412,6 +413,12 @@
       font-weight: 600;
       color: var(--green);
       letter-spacing: .5px;
+    }
+
+    .fish-panel-hdr-icon {
+      font-family: var(--fm);
+      font-size: 9px;
+      color: var(--text2);
     }
 
     .fish-panel-body {
@@ -490,7 +497,7 @@
       <div class="fish-panel">
         <div class="fish-panel-hdr" onclick="this.nextElementSibling.classList.toggle('hidden')">
           <h3>Fish Zones</h3>
-          <span style="font-family:var(--fm);font-size:9px;color:var(--text2);">▾</span>
+          <span class="fish-panel-hdr-icon">▾</span>
         </div>
         <div class="fish-panel-body" id="fish-panel-body"></div>
       </div>
