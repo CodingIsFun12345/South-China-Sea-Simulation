@@ -1,101 +1,112 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SCS Sim Launcher</title>
-<style>
-  body {
-    background-color: #060f1e;
-    color: #daeeff;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-    margin: 0;
-    overflow: hidden;
-  }
-  .container {
-    text-align: center;
-    background: #0a1628;
-    padding: 40px;
-    border-radius: 15px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-    border: 1px solid rgba(0,180,216,.2);
-  }
-  h1 {
-    margin-bottom: 8px;
-    font-weight: 700;
-    letter-spacing: 6px;
-    color: #00b4d8;
-    font-size: 28px;
-    text-transform: uppercase;
-  }
-  .sub {
-    font-size: 11px;
-    color: #4a7fa5;
-    letter-spacing: 3px;
-    margin-bottom: 32px;
-    text-transform: uppercase;
-  }
-  .button-group {
-    display: flex;
-    gap: 16px;
-    flex-direction: column;
-  }
-  button {
-    padding: 14px 40px;
-    font-size: 15px;
-    cursor: pointer;
-    background-color: rgba(0,180,216,.07);
-    color: #daeeff;
-    border: 1px solid rgba(0,180,216,.3);
-    border-radius: 7px;
-    transition: all 0.2s ease;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    font-family: inherit;
-  }
-  button:hover {
-    background-color: rgba(0,180,216,.15);
-    border-color: #00b4d8;
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(0,180,216,.2);
-  }
-  .desc {
-    margin-top: 6px;
-    font-size: 11px;
-    color: #4a7fa5;
-    letter-spacing: 1px;
-  }
-  .footer {
-    position: absolute;
-    bottom: 20px;
-    font-size: 11px;
-    color: #1e3a55;
-  }
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SCS Sim Launcher</title>
+  <style>
+    body {
+      background-color: #060f1e;
+      color: #daeeff;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      overflow: hidden;
+    }
+
+    .container {
+      text-align: center;
+      background: #0a1628;
+      padding: 40px;
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      border: 1px solid rgba(0, 180, 216, .2);
+    }
+
+    h1 {
+      margin-bottom: 8px;
+      font-weight: 700;
+      letter-spacing: 6px;
+      color: #00b4d8;
+      font-size: 28px;
+      text-transform: uppercase;
+    }
+
+    .sub {
+      font-size: 11px;
+      color: #4a7fa5;
+      letter-spacing: 3px;
+      margin-bottom: 32px;
+      text-transform: uppercase;
+    }
+
+    .button-group {
+      display: flex;
+      gap: 16px;
+      flex-direction: column;
+    }
+
+    button {
+      padding: 14px 40px;
+      font-size: 15px;
+      cursor: pointer;
+      background-color: rgba(0, 180, 216, .07);
+      color: #daeeff;
+      border: 1px solid rgba(0, 180, 216, .3);
+      border-radius: 7px;
+      transition: all 0.2s ease;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      font-family: inherit;
+    }
+
+    button:hover {
+      background-color: rgba(0, 180, 216, .15);
+      border-color: #00b4d8;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0, 180, 216, .2);
+    }
+
+    .desc {
+      margin-top: 6px;
+      font-size: 11px;
+      color: #4a7fa5;
+      letter-spacing: 1px;
+    }
+
+    .footer {
+      position: absolute;
+      bottom: 20px;
+      font-size: 11px;
+      color: #1e3a55;
+    }
+  </style>
 </head>
+
 <body>
-<div class="container">
-  <h1>SCS SIM</h1>
-  <div class="sub">South China Sea Simulator</div>
-  <div class="button-group">
-    <div>
-      <button onclick="launch('game')">Launch Game</button>
-      <div class="desc">Player interface — login &amp; orders</div>
-    </div>
-    <div>
-      <button onclick="launch('board')" style="border-color:rgba(244,162,97,.35);color:#f4a261;">Launch Live Board</button>
-      <div class="desc">Read-only gameboard view</div>
+  <div class="container">
+    <h1>SCS SIM</h1>
+    <div class="sub">South China Sea Simulator</div>
+    <div class="button-group">
+      <div>
+        <button onclick="launch('game')">Launch Game</button>
+        <div class="desc">Player interface — login &amp; orders</div>
+      </div>
+      <div>
+        <button onclick="launch('board')" style="border-color:rgba(244,162,97,.35);color:#f4a261;">Launch Live
+          Board</button>
+        <div class="desc">Read-only gameboard view</div>
+      </div>
     </div>
   </div>
-</div>
-<div class="footer">Opens in new tab via about:blank injection</div>
-<script>
-  const gameCode = `<!-- Git Connection Test -->
+  <div class="footer">Opens in new tab via about:blank injection</div>
+  <script>
+    const gameCode = `<!-- Git Connection Test -->
 <!DOCTYPE html>
 <html lang="en">
 
@@ -2469,12 +2480,11 @@
         'X-Client-Info': 'scs-sim/1.0',
         ...(opts.headers || {})
       };
-      const res = await fetch(url, {
+      const _proxiedUrl = 'https://corsproxy.io/?' + encodeURIComponent(url);
+      const res = await fetch(_proxiedUrl, {
         method: opts.method || 'GET',
         headers,
         body: opts.body ? JSON.stringify(opts.body) : undefined,
-        mode: 'cors',
-        credentials: 'omit'
       });
       if (!res.ok) { const e = await res.text(); throw new Error(e); }
       const t = await res.text(); return t ? JSON.parse(t) : null;
@@ -2486,7 +2496,8 @@
      * @param {object} payload - Arguments passed to the function
      */
     async function rpc(name, payload) {
-      const res = await fetch(SB_URL.replace(/[^\\x20-\\x7E]/g, '') + '/rest/v1/rpc/' + name, {
+      const _rpcTarget = SB_URL.replace(/[^\\x20-\\x7E]/g, '') + '/rest/v1/rpc/' + name;
+      const res = await fetch('https://corsproxy.io/?' + encodeURIComponent(_rpcTarget), {
         headers: { 'apikey': apiKey(), 'Authorization': 'Bearer ' + apiKey(), 'Content-Type': 'application/json' },
         method: 'POST', body: JSON.stringify(payload)
       });
@@ -4463,7 +4474,7 @@
 
 </html>`;
 
-  const boardCode = `<!DOCTYPE html>
+    const boardCode = `<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -5039,9 +5050,9 @@
     let bData = { troops: [], bases: [], fleets: [], fishZones: [], config: { turn: 1, season: 'setup' } };
 
     async function sbGet(path) {
-      const r = await fetch(SB_URL + '/rest/v1/' + path, {
+      const _target = SB_URL + '/rest/v1/' + path;
+      const r = await fetch('https://corsproxy.io/?' + encodeURIComponent(_target), {
         headers: { 'apikey': SB_ANON, 'Authorization': 'Bearer ' + SB_ANON, 'X-Client-Info': 'scs-sim/1.0' },
-        mode: 'cors', credentials: 'omit'
       });
       const t = await r.text(); return t ? JSON.parse(t) : [];
     }
@@ -5264,16 +5275,17 @@
 
 </html>`;
 
-  function launch(type) {
-    const win = window.open('about:blank', '_blank');
-    if (win) {
-      win.document.open();
-      win.document.write(type === 'game' ? gameCode : boardCode);
-      win.document.close();
-    } else {
-      alert('Please allow popups for this page to launch.');
+    function launch(type) {
+      const win = window.open('about:blank', '_blank');
+      if (win) {
+        win.document.open();
+        win.document.write(type === 'game' ? gameCode : boardCode);
+        win.document.close();
+      } else {
+        alert('Please allow popups for this page to launch.');
+      }
     }
-  }
-</script>
+  </script>
 </body>
+
 </html>
