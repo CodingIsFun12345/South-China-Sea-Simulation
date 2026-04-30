@@ -2243,9 +2243,21 @@
       if (!confirm('Withdraw your submitted orders?')) return;
       showLoad('Withdrawing…');
       try {
-        await sb('pending_orders?country=eq.' + encodeURIComponent(CU.country) + '&season=eq.' + D.cfg.season + '&turn=eq.' + D.cfg.turn, { method: 'DELETE', prefer: 'return=minimal' });
+        await sb(
+          'pending_orders?country=eq.' + encodeURIComponent(CU.country) +
+          '&season=eq.' + encodeURIComponent(D.cfg.season) +
+          '&turn=eq.' + D.cfg.turn,
+          { method: 'DELETE', prefer: 'return=representation' }
+        );
         await handleRefresh();
-      } catch (e) { hideLoad(); alert(e.message); }
+        // After refresh, check if orders are still there (silent RLS block)
+        if (D.myOrders.length > 0) {
+          showMsg('Withdraw failed — orders still present. Ask your GM to withdraw them, or run this SQL in Supabase:<br><code style="font-size:10px;">CREATE POLICY "anon delete own orders" ON pending_orders FOR DELETE TO anon USING (true);</code>', 'ae');
+        }
+      } catch (e) {
+        hideLoad();
+        showMsg('Withdraw error: ' + e.message, 'ae');
+      }
     }
 
     function renderSidebar() {
