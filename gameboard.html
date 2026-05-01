@@ -137,9 +137,78 @@
     .board-area {
       flex: 1;
       display: grid;
-      grid-template-columns: 1fr 270px;
+      grid-template-columns: 200px 1fr 270px;
       overflow: hidden;
       min-height: 0;
+    }
+
+    .fish-sidebar {
+      border-right: 1px solid var(--bdr);
+      background: rgba(4, 12, 24, .85);
+      overflow-y: auto;
+      padding: 10px 8px;
+    }
+
+    .fish-sidebar::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    .fish-sidebar::-webkit-scrollbar-thumb {
+      background: rgba(46, 196, 182, .3);
+      border-radius: 2px;
+    }
+
+    .fish-sidebar h3 {
+      font-family: var(--fh);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--green);
+      margin-bottom: 8px;
+      padding-bottom: 5px;
+      border-bottom: 1px solid rgba(46, 196, 182, .15);
+    }
+
+    .fz-row-sb {
+      margin-bottom: 9px;
+      padding-bottom: 9px;
+      border-bottom: 1px solid rgba(255, 255, 255, .04);
+    }
+
+    .fz-row-sb:last-child {
+      border-bottom: none;
+    }
+
+    .fz-name-sb {
+      font-family: var(--fh);
+      font-size: 11px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      margin-bottom: 3px;
+    }
+
+    .fz-bar-sb {
+      height: 4px;
+      border-radius: 2px;
+      overflow: hidden;
+      background: rgba(255, 255, 255, .07);
+      margin-bottom: 3px;
+    }
+
+    .fz-bar-sb-fill {
+      height: 4px;
+      border-radius: 2px;
+    }
+
+    .fz-info-sb {
+      font-family: var(--fm);
+      font-size: 9px;
+      color: var(--text2);
+      display: flex;
+      justify-content: space-between;
     }
 
     .map-panel {
@@ -389,53 +458,6 @@
       border-top: 1px solid var(--bdr);
     }
 
-    .fish-panel {
-      border: 1px solid rgba(46, 196, 182, .2);
-      border-radius: 8px;
-      background: rgba(46, 196, 182, .04);
-      overflow: hidden;
-    }
-
-    .fish-panel-hdr {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 7px 10px;
-      border-bottom: 1px solid rgba(46, 196, 182, .15);
-      cursor: pointer;
-      -webkit-user-select: none;
-      user-select: none;
-    }
-
-    .fish-panel-hdr h3 {
-      font-family: var(--fh);
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--green);
-      letter-spacing: .5px;
-    }
-
-    .fish-panel-hdr-icon {
-      font-family: var(--fm);
-      font-size: 9px;
-      color: var(--text2);
-    }
-
-    .fish-panel-body {
-      padding: 10px 10px 4px;
-      max-height: 340px;
-      overflow-y: auto;
-    }
-
-    .fish-panel-body::-webkit-scrollbar {
-      width: 4px;
-    }
-
-    .fish-panel-body::-webkit-scrollbar-thumb {
-      background: rgba(46, 196, 182, .3);
-      border-radius: 2px;
-    }
-
     .spin {
       width: 16px;
       height: 16px;
@@ -482,6 +504,10 @@
     </div>
   </div>
   <div class="board-area">
+    <div class="fish-sidebar">
+      <h3>Fish Zones</h3>
+      <div id="fish-sidebar-body"></div>
+    </div>
     <div class="map-panel" id="map-panel">
       <div class="map-wrapper" id="map-wrapper">
         <img id="bmap" src="" alt="SCS Game Board">
@@ -494,13 +520,6 @@
         <div id="conf-list"></div>
       </div>
       <div id="country-cards"></div>
-      <div class="fish-panel">
-        <div class="fish-panel-hdr" onclick="this.nextElementSibling.classList.toggle('hidden')">
-          <h3>Fish Zones</h3>
-          <span class="fish-panel-hdr-icon">▾</span>
-        </div>
-        <div class="fish-panel-body" id="fish-panel-body"></div>
-      </div>
       <div class="legend">
         <h3>Zone Legend</h3>
         <div id="legend-items"></div>
@@ -626,7 +645,6 @@
         return el;
       }
 
-      // ── Fish stock overlay markers (one per zone) ──
       const fishByZone = {};
       fishZones.forEach(f => { fishByZone[f.zone] = f; });
       const boatsByZone = {};
@@ -635,41 +653,8 @@
         boatsByZone[z] = (boatsByZone[z] || 0) + 1;
       });
 
-      ALL_ZONES.forEach(z => {
-        const labelTile = ZONE_LABEL_TILE[z]; if (!labelTile) return;
-        // Don't render fish marker if ships occupy this tile (avoid overlap)
-        if (byTile[labelTile]) return;
-        const row = fishByZone[z];
-        const stock = row ? row.stock : (ZONE_FISH_DATA[z]?.initial ?? 0);
-        const cap = row ? row.capacity : (ZONE_FISH_DATA[z]?.cap ?? 15);
-        const boats = boatsByZone[z] || 0;
-        const h = fishHealth(stock, cap);
-        const nextStock = projectFish(stock, cap, boats);
-        const delta = nextStock - stock;
-        const arrow = delta > 0.05 ? '↑' : delta < -0.05 ? '↓' : '→';
-        const zc = ZONE_COLORS[z] || '#555';
-        const m = mk(labelTile); if (!m) return;
-        m.style.zIndex = '1'; // Below ship markers
-        m.innerHTML = '<div style="'
-          + 'background:rgba(4,12,24,.82);border:1px solid ' + h.color + '55;border-radius:7px;'
-          + 'padding:3px 5px;text-align:center;min-width:36px;cursor:default;'
-          + '">'
-          + '<div style="font-family:var(--fm);font-size:11px;font-weight:700;color:' + h.color + ';line-height:1.1;">'
-          + '🐟' + stock
-          + '</div>'
-          + '<div style="font-family:var(--fm);font-size:8px;color:' + h.color + '88;line-height:1.1;">'
-          + arrow + nextStock + '/' + cap
-          + '</div>'
-          + (boats > 0 ? '<div style="font-size:8px;color:var(--gold);line-height:1;">🎣' + boats + '</div>' : '')
-          + '</div>'
-          + '<div class="tooltip">'
-          + '<b>' + z + '</b><br>'
-          + 'Stock: ' + stock + ' / ' + cap + ' (' + h.label + ')<br>'
-          + 'Fishing boats: ' + boats + '<br>'
-          + 'Next turn projection: ' + nextStock + ' ' + arrow
-          + '</div>';
-        overlay.appendChild(m);
-      });
+      // ── Fish sidebar (left panel) ──
+      renderFishSidebar(fishZones, boatsByZone);
 
       // Render all tiles containing ships/units
       Object.entries(byTile).forEach(([tile, ships]) => {
@@ -754,36 +739,31 @@
       renderFishPanel(fishZones, boatsByZone);
     }
 
-    function renderFishPanel(fishZones, boatsByZone) {
-      const el = document.getElementById('fish-panel-body');
+    function renderFishSidebar(fishZones, boatsByZone) {
+      const el = document.getElementById('fish-sidebar-body');
       if (!el) return;
-      const fishByZone = {};
-      (fishZones || []).forEach(f => { fishByZone[f.zone] = f; });
+      const fByZone = {};
+      (fishZones || []).forEach(f => { fByZone[f.zone] = f; });
       el.innerHTML = ALL_ZONES.map(z => {
-        const row = fishByZone[z];
+        const row = fByZone[z];
         const stock = row ? row.stock : (ZONE_FISH_DATA[z]?.initial ?? 0);
         const cap = row ? row.capacity : (ZONE_FISH_DATA[z]?.cap ?? 15);
         const boats = boatsByZone[z] || 0;
         const h = fishHealth(stock, cap);
-        const next = projectFish(stock, cap, boats);
-        const delta = next - stock;
-        const arrow = delta > 0.05 ? '↑' : delta < -0.05 ? '↓' : '→';
+        const next = projectFish(stock, cap, boats, true);
         const pct = Math.min(100, Math.round(stock / cap * 100));
+        const delta = next - stock;
+        const arrow = delta > 0 ? '↑' : delta < 0 ? '↓' : '→';
         const zc = ZONE_COLORS[z] || '#555';
-        return '<div style="margin-bottom:9px;">'
-          + '<div style="display:flex;align-items:center;gap:5px;margin-bottom:3px;">'
-          + '<div style="width:9px;height:9px;border-radius:50%;background:' + zc + ';flex-shrink:0;"></div>'
-          + '<div style="font-family:var(--fh);font-size:11px;font-weight:600;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + z + '</div>'
-          + '<div style="font-family:var(--fm);font-size:10px;color:' + h.color + ';white-space:nowrap;">'
-          + stock + '/' + cap
+        return '<div class="fz-row-sb">'
+          + '<div class="fz-name-sb">'
+          + '<div style="width:8px;height:8px;border-radius:50%;background:' + zc + ';flex-shrink:0;"></div>'
+          + '<span style="color:' + h.color + ';flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" title="' + z + '">' + z + '</span>'
           + '</div>'
-          + '</div>'
-          + '<div style="background:rgba(255,255,255,.07);border-radius:2px;height:4px;overflow:hidden;margin-bottom:3px;">'
-          + '<div style="width:' + pct + '%;height:4px;background:' + h.color + ';border-radius:2px;"></div>'
-          + '</div>'
-          + '<div style="display:flex;justify-content:space-between;font-family:var(--fm);font-size:9px;color:var(--text2);">'
-          + '<span>' + (boats > 0 ? '🎣' + boats + ' boat' + (boats > 1 ? 's' : '') : 'no boats') + '</span>'
-          + '<span style="color:' + h.color + '88;">' + arrow + next + ' next</span>'
+          + '<div class="fz-bar-sb"><div class="fz-bar-sb-fill" style="width:' + pct + '%;background:' + h.color + ';"></div></div>'
+          + '<div class="fz-info-sb">'
+          + '<span>' + stock + '/' + cap + '</span>'
+          + '<span style="color:' + h.color + '88;">' + arrow + next + (boats ? ' 🎣' + boats : '') + '</span>'
           + '</div>'
           + '</div>';
       }).join('');
